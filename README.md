@@ -23,7 +23,7 @@ Each type of fixture relies on three major components:
 
 ## Types of Fixtures
 
-Bellow you cand a list of all supported types of fixtures.
+Bellow you can find a list of all supported types of fixtures.
 
 ### CachePoolFixtures
 
