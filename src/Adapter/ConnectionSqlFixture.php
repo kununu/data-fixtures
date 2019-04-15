@@ -3,6 +3,7 @@
 namespace Kununu\DataFixtures\Adapter;
 
 use Doctrine\DBAL\Connection;
+use Kununu\DataFixtures\Exception\InvalidFileException;
 
 abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
 {
@@ -37,7 +38,7 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
         restore_error_handler();
 
         if (false === $content) {
-            throw new \RuntimeException($error);
+            throw new InvalidFileException($error);
         }
 
         return $content;
