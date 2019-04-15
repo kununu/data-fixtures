@@ -4,33 +4,43 @@ namespace Kununu\DataFixtures\Tests\Purger\Cache;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class ConnectionPurgerTest extends TestCase
 {
-    /** @var MockObject|Connection */
-    private $connection;
-
     public function testThatWhenNoTablesAreProvidedNothingIsPurged(): void
     {
-        $this->connection
-            ->expects($this->never())
-            ->method($this->anything());
+        /** @var MockObject|Connection $connection */
+        $connection = $this->createMock(Connection::class);
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->expects($this->any())->method('listTableNames')->willReturn([]);
+        $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
 
-        $purger = new ConnectionPurger($this->connection, []);
+        $connection
+            ->expects($this->never())
+            ->method('executeUpdate');
+
+        $purger = new ConnectionPurger($connection);
         $purger->purge();
     }
 
     public function testThatExcludedTablesAreNotPurged(): void
     {
-        $this->connection
+        /** @var MockObject|Connection $connection */
+        $connection = $this->createMock(Connection::class);
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->expects($this->any())->method('listTableNames')->willReturn(['table_1', 'table_2', 'table_3']);
+        $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+
+        $connection
             ->expects($this->once())
             ->method('getDatabasePlatform')
             ->willReturn($this->createMock(AbstractPlatform::class));
 
-        $this->connection
+        $connection
             ->expects($this->exactly(2))
             ->method('executeUpdate')
             ->withConsecutive(
@@ -39,12 +49,7 @@ final class ConnectionPurgerTest extends TestCase
             );
 
         $purger = new ConnectionPurger(
-            $this->connection,
-            [
-                'table_1',
-                'table_2',
-                'table_3',
-            ],
+            $connection,
             ['table_4', 'table_2', 'table_5']
         );
 
@@ -53,12 +58,18 @@ final class ConnectionPurgerTest extends TestCase
 
     public function testThatPurgesWithDeleteMode(): void
     {
-        $this->connection
+        /** @var MockObject|Connection $connection */
+        $connection = $this->createMock(Connection::class);
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->expects($this->any())->method('listTableNames')->willReturn(['table_1', 'table_2', 'table_3']);
+        $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+
+        $connection
             ->expects($this->once())
             ->method('getDatabasePlatform')
             ->willReturn($this->createMock(AbstractPlatform::class));
 
-        $this->connection
+        $connection
             ->expects($this->exactly(3))
             ->method('executeUpdate')
             ->withConsecutive(
@@ -67,20 +78,19 @@ final class ConnectionPurgerTest extends TestCase
                 ['DELETE FROM table_3']
             );
 
-        $purger = new ConnectionPurger(
-            $this->connection,
-            [
-                'table_1',
-                'table_2',
-                'table_3',
-            ]
-        );
+        $purger = new ConnectionPurger($connection);
 
         $purger->purge();
     }
 
     public function testThatPurgesWithTruncateMode(): void
     {
+        /** @var MockObject|Connection $connection */
+        $connection = $this->createMock(Connection::class);
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->expects($this->any())->method('listTableNames')->willReturn(['table_1', 'table_2', 'table_3']);
+        $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+
         $platform = $this->createMock(AbstractPlatform::class);
 
         $platform
@@ -97,12 +107,12 @@ final class ConnectionPurgerTest extends TestCase
                 'TRUNCATE table_3'
             );
 
-        $this->connection
+        $connection
             ->expects($this->once())
             ->method('getDatabasePlatform')
             ->willReturn($platform);
 
-        $this->connection
+        $connection
             ->expects($this->exactly(3))
             ->method('executeUpdate')
             ->withConsecutive(
@@ -111,14 +121,7 @@ final class ConnectionPurgerTest extends TestCase
                 ['TRUNCATE table_3']
             );
 
-        $purger = new ConnectionPurger(
-            $this->connection,
-            [
-                'table_1',
-                'table_2',
-                'table_3',
-            ]
-        );
+        $purger = new ConnectionPurger($connection);
 
         $purger->setPurgeMode(2);
         $purger->purge();
@@ -126,7 +129,13 @@ final class ConnectionPurgerTest extends TestCase
 
     public function testChangePurgeModeToDelete() : void
     {
-        $purger = new ConnectionPurger($this->connection, []);
+        /** @var MockObject|Connection $connection */
+        $connection = $this->createMock(Connection::class);
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->expects($this->any())->method('listTableNames')->willReturn(['table_1', 'table_2', 'table_3']);
+        $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+
+        $purger = new ConnectionPurger($connection);
 
         $purger->setPurgeMode(1);
 
@@ -135,7 +144,13 @@ final class ConnectionPurgerTest extends TestCase
 
     public function testChangePurgeModeToTruncate() : void
     {
-        $purger = new ConnectionPurger($this->connection, []);
+        /** @var MockObject|Connection $connection */
+        $connection = $this->createMock(Connection::class);
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->expects($this->any())->method('listTableNames')->willReturn(['table_1', 'table_2', 'table_3']);
+        $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+
+        $purger = new ConnectionPurger($connection);
 
         $purger->setPurgeMode(2);
 
@@ -146,14 +161,13 @@ final class ConnectionPurgerTest extends TestCase
     {
         $this->expectException(\Exception::class);
 
-        $purger = new ConnectionPurger($this->connection, []);
+        /** @var MockObject|Connection $connection */
+        $connection = $this->createMock(Connection::class);
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->expects($this->any())->method('listTableNames')->willReturn(['table_1', 'table_2', 'table_3']);
+        $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+
+        $purger = new ConnectionPurger($connection);
         $purger->setPurgeMode(10);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->connection = $this->createMock(Connection::class);
     }
 }

@@ -17,10 +17,11 @@ final class ConnectionPurger implements PurgerInterface
 
     private $purgeMode = self::PURGE_MODE_DELETE;
 
-    public function __construct(Connection $connection, array $tables, array $excludedTables = [])
+    public function __construct(Connection $connection, array $excludedTables = [])
     {
         $this->connection = $connection;
-        $this->tables = $tables;
+        ;
+        $this->tables = $connection->getSchemaManager()->listTableNames();
         $this->excludedTables = $excludedTables;
     }
 
