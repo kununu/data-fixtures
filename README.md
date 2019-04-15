@@ -110,7 +110,7 @@ $connectionParams = [
 
 $conn = Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
 
-$purger = new Kununu\DataFixtures\Purger\ConnectionPurger($conn, $tables, $excludedTables);
+$purger = new Kununu\DataFixtures\Purger\ConnectionPurger($conn, $excludedTables);
 
 // If you want you can change the Purge Mode
 $purger->setPurgeMode(1); // PURGE_MODE_DELETE
