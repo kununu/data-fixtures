@@ -6,9 +6,11 @@ use Kununu\DataFixtures\FixtureInterface;
 
 interface LoaderInterface
 {
-    public function loadFromDirectory(string $dir) : array;
+    public function loadFromDirectory(string $dir) : void;
 
-    public function loadFromFile(string $fileName) : array;
+    public function loadFromFile(string $fileName) : void;
+
+    public function loadFromClassName(string $className) : void;
 
     public function getFixture(string $className) : FixtureInterface;
 

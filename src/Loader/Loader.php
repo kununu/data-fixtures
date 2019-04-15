@@ -10,7 +10,7 @@ abstract class Loader implements LoaderInterface
 
     private $fileExtension = '.php';
 
-    final public function loadFromDirectory(string $dir) : array
+    final public function loadFromDirectory(string $dir) : void
     {
         if (!is_dir($dir)) {
             throw new \InvalidArgumentException(sprintf('"%s" does not exist', $dir));
@@ -21,17 +21,22 @@ abstract class Loader implements LoaderInterface
             \RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        return $this->loadFromIterator($iterator);
+        $this->loadFromIterator($iterator);
     }
 
-    final public function loadFromFile(string $fileName) : array
+    final public function loadFromFile(string $fileName) : void
     {
         if (!is_readable($fileName)) {
             throw new \InvalidArgumentException(sprintf('"%s" does not exist or is not readable', $fileName));
         }
 
-        $iterator = new \ArrayIterator([new \SplFileInfo($fileName)]);
-        return $this->loadFromIterator($iterator);
+        $this->loadFromIterator(new \ArrayIterator([new \SplFileInfo($fileName)]));
+    }
+
+    final public function loadFromClassName(string $className) : void
+    {
+        $reflClass = new \ReflectionClass($className);
+        $this->loadFromIterator(new \ArrayIterator([new \SplFileInfo($reflClass->getFileName())]));
     }
 
     final public function getFixture(string $className) : FixtureInterface
@@ -67,7 +72,7 @@ abstract class Loader implements LoaderInterface
         return new $class();
     }
 
-    private function loadFromIterator(\Iterator $iterator) : array
+    private function loadFromIterator(\Iterator $iterator) : void
     {
         $includedFiles = [];
         foreach ($iterator as $file) {
@@ -95,7 +100,5 @@ abstract class Loader implements LoaderInterface
                 $this->addFixture($fixture);
             }
         }
-
-        return $fixtures;
     }
 }
