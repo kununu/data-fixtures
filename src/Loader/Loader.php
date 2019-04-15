@@ -4,7 +4,7 @@ namespace Kununu\DataFixtures\Loader;
 
 use Kununu\DataFixtures\FixtureInterface;
 
-abstract class Loader
+abstract class Loader implements LoaderInterface
 {
     private $fixtures = [];
 
