@@ -19,11 +19,11 @@ Each type of fixture relies on three major components:
 
 - `Purger` - Class responsible of clearing the contents of a data storage
 - `Loader` - Class responsible of loading data-fixtures of a specific type in multiple ways
-- `Executor` - Class responsible of orchestrating the flow, but calling the purger and loading the fixtures
+- `Executor` - Class responsible of orchestrating the flow, by calling the purger and loading the fixtures
 
 ## Types of Fixtures
 
-Bellow you cand a list of all supported types of fixtures.
+Bellow you can find a list of all supported types of fixtures.
 
 ### CachePoolFixtures
 
