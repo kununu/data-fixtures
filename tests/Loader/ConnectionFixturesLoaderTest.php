@@ -7,7 +7,7 @@ use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
 use Kununu\DataFixtures\Tests\TestFixtures\ConnectionFixture1;
 use PHPUnit\Framework\TestCase;
 
-final class SqlFixturesLoaderTest extends TestCase
+final class ConnectionFixturesLoaderTest extends TestCase
 {
     /** @var ConnectionFixturesLoader */
     private $loader;
@@ -24,7 +24,14 @@ final class SqlFixturesLoaderTest extends TestCase
         $this->assertCount(2, $this->loader->getFixtures());
 
         $this->loader->loadFromDirectory(__DIR__. '/../TestFixtures/');
-        $this->assertCount(5, $this->loader->getFixtures());
+        $this->assertCount(6, $this->loader->getFixtures());
+    }
+
+    public function testLoadFromDirectoryThrowsExceptionIfNotDirectory()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->loader->loadFromDirectory(__DIR__. '/../NotFoundDirectory/');
     }
 
     public function testLoadFromFile()
@@ -51,6 +58,13 @@ final class SqlFixturesLoaderTest extends TestCase
         $this->assertCount(5, $this->loader->getFixtures());
     }
 
+    public function testLoadFromFileThrowsExceptionForInvalidFile()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->loader->loadFromFile(__DIR__. '/../NotFoundDirectory/CachePoolFixture1.php');
+    }
+
     public function testGetFixture()
     {
         $this->loader->loadFromFile(__DIR__. '/../TestFixtures/ConnectionFixture1.php');
@@ -58,6 +72,13 @@ final class SqlFixturesLoaderTest extends TestCase
         $fixture = $this->loader->getFixture(ConnectionFixture1::class);
 
         $this->assertInstanceOf(ConnectionFixture1::class, $fixture);
+    }
+
+    public function testGetFixtureThrowsExceptionWhenFixtureDoesNotExists()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->loader->getFixture(ConnectionFixture1::class);
     }
 
     protected function setUp(): void

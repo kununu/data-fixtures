@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Kununu\DataFixtures\Tests\Purger\Cache;
+namespace Kununu\DataFixtures\Tests\Purger;
 
 use Kununu\DataFixtures\Purger\CachePoolPurger;
 use PHPUnit\Framework\MockObject\MockObject;
