@@ -20,7 +20,6 @@ final class ConnectionPurger implements PurgerInterface
     public function __construct(Connection $connection, array $excludedTables = [])
     {
         $this->connection = $connection;
-        ;
         $this->tables = $connection->getSchemaManager()->listTableNames();
         $this->excludedTables = $excludedTables;
     }
