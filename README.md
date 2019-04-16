@@ -133,12 +133,14 @@ In order to load fixtures you have a couple of options available:
 
 1) loadFromDirectory(string $dir)
 2) loadFromFile(string $fileName)
-3) addFixture(FixtureInterface $fixture)
+3) loadFromClassName(string $className)
+4) addFixture(FixtureInterface $fixture)
 
 ```
 $loader = new Kununu\DataFixtures\Loader\ConnectionFixturesLoader();
 $loader->loadFromDirectory('/your/directory/');
 $loader->loadFromFile('/your/file.php');
+$loader->loadFromClassName(MyFixtureSql::class);
 $loader->addFixture(new MyFixtureSql());
 ```
 
@@ -147,6 +149,12 @@ $loader->addFixture(new MyFixtureSql());
 - Dependent Fixtures
 - Fixture Group
 - OrderedFixture
+
+## Notes
+
+- ConnectionExecutor and ConnectionPurger are transactional
+- ConnectionPurger and ConnectionPurger disable foreign keys checks
+- **You own the fixtures you load**
 
 ## Tests
 

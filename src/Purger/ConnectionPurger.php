@@ -4,7 +4,7 @@ namespace Kununu\DataFixtures\Purger;
 
 use Doctrine\DBAL\Connection;
 
-final class ConnectionPurger implements PurgerInterface
+final class ConnectionPurger implements TransactionalPurgerInterface
 {
     private const PURGE_MODE_DELETE = 1;
     private const PURGE_MODE_TRUNCATE = 2;
@@ -16,6 +16,8 @@ final class ConnectionPurger implements PurgerInterface
     private $excludedTables;
 
     private $purgeMode = self::PURGE_MODE_DELETE;
+
+    private $transactional = true;
 
     public function __construct(Connection $connection, array $excludedTables = [])
     {
@@ -31,11 +33,13 @@ final class ConnectionPurger implements PurgerInterface
         if (!empty($tables)) {
             $platform = $this->connection->getDatabasePlatform();
 
-            $this->connection->beginTransaction();
-
-            $this->connection->exec('SET FOREIGN_KEY_CHECKS=0');
+            if ($this->transactional) {
+                $this->connection->beginTransaction();
+            }
 
             try {
+                $this->connection->exec('SET FOREIGN_KEY_CHECKS=0');
+
                 foreach ($tables as $tbl) {
                     if ($this->purgeMode === self::PURGE_MODE_DELETE) {
                         $this->connection->executeUpdate('DELETE FROM ' . $this->connection->quoteIdentifier($tbl));
@@ -44,11 +48,17 @@ final class ConnectionPurger implements PurgerInterface
                     }
                 }
 
-                $this->connection->commit();
+                if ($this->transactional) {
+                    $this->connection->commit();
+                }
+
                 $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
             } catch (\Throwable $e) {
-                $this->connection->rollBack();
+                if ($this->transactional) {
+                    $this->connection->rollBack();
+                }
                 $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
+
                 throw $e;
             }
         }
@@ -68,5 +78,15 @@ final class ConnectionPurger implements PurgerInterface
     public function getPurgeMode() : int
     {
         return $this->purgeMode;
+    }
+
+    public function enableTransactional() : void
+    {
+        $this->transactional = true;
+    }
+
+    public function disableTransactional() : void
+    {
+        $this->transactional = false;
     }
 }

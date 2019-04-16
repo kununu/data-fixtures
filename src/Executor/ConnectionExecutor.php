@@ -4,7 +4,7 @@ namespace Kununu\DataFixtures\Executor;
 
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
-use Kununu\DataFixtures\Purger\PurgerInterface;
+use Kununu\DataFixtures\Purger\TransactionalPurgerInterface;
 
 final class ConnectionExecutor implements ExecutorInterface
 {
@@ -12,7 +12,7 @@ final class ConnectionExecutor implements ExecutorInterface
 
     private $purger;
 
-    public function __construct(Connection $connection, PurgerInterface $purger)
+    public function __construct(Connection $connection, TransactionalPurgerInterface $purger)
     {
         $this->connection = $connection;
         $this->purger = $purger;
@@ -22,12 +22,14 @@ final class ConnectionExecutor implements ExecutorInterface
     {
         $this->connection->beginTransaction();
 
-        $this->connection->exec('SET FOREIGN_KEY_CHECKS=0');
-
         try {
             if ($append === false) {
+                $this->purger->disableTransactional();
                 $this->purger->purge();
+                $this->purger->enableTransactional();
             }
+
+            $this->connection->exec('SET FOREIGN_KEY_CHECKS=0');
 
             foreach ($fixtures as $fixture) {
                 $this->load($fixture);
@@ -36,6 +38,7 @@ final class ConnectionExecutor implements ExecutorInterface
             $this->connection->commit();
             $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
         } catch (\Throwable $e) {
+            $this->purger->enableTransactional();
             $this->connection->rollBack();
             $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
             throw $e;
