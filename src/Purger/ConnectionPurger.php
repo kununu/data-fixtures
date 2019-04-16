@@ -3,6 +3,7 @@
 namespace Kununu\DataFixtures\Purger;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 
 final class ConnectionPurger implements PurgerInterface
@@ -31,31 +32,29 @@ final class ConnectionPurger implements PurgerInterface
     {
         $tables = array_diff($this->tables, $this->excludedTables);
 
-        if (!empty($tables)) {
-            $platform = $this->connection->getDatabasePlatform();
+        if (empty($tables)) {
+            return;
+        }
 
-            $this->connection->beginTransaction();
+        $platform = $this->connection->getDatabasePlatform();
 
-            try {
-                $this->connection->exec($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+        $this->connection->beginTransaction();
 
-                foreach ($tables as $tbl) {
-                    if ($this->purgeMode === self::PURGE_MODE_DELETE) {
-                        $this->connection->executeUpdate('DELETE FROM ' . $this->connection->quoteIdentifier($tbl));
-                    } else {
-                        $this->connection->executeUpdate($platform->getTruncateTableSQL($this->connection->quoteIdentifier($tbl), true));
-                    }
-                }
+        try {
+            $this->connection->exec($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
 
-                $this->connection->commit();
-
-                $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
-            } catch (\Throwable $e) {
-                $this->connection->rollBack();
-                $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
-
-                throw $e;
+            foreach ($tables as $tableName) {
+                $this->purgeTable($platform, $tableName);
             }
+
+            $this->connection->commit();
+
+            $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+        } catch (\Throwable $e) {
+            $this->connection->rollBack();
+            $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+
+            throw $e;
         }
     }
 
@@ -73,5 +72,14 @@ final class ConnectionPurger implements PurgerInterface
     public function getPurgeMode() : int
     {
         return $this->purgeMode;
+    }
+
+    private function purgeTable(AbstractPlatform $platform, string $tableName) : void
+    {
+        if ($this->purgeMode === self::PURGE_MODE_DELETE) {
+            $this->connection->executeUpdate('DELETE FROM ' . $this->connection->quoteIdentifier($tableName));
+        } else {
+            $this->connection->executeUpdate($platform->getTruncateTableSQL($this->connection->quoteIdentifier($tableName), true));
+        }
     }
 }

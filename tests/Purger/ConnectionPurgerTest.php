@@ -66,7 +66,7 @@ final class ConnectionPurgerTest extends TestCase
     public function testThatWhenNoTablesAreProvidedNothingIsPurged(): void
     {
         /** @var MockObject|Connection $connection */
-        $connection = $this->getConnectionMock([]);
+        $connection = $this->getConnectionMock(true, []);
 
         $connection
             ->expects($this->never())
@@ -86,11 +86,6 @@ final class ConnectionPurgerTest extends TestCase
             ->method('quoteIdentifier')
             ->withConsecutive(['table_1'], ['table_3'])
             ->willReturnOnConsecutiveCalls('table_1', 'table_3');
-
-        $connection
-            ->expects($this->once())
-            ->method('getDatabasePlatform')
-            ->willReturn($this->createMock(AbstractPlatform::class));
 
         $connection
             ->expects($this->exactly(2))
@@ -120,11 +115,6 @@ final class ConnectionPurgerTest extends TestCase
             ->willReturnOnConsecutiveCalls('table_1', 'table_2', 'table_3');
 
         $connection
-            ->expects($this->once())
-            ->method('getDatabasePlatform')
-            ->willReturn($this->createMock(AbstractPlatform::class));
-
-        $connection
             ->expects($this->exactly(3))
             ->method('executeUpdate')
             ->withConsecutive(
@@ -141,7 +131,7 @@ final class ConnectionPurgerTest extends TestCase
     public function testThatPurgesWithTruncateMode(): void
     {
         /** @var MockObject|Connection $connection */
-        $connection = $this->getConnectionMock();
+        $connection = $this->getConnectionMock(false);
 
         $connection
             ->expects($this->exactly(3))
@@ -166,7 +156,7 @@ final class ConnectionPurgerTest extends TestCase
             );
 
         $connection
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getDatabasePlatform')
             ->willReturn($platform);
 
@@ -220,13 +210,16 @@ final class ConnectionPurgerTest extends TestCase
         $purger->setPurgeMode(10);
     }
 
-    private function getConnectionMock(array $tables = ['table_1', 'table_2', 'table_3']) : MockObject
+    private function getConnectionMock(bool $withPlatform = true, array $tables = ['table_1', 'table_2', 'table_3']) : MockObject
     {
         $connection = $this->createMock(Connection::class);
         $schemaManager = $this->createMock(AbstractSchemaManager::class);
         $schemaManager->expects($this->any())->method('listTableNames')->willReturn($tables);
         $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
         $connection->expects($this->any())->method('getDriver')->willReturn($this->createMock(AbstractMySQLDriver::class));
+        if ($withPlatform) {
+            $connection->expects($this->any())->method('getDatabasePlatform')->willReturn($this->createMock(AbstractPlatform::class));
+        }
 
         return $connection;
     }
