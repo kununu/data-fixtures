@@ -3,6 +3,7 @@
 namespace Kununu\DataFixtures\Tests\Purger;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ConnectionPurgerTest extends TestCase
 {
-    public function testThatPurgerByDefaultIsTransactional() : void
+    public function testThatPurgerIsTransactionalAndCommits() : void
     {
         /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
@@ -33,30 +34,7 @@ final class ConnectionPurgerTest extends TestCase
         $purger->purge();
     }
 
-    public function testThatWhenPurgerIsTransactionalThenItCommits() : void
-    {
-        /** @var MockObject|Connection $connection */
-        $connection = $this->getConnectionMock();
-
-        $connection
-            ->expects($this->exactly(2))
-            ->method('exec')
-            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
-
-        $connection
-            ->expects($this->once())
-            ->method('beginTransaction');
-
-        $connection
-            ->expects($this->once())
-            ->method('commit');
-
-        $purger = new ConnectionPurger($connection);
-        $purger->enableTransactional();
-        $purger->purge();
-    }
-
-    public function testThatWhenPurgerIsTransactionalAndAnExceptionIsThrownThenItRollbacks() : void
+    public function testThatPurgerIsTransactionalAndRollbacks() : void
     {
         $this->expectException(\Exception::class);
 
@@ -82,24 +60,6 @@ final class ConnectionPurgerTest extends TestCase
             ->method('rollback');
 
         $purger = new ConnectionPurger($connection);
-        $purger->purge();
-    }
-
-    public function testThatWhenPurgerIsNotTransactionalThenItDoesNotCommits() : void
-    {
-        /** @var MockObject|Connection $connection */
-        $connection = $this->getConnectionMock();
-
-        $connection
-            ->expects($this->never())
-            ->method('beginTransaction');
-
-        $connection
-            ->expects($this->never())
-            ->method('commit');
-
-        $purger = new ConnectionPurger($connection);
-        $purger->disableTransactional();
         $purger->purge();
     }
 
@@ -266,6 +226,7 @@ final class ConnectionPurgerTest extends TestCase
         $schemaManager = $this->createMock(AbstractSchemaManager::class);
         $schemaManager->expects($this->any())->method('listTableNames')->willReturn($tables);
         $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+        $connection->expects($this->any())->method('getDriver')->willReturn($this->createMock(AbstractMySQLDriver::class));
 
         return $connection;
     }

@@ -3,9 +3,12 @@
 namespace Kununu\DataFixtures\Purger;
 
 use Doctrine\DBAL\Connection;
+use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 
-final class ConnectionPurger implements TransactionalPurgerInterface
+final class ConnectionPurger implements PurgerInterface
 {
+    use ConnectionToolsTrait;
+
     private const PURGE_MODE_DELETE = 1;
     private const PURGE_MODE_TRUNCATE = 2;
 
@@ -16,8 +19,6 @@ final class ConnectionPurger implements TransactionalPurgerInterface
     private $excludedTables;
 
     private $purgeMode = self::PURGE_MODE_DELETE;
-
-    private $transactional = true;
 
     public function __construct(Connection $connection, array $excludedTables = [])
     {
@@ -33,12 +34,10 @@ final class ConnectionPurger implements TransactionalPurgerInterface
         if (!empty($tables)) {
             $platform = $this->connection->getDatabasePlatform();
 
-            if ($this->transactional) {
-                $this->connection->beginTransaction();
-            }
+            $this->connection->beginTransaction();
 
             try {
-                $this->connection->exec('SET FOREIGN_KEY_CHECKS=0');
+                $this->connection->exec($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
 
                 foreach ($tables as $tbl) {
                     if ($this->purgeMode === self::PURGE_MODE_DELETE) {
@@ -48,16 +47,12 @@ final class ConnectionPurger implements TransactionalPurgerInterface
                     }
                 }
 
-                if ($this->transactional) {
-                    $this->connection->commit();
-                }
+                $this->connection->commit();
 
-                $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
+                $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
             } catch (\Throwable $e) {
-                if ($this->transactional) {
-                    $this->connection->rollBack();
-                }
-                $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
+                $this->connection->rollBack();
+                $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
 
                 throw $e;
             }
@@ -78,15 +73,5 @@ final class ConnectionPurger implements TransactionalPurgerInterface
     public function getPurgeMode() : int
     {
         return $this->purgeMode;
-    }
-
-    public function enableTransactional() : void
-    {
-        $this->transactional = true;
-    }
-
-    public function disableTransactional() : void
-    {
-        $this->transactional = false;
     }
 }

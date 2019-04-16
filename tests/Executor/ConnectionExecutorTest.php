@@ -3,9 +3,10 @@
 namespace Kununu\DataFixtures\Tests\Loader;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
-use Kununu\DataFixtures\Purger\TransactionalPurgerInterface;
+use Kununu\DataFixtures\Purger\PurgerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +15,7 @@ final class ConnectionExecutorTest extends TestCase
     /** @var Connection|MockObject */
     private $connection;
 
-    /** @var TransactionalPurgerInterface|MockObject */
+    /** @var PurgerInterface|MockObject */
     private $purger;
 
     public function testThatExecutorIsTransactionalAndCommits() : void
@@ -34,15 +35,7 @@ final class ConnectionExecutorTest extends TestCase
 
         $this->purger
             ->expects($this->never())
-            ->method('disableTransactional');
-
-        $this->purger
-            ->expects($this->never())
             ->method('purge');
-
-        $this->purger
-            ->expects($this->never())
-            ->method('enableTransactional');
 
         $executor = new ConnectionExecutor($this->connection, $this->purger);
 
@@ -73,14 +66,6 @@ final class ConnectionExecutorTest extends TestCase
 
         $this->purger
             ->expects($this->once())
-            ->method('disableTransactional');
-
-        $this->purger
-            ->expects($this->exactly(2))
-            ->method('enableTransactional');
-
-        $this->purger
-            ->expects($this->once())
             ->method('purge');
 
         $executor = new ConnectionExecutor($this->connection, $this->purger);
@@ -92,14 +77,6 @@ final class ConnectionExecutorTest extends TestCase
     {
         $this->purger
             ->expects($this->never())
-            ->method('disableTransactional');
-
-        $this->purger
-            ->expects($this->never())
-            ->method('enableTransactional');
-
-        $this->purger
-            ->expects($this->never())
             ->method('purge');
 
         $executor = new ConnectionExecutor($this->connection, $this->purger);
@@ -109,14 +86,6 @@ final class ConnectionExecutorTest extends TestCase
 
     public function testThatPurgesWhenAppendIsDisabled() : void
     {
-        $this->purger
-            ->expects($this->once())
-            ->method('disableTransactional');
-
-        $this->purger
-            ->expects($this->once())
-            ->method('enableTransactional');
-
         $this->purger
             ->expects($this->once())
             ->method('purge');
@@ -144,6 +113,10 @@ final class ConnectionExecutorTest extends TestCase
         parent::setUp();
 
         $this->connection = $this->createMock(Connection::class);
-        $this->purger = $this->createMock(TransactionalPurgerInterface::class);
+        $this->connection
+            ->expects($this->any())
+            ->method('getDriver')
+            ->willReturn($this->createMock(AbstractMySQLDriver::class));
+        $this->purger = $this->createMock(PurgerInterface::class);
     }
 }

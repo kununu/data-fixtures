@@ -4,15 +4,18 @@ namespace Kununu\DataFixtures\Executor;
 
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
-use Kununu\DataFixtures\Purger\TransactionalPurgerInterface;
+use Kununu\DataFixtures\Purger\PurgerInterface;
+use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 
 final class ConnectionExecutor implements ExecutorInterface
 {
+    use ConnectionToolsTrait;
+
     private $connection;
 
     private $purger;
 
-    public function __construct(Connection $connection, TransactionalPurgerInterface $purger)
+    public function __construct(Connection $connection, PurgerInterface $purger)
     {
         $this->connection = $connection;
         $this->purger = $purger;
@@ -24,23 +27,20 @@ final class ConnectionExecutor implements ExecutorInterface
 
         try {
             if ($append === false) {
-                $this->purger->disableTransactional();
                 $this->purger->purge();
-                $this->purger->enableTransactional();
             }
 
-            $this->connection->exec('SET FOREIGN_KEY_CHECKS=0');
+            $this->connection->exec($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
 
             foreach ($fixtures as $fixture) {
                 $this->load($fixture);
             }
 
             $this->connection->commit();
-            $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
+            $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
         } catch (\Throwable $e) {
-            $this->purger->enableTransactional();
             $this->connection->rollBack();
-            $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
+            $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
             throw $e;
         }
     }
