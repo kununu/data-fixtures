@@ -22,6 +22,8 @@ final class ConnectionExecutor implements ExecutorInterface
     {
         $this->connection->beginTransaction();
 
+        $this->connection->exec('SET FOREIGN_KEY_CHECKS=0');
+
         try {
             if ($append === false) {
                 $this->purger->purge();
@@ -32,8 +34,10 @@ final class ConnectionExecutor implements ExecutorInterface
             }
 
             $this->connection->commit();
+            $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
         } catch (\Throwable $e) {
             $this->connection->rollBack();
+            $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
             throw $e;
         }
     }

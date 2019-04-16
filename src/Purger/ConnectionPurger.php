@@ -31,12 +31,25 @@ final class ConnectionPurger implements PurgerInterface
         if (!empty($tables)) {
             $platform = $this->connection->getDatabasePlatform();
 
-            foreach ($tables as $tbl) {
-                if ($this->purgeMode === self::PURGE_MODE_DELETE) {
-                    $this->connection->executeUpdate('DELETE FROM ' . $tbl);
-                } else {
-                    $this->connection->executeUpdate($platform->getTruncateTableSQL($tbl, true));
+            $this->connection->beginTransaction();
+
+            $this->connection->exec('SET FOREIGN_KEY_CHECKS=0');
+
+            try {
+                foreach ($tables as $tbl) {
+                    if ($this->purgeMode === self::PURGE_MODE_DELETE) {
+                        $this->connection->executeUpdate('DELETE FROM ' . $this->connection->quoteIdentifier($tbl));
+                    } else {
+                        $this->connection->executeUpdate($platform->getTruncateTableSQL($this->connection->quoteIdentifier($tbl), true));
+                    }
                 }
+
+                $this->connection->commit();
+                $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
+            } catch (\Throwable $e) {
+                $this->connection->rollBack();
+                $this->connection->exec('SET FOREIGN_KEY_CHECKS=1');
+                throw $e;
             }
         }
     }

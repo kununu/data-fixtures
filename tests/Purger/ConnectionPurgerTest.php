@@ -11,6 +11,57 @@ use PHPUnit\Framework\TestCase;
 
 final class ConnectionPurgerTest extends TestCase
 {
+    public function testThatPurgerIsTransactionalAndCommits() : void
+    {
+        /** @var MockObject|Connection $connection */
+        $connection = $this->getConnectionMock();
+
+        $connection
+            ->expects($this->exactly(2))
+            ->method('exec')
+            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
+
+        $connection
+            ->expects($this->once())
+            ->method('beginTransaction');
+
+        $connection
+            ->expects($this->once())
+            ->method('commit');
+
+        $purger = new ConnectionPurger($connection);
+        $purger->purge();
+    }
+
+    public function testThatPurgerIsTransactionalAndRollbacks() : void
+    {
+        $this->expectException(\Exception::class);
+
+        /** @var MockObject|Connection $connection */
+        $connection = $this->getConnectionMock();
+
+        $connection
+            ->expects($this->exactly(2))
+            ->method('exec')
+            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
+
+        $connection
+            ->expects($this->any())
+            ->method('executeUpdate')
+            ->willThrowException(new \Exception());
+
+        $connection
+            ->expects($this->once())
+            ->method('beginTransaction');
+
+        $connection
+            ->expects($this->once())
+            ->method('rollback');
+
+        $purger = new ConnectionPurger($connection);
+        $purger->purge();
+    }
+
     public function testThatWhenNoTablesAreProvidedNothingIsPurged(): void
     {
         /** @var MockObject|Connection $connection */
@@ -28,6 +79,12 @@ final class ConnectionPurgerTest extends TestCase
     {
         /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
+
+        $connection
+            ->expects($this->exactly(2))
+            ->method('quoteIdentifier')
+            ->withConsecutive(['table_1'], ['table_3'])
+            ->willReturnOnConsecutiveCalls('table_1', 'table_3');
 
         $connection
             ->expects($this->once())
@@ -56,6 +113,12 @@ final class ConnectionPurgerTest extends TestCase
         $connection = $this->getConnectionMock();
 
         $connection
+            ->expects($this->exactly(3))
+            ->method('quoteIdentifier')
+            ->withConsecutive(['table_1'], ['table_2'], ['table_3'])
+            ->willReturnOnConsecutiveCalls('table_1', 'table_2', 'table_3');
+
+        $connection
             ->expects($this->once())
             ->method('getDatabasePlatform')
             ->willReturn($this->createMock(AbstractPlatform::class));
@@ -78,6 +141,12 @@ final class ConnectionPurgerTest extends TestCase
     {
         /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
+
+        $connection
+            ->expects($this->exactly(3))
+            ->method('quoteIdentifier')
+            ->withConsecutive(['table_1'], ['table_2'], ['table_3'])
+            ->willReturnOnConsecutiveCalls('table_1', 'table_2', 'table_3');
 
         $platform = $this->createMock(AbstractPlatform::class);
 

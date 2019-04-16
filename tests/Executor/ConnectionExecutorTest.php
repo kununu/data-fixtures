@@ -20,6 +20,11 @@ final class ConnectionExecutorTest extends TestCase
     public function testThatExecutorIsTransactionalAndCommits() : void
     {
         $this->connection
+            ->expects($this->exactly(2))
+            ->method('exec')
+            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
+
+        $this->connection
             ->expects($this->once())
             ->method('beginTransaction');
 
@@ -39,6 +44,11 @@ final class ConnectionExecutorTest extends TestCase
     public function testThatExecutorIsTransactionalAndRollbacks() : void
     {
         $this->expectException(\Exception::class);
+
+        $this->connection
+            ->expects($this->exactly(2))
+            ->method('exec')
+            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
 
         $this->connection
             ->expects($this->once())
