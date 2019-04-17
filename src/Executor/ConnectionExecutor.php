@@ -37,11 +37,11 @@ final class ConnectionExecutor implements ExecutorInterface
             }
 
             $this->connection->commit();
-            $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
         } catch (\Throwable $e) {
             $this->connection->rollBack();
-            $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
             throw $e;
+        } finally {
+            $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
         }
     }
 
