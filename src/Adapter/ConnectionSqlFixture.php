@@ -9,7 +9,7 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
 {
     final public function load(Connection $connection): void
     {
-        foreach ($this->filesName() as $fileName) {
+        foreach ($this->fileNames() as $fileName) {
             $file = new \SplFileInfo($fileName);
 
             if ($file->getExtension() !== 'sql') {
@@ -17,16 +17,19 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
             }
 
             foreach ($this->getSql($file) as $sql) {
+                if (empty($sql)) {
+                    continue;
+                }
                 $connection->exec($sql);
             }
         }
     }
 
-    abstract protected function filesName() : array;
+    abstract protected function fileNames() : array;
 
     private function getSql(\SplFileInfo $fileInfo) : array
     {
-        return array_values(array_filter(explode("\n", $this->getFileContents($fileInfo))));
+        return array_map('trim',(explode(";", $this->getFileContents($fileInfo))));
     }
 
     private function getFileContents(\SplFileInfo $fileInfo) : string
