@@ -88,7 +88,7 @@ use Kununu\DataFixtures\Adapter\ConnectionSqlFixture;
 
 final class MyFixtureSql extends ConnectionSqlFixture
 {
-    protected function filesName(): array
+    protected function fileNames(): array
     {
         return [
             __DIR__ . '/Sql/pages.sql',

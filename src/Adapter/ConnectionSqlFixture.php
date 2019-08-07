@@ -29,7 +29,7 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
 
     private function getSql(\SplFileInfo $fileInfo) : array
     {
-        return array_map('trim',(explode(";", $this->getFileContents($fileInfo))));
+        return array_map('trim', (explode(";", $this->getFileContents($fileInfo))));
     }
 
     private function getFileContents(\SplFileInfo $fileInfo) : string
