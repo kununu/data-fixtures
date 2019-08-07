@@ -19,10 +19,10 @@ final class ConnectionSqlFixtureTest extends TestCase
             ->expects($this->exactly(4))
             ->method('exec')
             ->withConsecutive(
-                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'1\', \'name\', \'description\');'],
-                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'2\', \'name2\', \'description2\');'],
-                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'3\', \'name3\', \'description3\');'],
-                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'4\', \'name4\', \'description4\');']
+                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'1\', \'name\', \'description\')'],
+                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'2\', \'name2\', \'description2\')'],
+                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'3\', \'name3\', \'description3\')'],
+                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'4\', \'name4\', \'description4\')']
             );
 
         $fixture = new ConnectionSqlFixture1();

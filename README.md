@@ -77,7 +77,7 @@ final class MyFixture implements ConnectionFixtureInterface
     public function load(Connection $connection): void
     {
         $connection->exec(
-            'insert into `rules`(`id`,`block_id`,`field`,`operator`,`value`) values (1100,1,"visits","lower_than","5")'
+            'insert into `rules` (`id`, `block_id`, `field`, `operator`, `value`) values (1100, 1, "visits", "lower_than" , "5")'
         );
     }
 }
@@ -88,7 +88,7 @@ use Kununu\DataFixtures\Adapter\ConnectionSqlFixture;
 
 final class MyFixtureSql extends ConnectionSqlFixture
 {
-    protected function filesName(): array
+    protected function fileNames(): array
     {
         return [
             __DIR__ . '/Sql/pages.sql',
