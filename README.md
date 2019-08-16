@@ -10,6 +10,7 @@ Currently, this package supports the following types of fixtures:
 
 - `ConnectionFixture` which relies on Doctrine DBAL package by using it's [Connection](https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Connection.php) implementation.
 - `CachePoolFixture` which relies on implementations of the [PSR6](https://github.com/php-fig/cache) standard.
+- `ElasticSearchFixtures` which relies on the [Elasticsearch-PHP client](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html).
 
 If you are using Doctrine ORM and/or ODM use can still use https://github.com/doctrine/data-fixtures as you would normally do.
 
@@ -124,6 +125,47 @@ $loader->addFixture(new MyFixture());
 
 $executor->execute($loader->getFixtures());
 // If you want you can `append` the fixtures instead of purging the database
+$executor->execute($loader->getFixtures(), true);
+```
+
+### ElasticsearchFixtures
+
+**1) Create your fixture classes that implement `ElasticSearchFixtureInterface`**
+
+```
+use Elasticsearch\Client;
+use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
+
+final class MyFixture implements ElasticSearchFixtureInterface
+{
+    public function load(Client $elasticSearch): void
+    {
+        $params = [
+            'index' => 'my_index',
+            'id'    => 'my_id',
+            'body'  => ['testField' => 'abc']
+        ];
+
+        $elasticSearch->index($params);
+    }
+}
+```
+
+**2) Configure the `ElasticSearchExecutor` to load your fixtures**
+
+```
+$client = \Elasticsearch\ClientBuilder::create()->build();
+
+$purger = new \Kununu\DataFixtures\Purger\ElasticSearchPurger($client, 'my_index');
+
+$executor = new \Kununu\DataFixtures\Executor\ElasticSearchExecutor($client, $purger);
+
+$loader = new \Kununu\DataFixtures\Loader\ElasticSearchFixturesLoader();
+$loader->addFixture(new MyFixture());
+
+$executor->execute($loader->getFixtures());
+
+// If you want you can `append` the fixtures instead of purging the index
 $executor->execute($loader->getFixtures(), true);
 ```
 
