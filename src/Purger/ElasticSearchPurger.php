@@ -19,6 +19,10 @@ final class ElasticSearchPurger implements PurgerInterface
 
     public function purge(): void
     {
+        // We need this flush/clearCache twice otherwise we may hit version conflicts when messing up with the same document.
+        $this->elasticSearch->indices()->flush(['index' => $this->indexName, 'force' => true]);
+        $this->elasticSearch->indices()->clearCache(['index' => $this->indexName]);
+
         $this->elasticSearch->deleteByQuery(
             [
                 'index' => $this->indexName,
@@ -27,9 +31,12 @@ final class ElasticSearchPurger implements PurgerInterface
                         'match_all' => new stdClass(),
                     ],
                 ],
-                //'conflicts' => 'proceed',
+                'refresh'             => true,
                 'wait_for_completion' => true,
             ]
         );
+
+        $this->elasticSearch->indices()->flush(['index' => $this->indexName, 'force' => true]);
+        $this->elasticSearch->indices()->clearCache(['index' => $this->indexName]);
     }
 }
