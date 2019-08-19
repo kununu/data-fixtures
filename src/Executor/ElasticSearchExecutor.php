@@ -30,6 +30,9 @@ final class ElasticSearchExecutor implements ExecutorInterface
         foreach ($fixtures as $fixture) {
             $this->load($fixture);
         }
+
+        $this->elasticSearch->indices()->flush(['index' => $this->indexName, 'force' => true]);
+        $this->elasticSearch->indices()->clearCache(['index' => $this->indexName]);
     }
 
     private function load(ElasticSearchFixtureInterface $fixture): void

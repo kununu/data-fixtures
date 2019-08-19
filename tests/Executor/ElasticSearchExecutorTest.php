@@ -3,6 +3,7 @@
 namespace Kununu\DataFixtures\Tests\Loader;
 
 use Elasticsearch\Client;
+use Elasticsearch\Namespaces\IndicesNamespace;
 use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
 use Kununu\DataFixtures\Executor\ElasticSearchExecutor;
 use Kununu\DataFixtures\Purger\PurgerInterface;
@@ -48,6 +49,22 @@ final class ElasticSearchExecutorTest extends TestCase
 
         $fixture2 = $this->createMock(ElasticSearchFixtureInterface::class);
         $fixture2->expects($this->once())->method('load')->with($this->client, self::INDEX_NAME);
+
+        $indices = $this->createMock(IndicesNamespace::class);
+        $indices
+            ->expects($this->once())
+            ->method('flush')
+            ->with(['index' => self::INDEX_NAME, 'force' => true]);
+
+        $indices
+            ->expects($this->once())
+            ->method('clearCache')
+            ->with(['index' => self::INDEX_NAME]);
+
+        $this->client
+            ->expects($this->any())
+            ->method('indices')
+            ->willReturn($indices);
 
         $executor = new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
 
