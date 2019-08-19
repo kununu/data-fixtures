@@ -10,11 +10,14 @@ final class ElasticSearchExecutor implements ExecutorInterface
 {
     private $elasticSearch;
 
+    private $indexName;
+
     private $purger;
 
-    public function __construct(Client $elasticSearch, PurgerInterface $purger)
+    public function __construct(Client $elasticSearch, string $indexName, PurgerInterface $purger)
     {
         $this->elasticSearch = $elasticSearch;
+        $this->indexName = $indexName;
         $this->purger = $purger;
     }
 
@@ -31,6 +34,6 @@ final class ElasticSearchExecutor implements ExecutorInterface
 
     private function load(ElasticSearchFixtureInterface $fixture): void
     {
-        $fixture->load($this->elasticSearch);
+        $fixture->load($this->elasticSearch, $this->indexName);
     }
 }

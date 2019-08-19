@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 final class ElasticSearchExecutorTest extends TestCase
 {
+    private const INDEX_NAME = 'my_index';
+
     /** @var Client|MockObject */
     private $client;
 
@@ -23,7 +25,7 @@ final class ElasticSearchExecutorTest extends TestCase
             ->expects($this->never())
             ->method('purge');
 
-        $executor = new ElasticSearchExecutor($this->client, $this->purger);
+        $executor = new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
 
         $executor->execute([], true);
     }
@@ -34,7 +36,7 @@ final class ElasticSearchExecutorTest extends TestCase
             ->expects($this->once())
             ->method('purge');
 
-        $executor = new ElasticSearchExecutor($this->client, $this->purger);
+        $executor = new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
 
         $executor->execute([]);
     }
@@ -42,12 +44,12 @@ final class ElasticSearchExecutorTest extends TestCase
     public function testThatFixturesAreLoaded(): void
     {
         $fixture1 = $this->createMock(ElasticSearchFixtureInterface::class);
-        $fixture1->expects($this->once())->method('load')->with($this->client);
+        $fixture1->expects($this->once())->method('load')->with($this->client, self::INDEX_NAME);
 
         $fixture2 = $this->createMock(ElasticSearchFixtureInterface::class);
-        $fixture2->expects($this->once())->method('load')->with($this->client);
+        $fixture2->expects($this->once())->method('load')->with($this->client, self::INDEX_NAME);
 
-        $executor = new ElasticSearchExecutor($this->client, $this->purger);
+        $executor = new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
 
         $executor->execute([$fixture1, $fixture2]);
     }

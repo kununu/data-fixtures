@@ -138,10 +138,10 @@ use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
 
 final class MyFixture implements ElasticSearchFixtureInterface
 {
-    public function load(Client $elasticSearch): void
+    public function load(Client $elasticSearch, string $indexName): void
     {
         $params = [
-            'index' => 'my_index',
+            'index' => $indexName,
             'id'    => 'my_id',
             'body'  => ['testField' => 'abc']
         ];
@@ -158,7 +158,7 @@ $client = \Elasticsearch\ClientBuilder::create()->build();
 
 $purger = new \Kununu\DataFixtures\Purger\ElasticSearchPurger($client, 'my_index');
 
-$executor = new \Kununu\DataFixtures\Executor\ElasticSearchExecutor($client, $purger);
+$executor = new \Kununu\DataFixtures\Executor\ElasticSearchExecutor($client, 'my_index', $purger);
 
 $loader = new \Kununu\DataFixtures\Loader\ElasticSearchFixturesLoader();
 $loader->addFixture(new MyFixture());

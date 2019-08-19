@@ -7,7 +7,7 @@ use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
 
 final class ElasticSearchFixture1 implements ElasticSearchFixtureInterface
 {
-    public function load(Client $elasticSearch): void
+    public function load(Client $elasticSearch, string $indexName): void
     {
     }
 }
