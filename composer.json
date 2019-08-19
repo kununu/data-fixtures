@@ -1,6 +1,5 @@
 {
     "name": "kununu/data-fixtures",
-    "version": "1.0",
     "description": "Load data fixtures with any storage",
     "type": "library",
     "require": {
