@@ -7,6 +7,7 @@ use Kununu\DataFixtures\Loader\ElasticSearchFixturesLoader;
 use Kununu\DataFixtures\Tests\TestFixtures\ElasticSearchFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\ElasticSearchFixture2;
 use Kununu\DataFixtures\Tests\TestFixtures\NotAFixture;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class ElasticSearchFixturesLoaderTest extends TestCase
@@ -17,10 +18,10 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
     public function testLoadFromDirectory(): void
     {
         $this->loader->addFixture(
-            $this->getMockBuilder(ElasticSearchFixtureInterface::class)->setMockClassName('Mock1')->getMock()
+            $this->getNamedElasticSearchFixtureMock('Mock1')
         );
         $this->loader->addFixture(
-            $this->getMockBuilder(ElasticSearchFixtureInterface::class)->setMockClassName('Mock2')->getMock()
+            $this->getNamedElasticSearchFixtureMock('Mock2')
         );
 
         $this->assertCount(2, $this->loader->getFixtures());
@@ -39,10 +40,10 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
     public function testLoadFromFile(): void
     {
         $this->loader->addFixture(
-            $this->getMockBuilder(ElasticSearchFixtureInterface::class)->setMockClassName('Mock1')->getMock()
+            $this->getNamedElasticSearchFixtureMock('Mock1')
         );
         $this->loader->addFixture(
-            $this->getMockBuilder(ElasticSearchFixtureInterface::class)->setMockClassName('Mock2')->getMock()
+            $this->getNamedElasticSearchFixtureMock('Mock2')
         );
 
         $this->assertCount(2, $this->loader->getFixtures());
@@ -65,10 +66,10 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
     public function testLoadFromClassName(): void
     {
         $this->loader->addFixture(
-            $this->getMockBuilder(ElasticSearchFixtureInterface::class)->setMockClassName('Mock1')->getMock()
+            $this->getNamedElasticSearchFixtureMock('Mock1')
         );
         $this->loader->addFixture(
-            $this->getMockBuilder(ElasticSearchFixtureInterface::class)->setMockClassName('Mock2')->getMock()
+            $this->getNamedElasticSearchFixtureMock('Mock2')
         );
 
         $this->assertCount(2, $this->loader->getFixtures());
@@ -102,5 +103,12 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
         parent::setUp();
 
         $this->loader = new ElasticSearchFixturesLoader();
+    }
+
+    private function getNamedElasticSearchFixtureMock(string $name): MockObject
+    {
+        return $this->getMockBuilder(ElasticSearchFixtureInterface::class)
+            ->setMockClassName($name)
+            ->getMock();
     }
 }

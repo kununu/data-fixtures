@@ -45,10 +45,16 @@ final class ElasticSearchExecutorTest extends TestCase
     public function testThatFixturesAreLoaded(): void
     {
         $fixture1 = $this->createMock(ElasticSearchFixtureInterface::class);
-        $fixture1->expects($this->once())->method('load')->with($this->client, self::INDEX_NAME);
+        $fixture1
+            ->expects($this->once())
+            ->method('load')
+            ->with($this->client, self::INDEX_NAME);
 
         $fixture2 = $this->createMock(ElasticSearchFixtureInterface::class);
-        $fixture2->expects($this->once())->method('load')->with($this->client, self::INDEX_NAME);
+        $fixture2
+            ->expects($this->once())
+            ->method('load')
+            ->with($this->client, self::INDEX_NAME);
 
         $indices = $this->createMock(IndicesNamespace::class);
         $indices
