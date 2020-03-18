@@ -233,6 +233,35 @@ $loader->loadFromClassName(MyFixtureSql::class);
 $loader->addFixture(new MyFixtureSql());
 ```
 
+## Initializable Fixtures
+
+If you want your Fixture classes to be initialized you can implement the `InitializableFixtureInterface`
+
+```
+public function initializeFixture(...$args): void;
+```
+
+Then before loading the fixtures you need to register them in the Loader:
+
+```
+$this->loader->registerInitializableFixture(
+	YourFixtureClass::class,
+	// 1st argument
+	1, 
+	// 2nd argument
+	'This is an argument that will be passed to initializeFixture of YourFixtureClass',
+	// 3rd argument
+	[
+		'field'    => 'field-name',
+		'value' => 10,
+	],
+	// 4th argument
+	$anInstanceOfOneOfYourOtherClasses
+	// Pass as many arguments as you like...
+);
+```
+
+
 **Possible TODOs**
 
 - Dependent Fixtures
