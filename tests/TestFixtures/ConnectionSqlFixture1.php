@@ -12,6 +12,7 @@ final class ConnectionSqlFixture1 extends ConnectionSqlFixture
             __DIR__ . '/Sql/fixture1.sql',
             __DIR__ . '/Sql/fixture2.sql',
             __DIR__ . '/Sql/fixture3.nonSql',
+            __DIR__ . '/Sql/fixture4.sql',
         ];
     }
 }

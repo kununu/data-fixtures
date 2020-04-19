@@ -16,10 +16,7 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
                 continue;
             }
 
-            foreach ($this->getSql($file) as $sql) {
-                if (empty($sql)) {
-                    continue;
-                }
+            if ($sql = $this->getSql($file)) {
                 $connection->exec($sql);
             }
         }
@@ -27,9 +24,11 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
 
     abstract protected function fileNames() : array;
 
-    private function getSql(\SplFileInfo $fileInfo) : array
+    private function getSql(\SplFileInfo $fileInfo) : ?string
     {
-        return array_map('trim', (explode(";", $this->getFileContents($fileInfo))));
+        $contents = trim($this->getFileContents($fileInfo));
+
+        return $contents !== '' ? $contents : null;
     }
 
     private function getFileContents(\SplFileInfo $fileInfo) : string
@@ -37,6 +36,7 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
         set_error_handler(function ($type, $msg) use (&$error) {
             $error = $msg;
         });
+
         $content = file_get_contents($fileInfo->getPathname());
         restore_error_handler();
 

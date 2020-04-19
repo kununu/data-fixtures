@@ -15,14 +15,22 @@ final class ConnectionSqlFixtureTest extends TestCase
         /** @var Connection|MockObject $connection */
         $connection = $this->createMock(Connection::class);
 
+        $fixture1Content = <<<'SQL'
+INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('1', 'name', 'description;');
+INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('2', 'name2', 'description2\n');
+SQL;
+
+        $fixture2Content = <<<'SQL'
+INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('3', 'name3', 'description3');
+INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('4', 'name4', 'description4');
+SQL;
+
         $connection
-            ->expects($this->exactly(4))
+            ->expects($this->exactly(2))
             ->method('exec')
             ->withConsecutive(
-                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'1\', \'name\', \'description\')'],
-                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'2\', \'name2\', \'description2\')'],
-                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'3\', \'name3\', \'description3\')'],
-                ['INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES (\'4\', \'name4\', \'description4\')']
+                [$fixture1Content],
+                [$fixture2Content]
             );
 
         $fixture = new ConnectionSqlFixture1();
