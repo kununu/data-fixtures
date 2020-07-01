@@ -19,4 +19,6 @@ interface LoaderInterface
     public function getFixtures() : array;
 
     public function registerInitializableFixture(string $className, ...$args): void;
+
+    public function clearFixtures(): void;
 }

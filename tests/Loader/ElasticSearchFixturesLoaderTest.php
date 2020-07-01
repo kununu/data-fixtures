@@ -28,6 +28,9 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
 
         $this->loader->loadFromDirectory(__DIR__ . '/../TestFixtures/');
         $this->assertCount(5, $this->loader->getFixtures());
+
+        $this->loader->clearFixtures();
+        $this->assertEmpty($this->loader->getFixtures());
     }
 
     public function testLoadFromDirectoryThrowsExceptionIfNotDirectory(): void
