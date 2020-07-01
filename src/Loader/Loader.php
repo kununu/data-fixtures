@@ -5,7 +5,6 @@ namespace Kununu\DataFixtures\Loader;
 use ArrayIterator;
 use InvalidArgumentException;
 use Iterator;
-use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
 use Kununu\DataFixtures\FixtureInterface;
 use Kununu\DataFixtures\InitializableFixtureInterface;
 use RecursiveDirectoryIterator;
@@ -82,6 +81,11 @@ abstract class Loader implements LoaderInterface
         }
     }
 
+    final public function clearFixtures(): void
+    {
+        $this->fixtures = [];
+    }
+
     abstract protected function supports(string $className): bool;
 
     private function createFixture(string $className): FixtureInterface
@@ -109,7 +113,6 @@ abstract class Loader implements LoaderInterface
             $includedFiles[] = $sourceFile;
         }
 
-        $fixtures = [];
         $declared = get_declared_classes();
 
         // Make the declared classes order deterministic
@@ -121,7 +124,6 @@ abstract class Loader implements LoaderInterface
 
             if (in_array($sourceFile, $includedFiles) && $this->supports($className)) {
                 $fixture = $this->createFixture($className);
-                $fixtures[] = $fixture;
                 $this->addFixture($fixture);
             }
         }
