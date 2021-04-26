@@ -1,10 +1,28 @@
 {
     "name": "kununu/data-fixtures",
-    "description": "Load data fixtures with any storage",
+    "description": "Load data fixtures in your application for in any storage",
     "type": "library",
+    "license": "MIT",
     "require": {
         "php": "^7.2"
     },
+    "keywords": [
+        "database",
+        "data fixtures",
+        "Doctrine",
+        "Elasticsearch",
+        "PSR-6 Cache"
+    ],
+    "authors": [
+        {
+            "name": "Hugo Gonçalves",
+            "email": "hugo.goncalves@kununu.com"
+        },
+        {
+            "name": "João Alves",
+            "email": "joao.alves@kununu.com"
+        }
+    ],
     "require-dev": {
         "phpunit/phpunit": "^8.1",
         "psr/cache": "^1.0",
