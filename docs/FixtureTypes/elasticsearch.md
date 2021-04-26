@@ -83,7 +83,7 @@ final class MyFixture extends ElasticSearchFixture
 
 ### 2. Load fixtures
 
-In order to load the fixtures that you created in the previous step, you will need to configure the *ElasticSearch Executor*.
+In order to load the fixtures that you created in the previous step, you will need to configure the *Elasticsearch Executor*.
 
 ```php
 $client = \Elasticsearch\ClientBuilder::create()->build();

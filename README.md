@@ -44,7 +44,7 @@ In order to enable the fixture types that you are interested, check out their do
 
 ## Appending Fixtures
 
-By default when loading fixtures the data storage is purged. If you want to change this behavior, you can pass *false* as second argument to any of the provided fixture types.
+By default when loading fixtures the data storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *false* as second argument to any executor.
 
 ```php
 // By default the data storage is purged
