@@ -1,7 +1,7 @@
 ### Cache Pool Fixtures
 -------------------------------
 
-The `CachePoolFixtures` allows you to load data fixtures for any implementation of the [PSR-6](https://github.com/php-fig/cache) standard.
+The `Cache Pool Fixtures` allows you to load data fixtures for any implementation of the [PSR-6](https://github.com/php-fig/cache) standard.
 
 ## Install
 
@@ -15,7 +15,7 @@ composer require psr/cache
 
 ### 1. Create fixture classes
 
-The first step to load Cache Pool Fixtures is to create fixtures classes. This classes must implement the [CachePoolFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/Adapter/CachePoolFixtureInterface.php) or if 
+The first step to load Cache Pool Fixtures is to create fixtures classes. This classes must implement the [CachePoolFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/Adapter/CachePoolFixtureInterface.php).
 
 ```php
 use Kununu\DataFixtures\Adapter\CachePoolFixtureInterface;
@@ -36,7 +36,7 @@ final class MyFixture implements CachePoolFixtureInterface
 
 In order to load the fixtures that you created in the previous step, you will need to configure the CachePoolExecutor.
 
-```
+```php
 $memcached = new \Memcached();
 $memcached->addServer('localhost', 11211);
 
