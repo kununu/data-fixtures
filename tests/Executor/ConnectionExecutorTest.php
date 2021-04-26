@@ -22,7 +22,7 @@ final class ConnectionExecutorTest extends TestCase
     {
         $this->connection
             ->expects($this->exactly(2))
-            ->method('exec')
+            ->method('executeStatement')
             ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
 
         $this->connection
@@ -48,7 +48,7 @@ final class ConnectionExecutorTest extends TestCase
 
         $this->connection
             ->expects($this->exactly(2))
-            ->method('exec')
+            ->method('executeStatement')
             ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
 
         $this->connection
