@@ -206,7 +206,13 @@ final class ConnectionPurgerTest extends TestCase
         $schemaManager = $this->createMock(AbstractSchemaManager::class);
         $schemaManager->expects($this->any())->method('listTableNames')->willReturn($tables);
 
-        $connection->expects($this->any())->method('createSchemaManager')->willReturn($schemaManager);
+        // To support doctrine/dbal ^2.9 and ^3.1
+        if (method_exists($connection, 'createSchemaManager')) {
+            $connection->expects($this->any())->method('createSchemaManager')->willReturn($schemaManager);
+        } else {
+            $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+        }
+
         $connection->expects($this->any())->method('getDriver')->willReturn($this->createMock(AbstractMySQLDriver::class));
         $connection->expects($this->any())->method('quoteIdentifier')->willReturnArgument(0);
 

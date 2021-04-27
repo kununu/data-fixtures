@@ -3,10 +3,21 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tools;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
 
 trait ConnectionToolsTrait
 {
+    protected function getDatabaseTables(Connection $connection): array
+    {
+        // This way we support both doctrine/dbal ^2.9 and ^3.1
+        if (method_exists($connection, 'createSchemaManager')) {
+            return $connection->createSchemaManager()->listTableNames();
+        }
+
+        return $connection->getSchemaManager()->listTableNames();
+    }
+
     protected function getDisableForeignKeysChecksStatementByDriver(Driver $driver): string
     {
         if ($driver instanceof Driver\AbstractMySQLDriver) {
