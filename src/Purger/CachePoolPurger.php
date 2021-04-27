@@ -17,7 +17,7 @@ final class CachePoolPurger implements PurgerInterface
     public function purge(): void
     {
         if (!$this->cachePool->clear()) {
-            throw new \Exception(sprintf('Failed to purge cache pool "%s"', get_class($this->cachePool)));
+            throw new PurgeFailedException(sprintf('Failed to purge cache pool "%s"', get_class($this->cachePool)));
         }
     }
 }

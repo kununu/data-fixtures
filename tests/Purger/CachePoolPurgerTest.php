@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Purger;
 
 use Kununu\DataFixtures\Purger\CachePoolPurger;
+use Kununu\DataFixtures\Purger\PurgeFailedException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
@@ -26,7 +27,7 @@ final class CachePoolPurgerTest extends TestCase
 
     public function testThatWhenCacheItemPoolFailsToPurgeThenAnExceptionIsThrown(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(PurgeFailedException::class);
 
         $this->cache
             ->expects($this->once())

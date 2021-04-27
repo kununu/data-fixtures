@@ -60,7 +60,7 @@ final class ConnectionPurger implements PurgerInterface
     public function setPurgeMode(int $mode): void
     {
         if (!in_array($mode, [self::PURGE_MODE_DELETE, self::PURGE_MODE_TRUNCATE])) {
-            throw new \Exception(sprintf('Purge Mode "%d" is not valid', $mode));
+            throw new InvalidConnectionPurgeModeException(sprintf('Purge Mode "%d" is not valid', $mode));
         }
 
         $this->purgeMode = $mode;
