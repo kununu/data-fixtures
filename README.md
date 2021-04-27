@@ -108,6 +108,12 @@ $loader->addFixture(new YourFixtureClass());
 
 ------------------------------
 
+## Contribute
+
+If you are interested in contributing read our [contributing guidelines](/CONTRIBUTING.md).
+
+------------------------------
+
 ## Tests
 
 Run the tests by doing:
