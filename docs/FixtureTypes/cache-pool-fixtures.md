@@ -15,7 +15,7 @@ composer require psr/cache
 
 ### 1. Create fixture classes
 
-The first step to load Cache Pool Fixtures is to create fixtures classes. This classes must implement the [CachePoolFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/Adapter/CachePoolFixtureInterface.php).
+The first step to load Cache Pool Fixtures is to create fixtures classes. This classes must implement the [CachePoolFixtureInterface](/src/Adapter/CachePoolFixtureInterface.php).
 
 ```php
 use Kununu\DataFixtures\Adapter\CachePoolFixtureInterface;
@@ -34,7 +34,7 @@ final class MyFixture implements CachePoolFixtureInterface
 
 ### 2. Load fixtures
 
-In order to load the fixtures that you created in the previous step, you will need to configure the CachePoolExecutor.
+In order to load the fixtures that you created in the previous step you will need to configure the CachePoolExecutor.
 
 ```php
 $memcached = new \Memcached();
@@ -51,5 +51,16 @@ $loader->addFixture(new MyFixture());
 
 $executor->execute($loader->getFixtures());
 // If you want you can `append` the fixtures instead of purging the cache pool
+$executor->execute($loader->getFixtures(), true);
+```
+
+### 3. Append Fixtures
+
+By default when loading fixtures the cache storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *false* as second argument to the CachePoolExecutor.
+
+```php
+$executor = new Kununu\DataFixtures\Executor\CachePoolExecutor($cache, $purger);
+
+// If you want you can `append` the fixtures instead of purging the cache storage
 $executor->execute($loader->getFixtures(), true);
 ```
