@@ -15,7 +15,7 @@ composer require elastic/elasticsearch
 
 ### 1. Create fixture classes
 
-The first step to load Elasticsearch Fixtures is to create fixtures classes. This classes must implement the [ElasticSearchFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/Adapter/ElasticSearchFixtureInterface.php) or if you want to easily use *bulk* inserts on your fixtures you can extend the class [ElasticSearchFixture](https://github.com/kununu/data-fixtures/blob/master/src/Adapter/ElasticSearchFixture.php).
+The first step to load Elasticsearch Fixtures is to create fixtures classes. This classes must implement the [ElasticSearchFixtureInterface](/src/Adapter/ElasticSearchFixtureInterface.php) or if you want to easily use *bulk* inserts on your fixtures you can extend the class [ElasticSearchFixture](/src/Adapter/ElasticSearchFixture.php).
 
 
 ```php
@@ -100,3 +100,19 @@ $executor->execute($loader->getFixtures());
 // If you want you can `append` the fixtures instead of purging the index
 $executor->execute($loader->getFixtures(), true);
 ```
+
+### 3. Append Fixtures
+
+By default when loading fixtures the Elasticsearch index is purged. If you want to change this behavior and instead append the fixtures, you can pass *false* as second argument to the ElasticsearchExecutor.
+
+```php
+$executor = new \Kununu\DataFixtures\Executor\ElasticSearchExecutor($client, 'my_index', $purger);
+
+// If you want you can `append` the fixtures instead of purging the Elasticsearch index
+$executor->execute($loader->getFixtures(), true);
+```
+
+## Notes
+
+- Elasticsearch Executor and Elasticsearch Purger flushes the configured index to ensure that any data is permanently stored.
+- Elasticsearch Executor and Elasticsearch Purger clears the cache for the configured index.
