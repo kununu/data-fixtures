@@ -15,7 +15,7 @@ composer require doctrine/dbal
 
 ### 1. Create fixture classes
 
-The first step to load *Connection Fixtures* is to create fixtures classes. This classes must implement the [ConnectionFixtureInterface](/src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql*  files.
+The first step to load *Connection Fixtures* is to create fixtures classes. This classes must implement the [ConnectionFixtureInterface](/src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](/src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql*  files.
 
 
 ```php
@@ -41,17 +41,29 @@ final class MyFixtureSql extends ConnectionSqlFixture
     protected function fileNames(): array
     {
         return [
-            __DIR__ . '/Sql/pages.sql',
-            __DIR__ . '/Sql/blocks.sql',
-            __DIR__ . '/Sql/rules.sql',
+            __DIR__ . '/Sql/fixture1.sql',
+            __DIR__ . '/Sql/fixture2.sql',
         ];
     }
 }
 ```
 
+```sql
+# fixture1.sql
+INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('1', 'name', 'description;');
+INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('2', 'name2', 'description2\n');
+```
+
+```sql
+# fixture2.sql
+
+INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('3', 'name3', 'description3');
+INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('4', 'name4', 'description4');
+```
+
 ### 2. Load fixtures
 
-In order to load the fixtures that you created in the previous step, you will need to configure the *Connection Executor*.
+In order to load the fixtures that you created in the previous step you will need to configure the *Connection Executor*.
 
 ```php
 $config = new Doctrine\DBAL\Configuration();
@@ -73,12 +85,11 @@ $loader->addFixture(new MyFixture());
 $executor->execute($loader->getFixtures());
 ```
 
-### 3. Appending Fixtures
+### 3. Append Fixtures
 
 By default when loading fixtures the database is purged. If you want to change this behavior and instead append the fixtures, you can pass *false* as second argument to the ConnectionExecutor.
 
 ```php
-...
 $executor = new Kununu\DataFixtures\Executor\ConnectionExecutor($conn, $purger);
 
 // If you want you can `append` the fixtures instead of purging the database
@@ -87,12 +98,11 @@ $executor->execute($loader->getFixtures(), true);
 
 ### 4. Exclude tables
 
-When you do not append fixtures all tables from database are purged. Still, sometimes you may want to exclude some tables.
+When you do not append fixtures all tables from the database are purged. Still, sometimes you may want to exclude some tables.
 You can specify the tables being excluded from being purged by passing them as second argument to the Purger.
 
 ```php
-...
-$excludedTables = ['country_code', 'doctrine_migrations'];
+$excludedTables = ['country_codes', 'doctrine_migrations'];
 $purger = new Kununu\DataFixtures\Purger\ConnectionPurger($conn, $excludedTables);
 
 $executor = new Kununu\DataFixtures\Executor\ConnectionExecutor($conn, $purger);
@@ -118,4 +128,4 @@ $purger->setPurgeMode(2); // PURGE_MODE_TRUNCATE
 ## Notes
 
 - Connection Executor and Connection Purger are transactional.
-- Connection Executor and Connection Purger disable foreign keys checks.
+- Connection Executor and Connection Purger disable foreign keys checks before running and enable them after they run.
