@@ -17,7 +17,7 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
             }
 
             if ($sql = $this->getSql($file)) {
-                $connection->exec($sql);
+                $connection->executeStatement($sql);
             }
         }
     }

@@ -27,7 +27,7 @@ SQL;
 
         $connection
             ->expects($this->exactly(2))
-            ->method('exec')
+            ->method('executeStatement')
             ->withConsecutive(
                 [$fixture1Content],
                 [$fixture2Content]
