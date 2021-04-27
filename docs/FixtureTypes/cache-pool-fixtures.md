@@ -54,6 +54,8 @@ $executor->execute($loader->getFixtures());
 $executor->execute($loader->getFixtures(), true);
 ```
 
+If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](/README.md#loading-fixtures)*.
+
 ### 3. Append Fixtures
 
 By default when loading fixtures the cache storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *false* as second argument to the CachePoolExecutor.

@@ -1,7 +1,7 @@
 # Elasticsearch Fixtures
 ---------------------
 
-The `ElasticsearchFixtures` allows you to load data fixtures for any Elasticsearch index.
+The `Elasticsearch Fixtures` allows you to load data fixtures for any Elasticsearch index.
 
 ## Install
 
@@ -83,7 +83,7 @@ final class MyFixture extends ElasticSearchFixture
 
 ### 2. Load fixtures
 
-In order to load the fixtures that you created in the previous step, you will need to configure the *Elasticsearch Executor*.
+In order to load the fixtures that you created in the previous step you will need to configure the *Elasticsearch Executor*.
 
 ```php
 $client = \Elasticsearch\ClientBuilder::create()->build();
@@ -101,6 +101,8 @@ $executor->execute($loader->getFixtures());
 $executor->execute($loader->getFixtures(), true);
 ```
 
+If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](/README.md#loading-fixtures)*.
+
 ### 3. Append Fixtures
 
 By default when loading fixtures the Elasticsearch index is purged. If you want to change this behavior and instead append the fixtures, you can pass *false* as second argument to the ElasticsearchExecutor.
@@ -114,5 +116,6 @@ $executor->execute($loader->getFixtures(), true);
 
 ## Notes
 
+- The Elasticsearch Purger runs a *deleteByQuery* query that matches all documents.
 - Elasticsearch Executor and Elasticsearch Purger flushes the configured index to ensure that any data is permanently stored.
 - Elasticsearch Executor and Elasticsearch Purger clears the cache for the configured index.
