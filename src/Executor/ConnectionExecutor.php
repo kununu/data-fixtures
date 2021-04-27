@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Executor;
 
@@ -21,7 +22,7 @@ final class ConnectionExecutor implements ExecutorInterface
         $this->purger = $purger;
     }
 
-    public function execute(array $fixtures, $append = false) : void
+    public function execute(array $fixtures, $append = false): void
     {
         $this->connection->beginTransaction();
 
@@ -45,7 +46,7 @@ final class ConnectionExecutor implements ExecutorInterface
         }
     }
 
-    private function load(ConnectionFixtureInterface $fixture)
+    private function load(ConnectionFixtureInterface $fixture): void
     {
         $fixture->load($this->connection);
     }

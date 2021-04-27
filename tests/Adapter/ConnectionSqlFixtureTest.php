@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Adapter;
 
@@ -10,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ConnectionSqlFixtureTest extends TestCase
 {
-    public function testLoad() : void
+    public function testLoad(): void
     {
         /** @var Connection|MockObject $connection */
         $connection = $this->createMock(Connection::class);
@@ -37,7 +38,7 @@ SQL;
         $fixture->load($connection);
     }
 
-    public function testThatLoadThrowsExceptionWhenCannotGetContentsOfFile() : void
+    public function testThatLoadThrowsExceptionWhenCannotGetContentsOfFile(): void
     {
         $this->expectException(InvalidFileException::class);
 

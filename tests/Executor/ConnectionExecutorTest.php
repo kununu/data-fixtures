@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Loader;
 
@@ -18,7 +19,7 @@ final class ConnectionExecutorTest extends TestCase
     /** @var PurgerInterface|MockObject */
     private $purger;
 
-    public function testThatExecutorIsTransactionalAndCommits() : void
+    public function testThatExecutorIsTransactionalAndCommits(): void
     {
         $this->connection
             ->expects($this->exactly(2))
@@ -42,7 +43,7 @@ final class ConnectionExecutorTest extends TestCase
         $executor->execute([], true);
     }
 
-    public function testThatExecutorIsTransactionalAndRollbacks() : void
+    public function testThatExecutorIsTransactionalAndRollbacks(): void
     {
         $this->expectException(\Exception::class);
 
@@ -73,7 +74,7 @@ final class ConnectionExecutorTest extends TestCase
         $executor->execute([]);
     }
 
-    public function testThatDoesNotPurgesWhenAppendIsEnabled() : void
+    public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->purger
             ->expects($this->never())
@@ -84,7 +85,7 @@ final class ConnectionExecutorTest extends TestCase
         $executor->execute([], true);
     }
 
-    public function testThatPurgesWhenAppendIsDisabled() : void
+    public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->purger
             ->expects($this->once())
@@ -95,7 +96,7 @@ final class ConnectionExecutorTest extends TestCase
         $executor->execute([]);
     }
 
-    public function testThatFixturesAreLoaded() : void
+    public function testThatFixturesAreLoaded(): void
     {
         $fixture1 = $this->createMock(ConnectionFixtureInterface::class);
         $fixture1->expects($this->once())->method('load')->with($this->connection);

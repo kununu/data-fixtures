@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Purger;
 
@@ -13,15 +14,10 @@ final class CachePoolPurger implements PurgerInterface
         $this->cachePool = $cachePool;
     }
 
-    public function purge() : void
+    public function purge(): void
     {
         if (!$this->cachePool->clear()) {
-            throw new \Exception(
-                sprintf(
-                    'Failed to purge cache pool "%s"',
-                    get_class($this->cachePool)
-                )
-            );
+            throw new \Exception(sprintf('Failed to purge cache pool "%s"', get_class($this->cachePool)));
         }
     }
 }

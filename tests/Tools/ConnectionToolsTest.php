@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Purger;
 
@@ -12,7 +13,7 @@ final class ConnectionToolsTest extends TestCase
 {
     use ConnectionToolsTrait;
 
-    public function testGetDisableForeignKeyChecksForMySQL() : void
+    public function testGetDisableForeignKeyChecksForMySQL(): void
     {
         $this->assertEquals(
             'SET FOREIGN_KEY_CHECKS=0',
@@ -20,7 +21,7 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    public function testGetEnableForeignKeyChecksForMySQL() : void
+    public function testGetEnableForeignKeyChecksForMySQL(): void
     {
         $this->assertEquals(
             'SET FOREIGN_KEY_CHECKS=1',
@@ -28,7 +29,7 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    public function testGetDisableForeignKeyChecksForSqlite() : void
+    public function testGetDisableForeignKeyChecksForSqlite(): void
     {
         $this->assertEquals(
             'PRAGMA foreign_keys = OFF',
@@ -36,7 +37,7 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    public function testGetEnableForeignKeyChecksForSqlite() : void
+    public function testGetEnableForeignKeyChecksForSqlite(): void
     {
         $this->assertEquals(
             'PRAGMA foreign_keys = ON',
@@ -44,7 +45,7 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    public function testGetEnableForeignKeyChecksForUnknownDriver() : void
+    public function testGetEnableForeignKeyChecksForUnknownDriver(): void
     {
         $this->assertEquals(
             '',
@@ -52,7 +53,7 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    public function testGetDisableForeignKeyChecksForUnknownDriver() : void
+    public function testGetDisableForeignKeyChecksForUnknownDriver(): void
     {
         $this->assertEquals(
             '',

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Loader;
 
@@ -51,10 +52,7 @@ abstract class Loader implements LoaderInterface
     final public function getFixture(string $className): FixtureInterface
     {
         if (!isset($this->fixtures[$className])) {
-            throw new InvalidArgumentException(sprintf(
-                '"%s" is not a registered fixture',
-                $className
-            ));
+            throw new InvalidArgumentException(sprintf('"%s" is not a registered fixture', $className));
         }
 
         return $this->fixtures[$className];

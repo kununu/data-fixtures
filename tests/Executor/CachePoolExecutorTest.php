@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Loader;
 
@@ -17,7 +18,7 @@ final class CachePoolExecutorTest extends TestCase
     /** @var PurgerInterface|MockObject */
     private $purger;
 
-    public function testThatDoesNotPurgesWhenAppendIsEnabled() : void
+    public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->purger
             ->expects($this->never())
@@ -28,7 +29,7 @@ final class CachePoolExecutorTest extends TestCase
         $executor->execute([], true);
     }
 
-    public function testThatPurgesWhenAppendIsDisabled() : void
+    public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->purger
             ->expects($this->once())
@@ -39,7 +40,7 @@ final class CachePoolExecutorTest extends TestCase
         $executor->execute([]);
     }
 
-    public function testThatFixturesAreLoaded() : void
+    public function testThatFixturesAreLoaded(): void
     {
         $fixture1 = $this->createMock(CachePoolFixtureInterface::class);
         $fixture1->expects($this->once())->method('load')->with($this->cache);

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Adapter;
 
@@ -22,18 +23,18 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
         }
     }
 
-    abstract protected function fileNames() : array;
+    abstract protected function fileNames(): array;
 
-    private function getSql(\SplFileInfo $fileInfo) : ?string
+    private function getSql(\SplFileInfo $fileInfo): ?string
     {
         $contents = trim($this->getFileContents($fileInfo));
 
         return $contents !== '' ? $contents : null;
     }
 
-    private function getFileContents(\SplFileInfo $fileInfo) : string
+    private function getFileContents(\SplFileInfo $fileInfo): string
     {
-        set_error_handler(function ($type, $msg) use (&$error) {
+        set_error_handler(function($type, $msg) use (&$error): void {
             $error = $msg;
         });
 

@@ -1,6 +1,5 @@
 # Security Policy
 
-
 ## Reporting a Vulnerability
 
 Jira is our entrypoint to report security vulnerabilities. Having this mind a KUNSECU user story (type Vulnerability) needs to be created. 

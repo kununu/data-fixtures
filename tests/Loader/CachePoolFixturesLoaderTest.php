@@ -1,14 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Loader;
 
-use Kununu\DataFixtures\{
-    Adapter\CachePoolFixtureInterface,
-    Loader\CachePoolFixturesLoader};
-use Kununu\DataFixtures\Tests\TestFixtures\{
-    CachePoolFixture1,
-    CachePoolFixture2,
-    NotAFixture};
+use Kununu\DataFixtures\Adapter\CachePoolFixtureInterface;
+use Kununu\DataFixtures\Loader\CachePoolFixturesLoader;
+use Kununu\DataFixtures\Tests\TestFixtures\CachePoolFixture1;
+use Kununu\DataFixtures\Tests\TestFixtures\CachePoolFixture2;
+use Kununu\DataFixtures\Tests\TestFixtures\NotAFixture;
 use PHPUnit\Framework\TestCase;
 
 final class CachePoolFixturesLoaderTest extends TestCase
@@ -16,7 +15,7 @@ final class CachePoolFixturesLoaderTest extends TestCase
     /** @var CachePoolFixturesLoader */
     private $loader;
 
-    public function testLoadFromDirectory()
+    public function testLoadFromDirectory(): void
     {
         $this->loader->addFixture(
             $this->getMockBuilder(CachePoolFixtureInterface::class)->setMockClassName('Mock1')->getMock()
@@ -34,14 +33,14 @@ final class CachePoolFixturesLoaderTest extends TestCase
         $this->assertEmpty($this->loader->getFixtures());
     }
 
-    public function testLoadFromDirectoryThrowsExceptionIfNotDirectory()
+    public function testLoadFromDirectoryThrowsExceptionIfNotDirectory(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         $this->loader->loadFromDirectory(__DIR__ . '/../NotFoundDirectory/');
     }
 
-    public function testLoadFromFile()
+    public function testLoadFromFile(): void
     {
         $this->loader->addFixture(
             $this->getMockBuilder(CachePoolFixtureInterface::class)->setMockClassName('Mock1')->getMock()
@@ -65,7 +64,7 @@ final class CachePoolFixturesLoaderTest extends TestCase
         $loadedFixtures = $this->loader->getFixtures();
         $this->assertCount(3, $loadedFixtures);
         $this->assertArrayHasKey(CachePoolFixture1::class, $loadedFixtures);
-        /** @var  CachePoolFixture1 $cachePoolFixture1 */
+        /** @var CachePoolFixture1 $cachePoolFixture1 */
         $cachePoolFixture1 = $loadedFixtures[CachePoolFixture1::class];
         $this->assertInstanceOf(CachePoolFixture1::class, $cachePoolFixture1);
         $this->assertEquals($cachePoolFixture1->arg1(), 2020);
@@ -84,14 +83,14 @@ final class CachePoolFixturesLoaderTest extends TestCase
         $this->assertCount(4, $this->loader->getFixtures());
     }
 
-    public function testLoadFromFileThrowsExceptionForInvalidFile()
+    public function testLoadFromFileThrowsExceptionForInvalidFile(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         $this->loader->loadFromFile(__DIR__ . '/../NotFoundDirectory/CachePoolFixture1.php');
     }
 
-    public function testLoadFromClassName()
+    public function testLoadFromClassName(): void
     {
         $this->loader->addFixture(
             $this->getMockBuilder(CachePoolFixtureInterface::class)->setMockClassName('Mock1')->getMock()
@@ -110,7 +109,7 @@ final class CachePoolFixturesLoaderTest extends TestCase
         $this->assertCount(4, $this->loader->getFixtures());
     }
 
-    public function testGetFixture()
+    public function testGetFixture(): void
     {
         $this->loader->loadFromFile(__DIR__ . '/../TestFixtures/CachePoolFixture1.php');
 
@@ -119,7 +118,7 @@ final class CachePoolFixturesLoaderTest extends TestCase
         $this->assertInstanceOf(CachePoolFixture1::class, $fixture);
     }
 
-    public function testGetFixtureThrowsExceptionWhenFixtureDoesNotExists()
+    public function testGetFixtureThrowsExceptionWhenFixtureDoesNotExists(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 

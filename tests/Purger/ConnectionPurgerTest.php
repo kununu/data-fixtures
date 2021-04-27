@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Purger;
 
@@ -15,7 +16,7 @@ final class ConnectionPurgerTest extends TestCase
     private const TABLES = ['table_1', 'table_2', 'table_3'];
     private const EXCLUDED_TABLES = ['table_4', 'table_2', 'table_5'];
 
-    public function testThatPurgerIsTransactionalAndCommits() : void
+    public function testThatPurgerIsTransactionalAndCommits(): void
     {
         /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
@@ -29,14 +30,14 @@ final class ConnectionPurgerTest extends TestCase
         $connection
             ->expects($this->once())
             ->method('beginTransaction')
-            ->willReturnCallback(function () use (&$transactionStarted) {
+            ->willReturnCallback(function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
         $connection
             ->expects($this->once())
             ->method('commit')
-            ->willReturnCallback(function () use (&$transactionStarted) {
+            ->willReturnCallback(function() use (&$transactionStarted): void {
                 $this->assertTrue($transactionStarted);
             });
 
@@ -44,7 +45,7 @@ final class ConnectionPurgerTest extends TestCase
         $purger->purge();
     }
 
-    public function testThatPurgerIsTransactionalAndRollbacks() : void
+    public function testThatPurgerIsTransactionalAndRollbacks(): void
     {
         $this->expectException(\Exception::class);
 
@@ -60,14 +61,14 @@ final class ConnectionPurgerTest extends TestCase
         $connection
             ->expects($this->once())
             ->method('beginTransaction')
-            ->willReturnCallback(function () use (&$transactionStarted) {
+            ->willReturnCallback(function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
         $connection
             ->expects($this->once())
             ->method('commit')
-            ->willReturnCallback(function () use (&$transactionStarted) {
+            ->willReturnCallback(function() use (&$transactionStarted): void {
                 $this->assertTrue($transactionStarted);
                 throw new \Exception('Failed to commit!');
             });
@@ -142,7 +143,7 @@ final class ConnectionPurgerTest extends TestCase
                 ['table_3', true]
             )
             ->willReturnOnConsecutiveCalls(
-                ...array_map(function ($element) {
+                ...array_map(function($element) {
                     return $element[0];
                 }, $this->getTruncateModeConnectionWithConsecutiveArguments())
             );
@@ -163,7 +164,7 @@ final class ConnectionPurgerTest extends TestCase
         $purger->purge();
     }
 
-    public function testChangePurgeModeToDelete() : void
+    public function testChangePurgeModeToDelete(): void
     {
         /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
@@ -175,7 +176,7 @@ final class ConnectionPurgerTest extends TestCase
         $this->assertEquals(1, $purger->getPurgeMode());
     }
 
-    public function testChangePurgeModeToTruncate() : void
+    public function testChangePurgeModeToTruncate(): void
     {
         /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
@@ -187,7 +188,7 @@ final class ConnectionPurgerTest extends TestCase
         $this->assertEquals(2, $purger->getPurgeMode());
     }
 
-    public function testChangePurgeModeToNotSupportedModeThrowsException() : void
+    public function testChangePurgeModeToNotSupportedModeThrowsException(): void
     {
         $this->expectException(\Exception::class);
 
@@ -198,16 +199,16 @@ final class ConnectionPurgerTest extends TestCase
         $purger->setPurgeMode(10);
     }
 
-    private function getConnectionMock(bool $withPlatform = true, array $tables = self::TABLES) : MockObject
+    private function getConnectionMock(bool $withPlatform = true, array $tables = self::TABLES): MockObject
     {
         $connection = $this->createMock(Connection::class);
 
         $schemaManager = $this->createMock(AbstractSchemaManager::class);
         $schemaManager->expects($this->any())->method('listTableNames')->willReturn($tables);
 
-        $connection->expects($this->any())->method('getSchemaManager')->willReturn($schemaManager);
+        $connection->expects($this->any())->method('createSchemaManager')->willReturn($schemaManager);
         $connection->expects($this->any())->method('getDriver')->willReturn($this->createMock(AbstractMySQLDriver::class));
-        $connection->expects($this->any())->method('quoteIdentifier')->will($this->returnArgument(0));
+        $connection->expects($this->any())->method('quoteIdentifier')->willReturnArgument(0);
 
         if ($withPlatform) {
             $connection->expects($this->any())->method('getDatabasePlatform')->willReturn($this->createMock(AbstractPlatform::class));
@@ -216,7 +217,7 @@ final class ConnectionPurgerTest extends TestCase
         return $connection;
     }
 
-    private function getConsecutiveArgumentsForConnectionExecStatement(?int $purgeMode = 1, ?array $tables = self::TABLES, ?array $excludedTables = []) : array
+    private function getConsecutiveArgumentsForConnectionExecStatement(?int $purgeMode = 1, ?array $tables = self::TABLES, ?array $excludedTables = []): array
     {
         $purgeStatements = [];
 
@@ -238,7 +239,7 @@ final class ConnectionPurgerTest extends TestCase
         );
     }
 
-    private function getDeleteModeConnectionWithConsecutiveArguments(array $tables = self::TABLES, array $excludedTables = []) : array
+    private function getDeleteModeConnectionWithConsecutiveArguments(array $tables = self::TABLES, array $excludedTables = []): array
     {
         $return = [];
 
@@ -251,7 +252,7 @@ final class ConnectionPurgerTest extends TestCase
         return $return;
     }
 
-    private function getTruncateModeConnectionWithConsecutiveArguments(array $tables = self::TABLES, array $excludedTables = []) : array
+    private function getTruncateModeConnectionWithConsecutiveArguments(array $tables = self::TABLES, array $excludedTables = []): array
     {
         $return = [];
 

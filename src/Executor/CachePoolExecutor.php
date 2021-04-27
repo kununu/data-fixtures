@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Executor;
 
@@ -18,7 +19,7 @@ final class CachePoolExecutor implements ExecutorInterface
         $this->purger = $purger;
     }
 
-    public function execute(array $fixtures, $append = false) : void
+    public function execute(array $fixtures, $append = false): void
     {
         if ($append === false) {
             $this->purger->purge();
@@ -29,7 +30,7 @@ final class CachePoolExecutor implements ExecutorInterface
         }
     }
 
-    private function load(CachePoolFixtureInterface $fixture)
+    private function load(CachePoolFixtureInterface $fixture): void
     {
         $fixture->load($this->cache);
     }

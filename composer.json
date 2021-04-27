@@ -24,11 +24,12 @@
         }
     ],
     "require-dev": {
-        "doctrine/dbal": "^2.9",
-        "elasticsearch/elasticsearch": "~7.0",
+        "doctrine/dbal": "^2.9 || ^3.1",
+        "elasticsearch/elasticsearch": "^7.0",
         "phpunit/phpunit": "^8.5",
         "psr/cache": "^1.0",
-        "symfony/phpunit-bridge": "^5.2"
+        "symfony/phpunit-bridge": "^5.2",
+        "kununu/scripts": "^1.1"
     },
     "suggest": {
         "psr/cache": "Load fixtures for implementation of the PSR6 standard",
@@ -47,5 +48,12 @@
     },
     "config": {
         "sort-packages": true
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/kununu/kununu-scripts.git",
+            "no-api": true
+        }
+    ]
 }

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Purger;
 
@@ -24,11 +25,11 @@ final class ConnectionPurger implements PurgerInterface
     public function __construct(Connection $connection, array $excludedTables = [])
     {
         $this->connection = $connection;
-        $this->tables = $connection->getSchemaManager()->listTableNames();
+        $this->tables = $connection->createSchemaManager()->listTableNames();
         $this->excludedTables = $excludedTables;
     }
 
-    public function purge() : void
+    public function purge(): void
     {
         $tables = array_diff($this->tables, $this->excludedTables);
 
@@ -56,23 +57,21 @@ final class ConnectionPurger implements PurgerInterface
         }
     }
 
-    public function setPurgeMode(int $mode) : void
+    public function setPurgeMode(int $mode): void
     {
         if (!in_array($mode, [self::PURGE_MODE_DELETE, self::PURGE_MODE_TRUNCATE])) {
-            throw new \Exception(
-                sprintf('Purge Mode "%d" is not valid', $mode)
-            );
+            throw new \Exception(sprintf('Purge Mode "%d" is not valid', $mode));
         }
 
         $this->purgeMode = $mode;
     }
 
-    public function getPurgeMode() : int
+    public function getPurgeMode(): int
     {
         return $this->purgeMode;
     }
 
-    private function purgeTable(AbstractPlatform $platform, string $tableName) : void
+    private function purgeTable(AbstractPlatform $platform, string $tableName): void
     {
         if ($this->purgeMode === self::PURGE_MODE_DELETE) {
             $this->connection->executeStatement('DELETE FROM ' . $this->connection->quoteIdentifier($tableName));
