@@ -15,7 +15,7 @@ composer require doctrine/dbal
 
 ### 1. Create fixture classes
 
-The first step to load *Connection Fixtures* is to create fixtures classes. This classes must implement the [ConnectionFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](https://github.com/kununu/data-fixtures/blob/master/src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql*  files.
+The first step to load *Connection Fixtures* is to create fixtures classes. This classes must implement the [ConnectionFixtureInterface](src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql*  files.
 
 
 ```php
