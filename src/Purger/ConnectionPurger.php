@@ -5,6 +5,7 @@ namespace Kununu\DataFixtures\Purger;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 
 final class ConnectionPurger implements PurgerInterface

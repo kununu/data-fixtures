@@ -7,8 +7,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
-use Kununu\DataFixtures\Purger\InvalidConnectionPurgeModeException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

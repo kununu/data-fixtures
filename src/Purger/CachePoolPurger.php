@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Purger;
 
+use Kununu\DataFixtures\Exception\PurgeFailedException;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachePoolPurger implements PurgerInterface
