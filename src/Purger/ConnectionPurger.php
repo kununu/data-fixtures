@@ -16,11 +16,8 @@ final class ConnectionPurger implements PurgerInterface
     private const PURGE_MODE_TRUNCATE = 2;
 
     private $connection;
-
     private $tables;
-
     private $excludedTables;
-
     private $purgeMode = self::PURGE_MODE_DELETE;
 
     public function __construct(Connection $connection, array $excludedTables = [])
@@ -32,9 +29,9 @@ final class ConnectionPurger implements PurgerInterface
 
     public function purge(): void
     {
-        $tables = array_diff($this->tables, $this->excludedTables);
+        $tablesToPurge = array_diff($this->tables, $this->excludedTables);
 
-        if (empty($tables)) {
+        if (empty($tablesToPurge)) {
             return;
         }
 
@@ -45,7 +42,7 @@ final class ConnectionPurger implements PurgerInterface
         try {
             $this->connection->executeStatement($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
 
-            foreach ($tables as $tableName) {
+            foreach ($tablesToPurge as $tableName) {
                 $this->purgeTable($platform, $tableName);
             }
 

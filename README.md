@@ -120,7 +120,7 @@ Run the tests by doing:
 
 ```
 composer install
-vendor/phpunit/phpunit/phpunit tests
+vendor/bin/phpunit
 ```
 
 ------------------------------

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Loader;
 
+use InvalidArgumentException;
 use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
 use Kununu\DataFixtures\Loader\ElasticSearchFixturesLoader;
 use Kununu\DataFixtures\Tests\TestFixtures\ElasticSearchFixture1;
@@ -36,7 +37,7 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
 
     public function testLoadFromDirectoryThrowsExceptionIfNotDirectory(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->loader->loadFromDirectory(__DIR__ . '/../NotFoundDirectory/');
     }
@@ -62,7 +63,7 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
 
     public function testLoadFromFileThrowsExceptionForInvalidFile(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->loader->loadFromFile(__DIR__ . '/../NotFoundDirectory/ElasticSearchFixture1.php');
     }
@@ -97,7 +98,7 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
 
     public function testGetFixtureThrowsExceptionWhenFixtureDoesNotExists(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->loader->getFixture(ElasticSearchFixture1::class);
     }
@@ -109,7 +110,12 @@ final class ElasticSearchFixturesLoaderTest extends TestCase
         $this->loader = new ElasticSearchFixturesLoader();
     }
 
-    private function getNamedElasticSearchFixtureMock(string $name): MockObject
+    /**
+     * @param string $name
+     *
+     * @return ElasticSearchFixtureInterface|MockObject
+     */
+    private function getNamedElasticSearchFixtureMock(string $name)
     {
         return $this->getMockBuilder(ElasticSearchFixtureInterface::class)
             ->setMockClassName($name)

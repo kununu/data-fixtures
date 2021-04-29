@@ -7,13 +7,13 @@ use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Purger\PurgerInterface;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
+use Throwable;
 
 final class ConnectionExecutor implements ExecutorInterface
 {
     use ConnectionToolsTrait;
 
     private $connection;
-
     private $purger;
 
     public function __construct(Connection $connection, PurgerInterface $purger)
@@ -38,7 +38,7 @@ final class ConnectionExecutor implements ExecutorInterface
             }
 
             $this->connection->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->connection->rollBack();
             throw $e;
         } finally {

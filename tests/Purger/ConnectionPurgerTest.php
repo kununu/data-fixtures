@@ -7,6 +7,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Exception;
 use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,7 +49,7 @@ final class ConnectionPurgerTest extends TestCase
 
     public function testThatPurgerIsTransactionalAndRollbacks(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
@@ -71,7 +72,7 @@ final class ConnectionPurgerTest extends TestCase
             ->method('commit')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 $this->assertTrue($transactionStarted);
-                throw new \Exception('Failed to commit!');
+                throw new Exception('Failed to commit!');
             });
 
         $connection

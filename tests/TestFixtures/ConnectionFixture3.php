@@ -9,5 +9,6 @@ final class ConnectionFixture3 extends ConnectionSqlFixture
 {
     protected function fileNames(): array
     {
+        return [];
     }
 }
