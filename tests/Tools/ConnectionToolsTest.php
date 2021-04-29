@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\DataFixtures\Tests\Purger;
+namespace Kununu\DataFixtures\Tests\Tools;
 
 use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
