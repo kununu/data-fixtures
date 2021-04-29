@@ -34,7 +34,8 @@
     "suggest": {
         "psr/cache": "Load fixtures for implementation of the PSR6 standard",
         "doctrine/dbal": "Load fixtures using Doctrine DBAL",
-        "elasticsearch/elasticsearch": "Load fixtures with Elasticsearch"
+        "elasticsearch/elasticsearch": "Load fixtures with Elasticsearch",
+        "kununu/testing-bundle": "Use this package in a Symfony application"
     },
     "autoload": {
         "psr-4": {
