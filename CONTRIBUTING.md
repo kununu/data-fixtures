@@ -1,5 +1,4 @@
 # Contributing
-----------------------------
 
 Contributions are more than **welcome**.
 
