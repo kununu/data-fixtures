@@ -1,12 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Adapter;
 
 use Elasticsearch\Client;
 use Kununu\DataFixtures\Tests\TestFixtures\ElasticSearchFixture3;
-use PHPUnit\Framework\{
-    MockObject\MockObject,
-    TestCase};
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 final class ElasticSearchFixtureTest extends TestCase
 {

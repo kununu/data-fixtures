@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Purger;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 
 final class ConnectionPurger implements PurgerInterface
@@ -24,11 +26,11 @@ final class ConnectionPurger implements PurgerInterface
     public function __construct(Connection $connection, array $excludedTables = [])
     {
         $this->connection = $connection;
-        $this->tables = $connection->getSchemaManager()->listTableNames();
+        $this->tables = $this->getDatabaseTables($connection);
         $this->excludedTables = $excludedTables;
     }
 
-    public function purge() : void
+    public function purge(): void
     {
         $tables = array_diff($this->tables, $this->excludedTables);
 
@@ -41,7 +43,7 @@ final class ConnectionPurger implements PurgerInterface
         $this->connection->beginTransaction();
 
         try {
-            $this->connection->exec($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+            $this->connection->executeStatement($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
 
             foreach ($tables as $tableName) {
                 $this->purgeTable($platform, $tableName);
@@ -52,32 +54,30 @@ final class ConnectionPurger implements PurgerInterface
             $this->connection->rollBack();
             throw $e;
         } finally {
-            $this->connection->exec($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+            $this->connection->executeStatement($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
         }
     }
 
-    public function setPurgeMode(int $mode) : void
+    public function setPurgeMode(int $mode): void
     {
         if (!in_array($mode, [self::PURGE_MODE_DELETE, self::PURGE_MODE_TRUNCATE])) {
-            throw new \Exception(
-                sprintf('Purge Mode "%d" is not valid', $mode)
-            );
+            throw new InvalidConnectionPurgeModeException(sprintf('Purge Mode "%d" is not valid', $mode));
         }
 
         $this->purgeMode = $mode;
     }
 
-    public function getPurgeMode() : int
+    public function getPurgeMode(): int
     {
         return $this->purgeMode;
     }
 
-    private function purgeTable(AbstractPlatform $platform, string $tableName) : void
+    private function purgeTable(AbstractPlatform $platform, string $tableName): void
     {
         if ($this->purgeMode === self::PURGE_MODE_DELETE) {
-            $this->connection->executeUpdate('DELETE FROM ' . $this->connection->quoteIdentifier($tableName));
+            $this->connection->executeStatement('DELETE FROM ' . $this->connection->quoteIdentifier($tableName));
         } else {
-            $this->connection->executeUpdate($platform->getTruncateTableSQL($this->connection->quoteIdentifier($tableName), true));
+            $this->connection->executeStatement($platform->getTruncateTableSQL($this->connection->quoteIdentifier($tableName), true));
         }
     }
 }

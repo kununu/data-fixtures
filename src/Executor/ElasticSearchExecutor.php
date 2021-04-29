@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Executor;
 
@@ -31,8 +32,7 @@ final class ElasticSearchExecutor implements ExecutorInterface
             $this->load($fixture);
         }
 
-        $this->elasticSearch->indices()->flush(['index' => $this->indexName, 'force' => true]);
-        $this->elasticSearch->indices()->clearCache(['index' => $this->indexName]);
+        $this->elasticSearch->indices()->refresh(['index' => $this->indexName]);
     }
 
     private function load(ElasticSearchFixtureInterface $fixture): void

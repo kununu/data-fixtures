@@ -1,6 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
-namespace Kununu\DataFixtures\Tests\Loader;
+namespace Kununu\DataFixtures\Tests\Executor;
 
 use Elasticsearch\Client;
 use Elasticsearch\Namespaces\IndicesNamespace;
@@ -59,12 +60,7 @@ final class ElasticSearchExecutorTest extends TestCase
         $indices = $this->createMock(IndicesNamespace::class);
         $indices
             ->expects($this->once())
-            ->method('flush')
-            ->with(['index' => self::INDEX_NAME, 'force' => true]);
-
-        $indices
-            ->expects($this->once())
-            ->method('clearCache')
+            ->method('refresh')
             ->with(['index' => self::INDEX_NAME]);
 
         $this->client
