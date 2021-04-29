@@ -125,4 +125,4 @@ vendor/phpunit/phpunit/phpunit tests
 
 ------------------------------
 
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=kununu_data-fixtures&metric=alert_status)](https://sonarcloud.io/dashboard?id=kununu:kununu_data-fixtures)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=kununu_data-fixtures&metric=alert_status)](https://sonarcloud.io/dashboard?id=kununu_data-fixtures)
