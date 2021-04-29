@@ -117,5 +117,4 @@ $executor->execute($loader->getFixtures(), true);
 ## Notes
 
 - The Elasticsearch Purger runs a *deleteByQuery* query that matches all documents.
-- Elasticsearch Executor and Elasticsearch Purger flushes the configured index to ensure that any data is permanently stored.
-- Elasticsearch Executor and Elasticsearch Purger clears the cache for the configured index.
+- Elasticsearch Executor and Elasticsearch Purger calls the refresh API after purging the index and load the fixtures.
