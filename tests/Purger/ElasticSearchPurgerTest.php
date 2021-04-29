@@ -18,12 +18,7 @@ final class ElasticSearchPurgerTest extends TestCase
         $indices = $this->createMock(IndicesNamespace::class);
         $indices
             ->expects($this->exactly(2))
-            ->method('flush')
-            ->with(['index' => 'my_index', 'force' => true]);
-
-        $indices
-            ->expects($this->exactly(2))
-            ->method('clearCache')
+            ->method('refresh')
             ->with(['index' => 'my_index']);
 
         $elasticSearch
@@ -42,8 +37,7 @@ final class ElasticSearchPurgerTest extends TestCase
                             'match_all' => new stdClass(),
                         ],
                     ],
-                    'refresh'             => true,
-                    'wait_for_completion' => true,
+                    'conflicts' => 'proceed',
                 ]
             )
             ->willReturn(true);

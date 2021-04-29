@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\DataFixtures\Tests\Loader;
+namespace Kununu\DataFixtures\Tests\Executor;
 
 use Kununu\DataFixtures\Adapter\CachePoolFixtureInterface;
 use Kununu\DataFixtures\Executor\CachePoolExecutor;

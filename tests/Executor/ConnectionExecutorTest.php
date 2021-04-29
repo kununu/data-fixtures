@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\DataFixtures\Tests\Loader;
+namespace Kununu\DataFixtures\Tests\Executor;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
