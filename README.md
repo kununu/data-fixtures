@@ -122,3 +122,7 @@ Run the tests by doing:
 composer install
 vendor/phpunit/phpunit/phpunit tests
 ```
+
+------------------------------
+
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=kununu_data-fixtures&metric=alert_status)](https://sonarcloud.io/dashboard?id=kununu:kununu_data-fixtures)
