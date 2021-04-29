@@ -1,5 +1,4 @@
 # Why kununu/data-fixtures
-----------------------------------
 
 At kununu we have the need to easily load fixtures for any of the storages that our services usually rely on: MySQL, Elasticsearch, Memcached, etc. We looked into community packages and there are definitily great options however we realized that they do not fullfill our requirements.
 

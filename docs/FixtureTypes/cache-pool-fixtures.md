@@ -1,5 +1,4 @@
 ### Cache Pool Fixtures
--------------------------------
 
 The `Cache Pool Fixtures` allows you to load data fixtures for any implementation of the [PSR-6](https://github.com/php-fig/cache) standard.
 

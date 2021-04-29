@@ -1,5 +1,4 @@
 # How to create a new Fixture Type
------------------
 
 This package already provides implementations to load fixtures for some storage types. You can find the list of all supported storage types [here](/README.md/#Fixtures-types).
 Still, if you have the need to create a new type you can do it and it's pretty simple.

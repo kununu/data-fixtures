@@ -1,5 +1,4 @@
 # Doctrine DBAL Connection Fixtures
--------------------------------
 
 The `Doctrine DBAL Connection Fixtures` allows you to load data fixtures for any Connection configured with [Doctrine DBAL](https://github.com/doctrine/dbal).
 

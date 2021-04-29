@@ -1,5 +1,4 @@
 # Elasticsearch Fixtures
----------------------
 
 The `Elasticsearch Fixtures` allows you to load data fixtures for any Elasticsearch index.
 
