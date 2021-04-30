@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Loader;
 
+use InvalidArgumentException;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
 use Kununu\DataFixtures\Tests\TestFixtures\ConnectionFixture1;
@@ -36,7 +37,7 @@ final class ConnectionFixturesLoaderTest extends TestCase
 
     public function testLoadFromDirectoryThrowsExceptionIfNotDirectory(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->loader->loadFromDirectory(__DIR__ . '/../NotFoundDirectory/');
     }
@@ -67,7 +68,7 @@ final class ConnectionFixturesLoaderTest extends TestCase
 
     public function testLoadFromFileThrowsExceptionForInvalidFile(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->loader->loadFromFile(__DIR__ . '/../NotFoundDirectory/CachePoolFixture1.php');
     }
@@ -107,7 +108,7 @@ final class ConnectionFixturesLoaderTest extends TestCase
 
     public function testGetFixtureThrowsExceptionWhenFixtureDoesNotExists(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->loader->getFixture(ConnectionFixture1::class);
     }

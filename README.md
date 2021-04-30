@@ -120,9 +120,11 @@ Run the tests by doing:
 
 ```
 composer install
-vendor/phpunit/phpunit/phpunit tests
+vendor/bin/phpunit
 ```
 
 ------------------------------
 
+![Continuous Integration](https://github.com/kununu/data-fixtures/actions/workflows/continuous-integration.yml/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kununu_data-fixtures&metric=alert_status)](https://sonarcloud.io/dashboard?id=kununu_data-fixtures)
+

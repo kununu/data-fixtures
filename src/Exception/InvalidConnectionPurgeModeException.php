@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Exception;
 
-final class InvalidConnectionPurgeModeException extends \RuntimeException
+use RuntimeException;
+
+final class InvalidConnectionPurgeModeException extends RuntimeException
 {
 }

@@ -5,6 +5,7 @@ namespace Kununu\DataFixtures\Tests\Executor;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
+use Exception;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
 use Kununu\DataFixtures\Purger\PurgerInterface;
@@ -49,7 +50,7 @@ final class ConnectionExecutorTest extends TestCase
 
     public function testThatExecutorIsTransactionalAndRollbacks(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $this->connection
             ->expects($this->exactly(2))
@@ -64,7 +65,7 @@ final class ConnectionExecutorTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('commit')
-            ->willThrowException(new \Exception());
+            ->willThrowException(new Exception());
 
         $this->connection
             ->expects($this->once())

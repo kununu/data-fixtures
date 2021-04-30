@@ -10,7 +10,6 @@ use Psr\Cache\CacheItemPoolInterface;
 final class CachePoolExecutor implements ExecutorInterface
 {
     private $cache;
-
     private $purger;
 
     public function __construct(CacheItemPoolInterface $cache, PurgerInterface $purger)

@@ -15,10 +15,10 @@ use SplFileInfo;
 
 abstract class Loader implements LoaderInterface
 {
+    private const FILE_EXTENSION = '.php';
+
     private $fixtures = [];
     private $initalizableFixtures = [];
-
-    private $fileExtension = '.php';
 
     final public function loadFromDirectory(string $dir): void
     {
@@ -103,7 +103,7 @@ abstract class Loader implements LoaderInterface
     {
         $includedFiles = [];
         foreach ($iterator as $file) {
-            if (($fileName = $file->getBasename($this->fileExtension)) == $file->getBasename()) {
+            if ($file->getBasename(self::FILE_EXTENSION) == $file->getBasename()) {
                 continue;
             }
             $sourceFile = realpath($file->getPathName());

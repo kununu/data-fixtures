@@ -9,7 +9,6 @@ use stdClass;
 final class ElasticSearchPurger implements PurgerInterface
 {
     private $elasticSearch;
-
     private $indexName;
 
     public function __construct(Client $elasticSearch, string $indexName)
@@ -20,7 +19,7 @@ final class ElasticSearchPurger implements PurgerInterface
 
     public function purge(): void
     {
-        // We need to refresh before otherwise we may hit version conflicts when messing up with the same document.
+        // We need to refresh before, otherwise we may hit version conflicts when messing up with the same document.
         $this->elasticSearch->indices()->refresh(['index' => $this->indexName]);
 
         $this->elasticSearch->deleteByQuery(

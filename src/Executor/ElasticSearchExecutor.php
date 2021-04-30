@@ -10,9 +10,7 @@ use Kununu\DataFixtures\Purger\PurgerInterface;
 final class ElasticSearchExecutor implements ExecutorInterface
 {
     private $elasticSearch;
-
     private $indexName;
-
     private $purger;
 
     public function __construct(Client $elasticSearch, string $indexName, PurgerInterface $purger)
