@@ -9,11 +9,14 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
+use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class ConnectionPurgerTest extends TestCase
 {
+    use ConnectionUtilsTrait;
+
     private const TABLES = ['table_1', 'table_2', 'table_3'];
     private const EXCLUDED_TABLES = ['table_4', 'table_2', 'table_5'];
 
@@ -24,8 +27,9 @@ final class ConnectionPurgerTest extends TestCase
 
         $connection
             ->expects($this->exactly(5))
-            ->method('executeStatement')
-            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement());
+            ->method($this->getExecuteQueryMethodName($connection))
+            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement())
+            ->willReturn(1);
 
         $transactionStarted = false;
         $connection
@@ -55,8 +59,9 @@ final class ConnectionPurgerTest extends TestCase
 
         $connection
             ->expects($this->exactly(5))
-            ->method('executeStatement')
-            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement());
+            ->method($this->getExecuteQueryMethodName($connection))
+            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement())
+            ->willReturn(1);
 
         $transactionStarted = false;
         $connection
@@ -89,7 +94,7 @@ final class ConnectionPurgerTest extends TestCase
 
         $connection
             ->expects($this->never())
-            ->method('executeStatement');
+            ->method($this->getExecuteQueryMethodName($connection));
 
         $purger = new ConnectionPurger($connection);
         $purger->purge();
@@ -102,8 +107,9 @@ final class ConnectionPurgerTest extends TestCase
 
         $connection
             ->expects($this->exactly(4))
-            ->method('executeStatement')
-            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement(1, self::TABLES, self::EXCLUDED_TABLES));
+            ->method($this->getExecuteQueryMethodName($connection))
+            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement(1, self::TABLES, self::EXCLUDED_TABLES))
+            ->willReturn(1);
 
         $purger = new ConnectionPurger(
             $connection,
@@ -120,8 +126,9 @@ final class ConnectionPurgerTest extends TestCase
 
         $connection
             ->expects($this->exactly(5))
-            ->method('executeStatement')
-            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement());
+            ->method($this->getExecuteQueryMethodName($connection))
+            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement())
+            ->willReturn(1);
 
         $purger = new ConnectionPurger($connection);
 
@@ -156,8 +163,9 @@ final class ConnectionPurgerTest extends TestCase
 
         $connection
             ->expects($this->exactly(5))
-            ->method('executeStatement')
-            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement(2));
+            ->method($this->getExecuteQueryMethodName($connection))
+            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement(2))
+            ->willReturn(1);
 
         $purger = new ConnectionPurger($connection);
 
