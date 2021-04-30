@@ -31,7 +31,7 @@ final class ConnectionExecutor implements ExecutorInterface
                 $this->purger->purge();
             }
 
-            $this->connection->executeStatement($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+            $this->executeQuery($this->connection, $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
 
             foreach ($fixtures as $fixture) {
                 $this->load($fixture);
@@ -42,7 +42,7 @@ final class ConnectionExecutor implements ExecutorInterface
             $this->connection->rollBack();
             throw $e;
         } finally {
-            $this->connection->executeStatement($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+            $this->executeQuery($this->connection, $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
         }
     }
 
