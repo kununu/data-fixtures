@@ -6,11 +6,14 @@ namespace Kununu\DataFixtures\Tests\Adapter;
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Exception\InvalidFileException;
 use Kununu\DataFixtures\Tests\TestFixtures\ConnectionSqlFixture1;
+use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class ConnectionSqlFixtureTest extends TestCase
 {
+    use ConnectionUtilsTrait;
+
     public function testLoad(): void
     {
         /** @var Connection|MockObject $connection */
@@ -28,11 +31,12 @@ SQL;
 
         $connection
             ->expects($this->exactly(2))
-            ->method('executeStatement')
+            ->method($this->getExecuteQueryMethodName($connection))
             ->withConsecutive(
                 [$fixture1Content],
                 [$fixture2Content]
-            );
+            )
+            ->willReturn(1);
 
         $fixture = new ConnectionSqlFixture1();
         $fixture->load($connection);

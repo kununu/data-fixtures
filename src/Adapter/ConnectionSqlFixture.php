@@ -5,10 +5,13 @@ namespace Kununu\DataFixtures\Adapter;
 
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Exception\InvalidFileException;
+use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 use SplFileInfo;
 
 abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
 {
+    use ConnectionToolsTrait;
+
     final public function load(Connection $connection): void
     {
         foreach ($this->fileNames() as $fileName) {
@@ -19,7 +22,7 @@ abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
             }
 
             if ($sql = $this->getSql($file)) {
-                $connection->executeStatement($sql);
+                $this->executeQuery($connection, $sql);
             }
         }
     }

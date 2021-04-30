@@ -20,6 +20,16 @@ trait ConnectionToolsTrait
         return $connection->getSchemaManager()->listTableNames();
     }
 
+    protected function executeQuery(Connection $connection, string $sql): int
+    {
+        // This way we support both doctrine/dbal ^2.9 and ^3.1
+        if (method_exists($connection, 'executeStatement')) {
+            return $connection->executeStatement($sql);
+        }
+
+        return $connection->exec($sql);
+    }
+
     protected function getDisableForeignKeysChecksStatementByDriver(Driver $driver): string
     {
         if ($driver instanceof AbstractMySQLDriver) {

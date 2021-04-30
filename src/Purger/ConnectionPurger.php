@@ -40,7 +40,7 @@ final class ConnectionPurger implements PurgerInterface
         $this->connection->beginTransaction();
 
         try {
-            $this->connection->executeStatement($this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+            $this->executeQuery($this->connection, $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
 
             foreach ($tablesToPurge as $tableName) {
                 $this->purgeTable($platform, $tableName);
@@ -51,7 +51,7 @@ final class ConnectionPurger implements PurgerInterface
             $this->connection->rollBack();
             throw $e;
         } finally {
-            $this->connection->executeStatement($this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+            $this->executeQuery($this->connection, $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
         }
     }
 
@@ -72,9 +72,9 @@ final class ConnectionPurger implements PurgerInterface
     private function purgeTable(AbstractPlatform $platform, string $tableName): void
     {
         if ($this->purgeMode === self::PURGE_MODE_DELETE) {
-            $this->connection->executeStatement('DELETE FROM ' . $this->connection->quoteIdentifier($tableName));
+            $this->executeQuery($this->connection, 'DELETE FROM ' . $this->connection->quoteIdentifier($tableName));
         } else {
-            $this->connection->executeStatement($platform->getTruncateTableSQL($this->connection->quoteIdentifier($tableName), true));
+            $this->executeQuery($this->connection, $platform->getTruncateTableSQL($this->connection->quoteIdentifier($tableName), true));
         }
     }
 }

@@ -9,11 +9,14 @@ use Exception;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
 use Kununu\DataFixtures\Purger\PurgerInterface;
+use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class ConnectionExecutorTest extends TestCase
 {
+    use ConnectionUtilsTrait;
+
     /** @var Connection|MockObject */
     private $connection;
 
@@ -24,8 +27,9 @@ final class ConnectionExecutorTest extends TestCase
     {
         $this->connection
             ->expects($this->exactly(2))
-            ->method('executeStatement')
-            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
+            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1'])
+            ->willReturn(1);
 
         $this->connection
             ->expects($this->once())
@@ -50,8 +54,9 @@ final class ConnectionExecutorTest extends TestCase
 
         $this->connection
             ->expects($this->exactly(2))
-            ->method('executeStatement')
-            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1']);
+            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1'])
+            ->willReturn(1);
 
         $this->connection
             ->expects($this->once())
@@ -77,6 +82,11 @@ final class ConnectionExecutorTest extends TestCase
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
+        $this->connection
+            ->expects($this->any())
+            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->willReturn(1);
+
         $this->purger
             ->expects($this->never())
             ->method('purge');
@@ -88,6 +98,11 @@ final class ConnectionExecutorTest extends TestCase
 
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
+        $this->connection
+            ->expects($this->any())
+            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->willReturn(1);
+
         $this->purger
             ->expects($this->once())
             ->method('purge');
@@ -99,6 +114,11 @@ final class ConnectionExecutorTest extends TestCase
 
     public function testThatFixturesAreLoaded(): void
     {
+        $this->connection
+            ->expects($this->any())
+            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->willReturn(1);
+
         $fixture1 = $this->createMock(ConnectionFixtureInterface::class);
         $fixture1->expects($this->once())->method('load')->with($this->connection);
 
