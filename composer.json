@@ -29,7 +29,7 @@
         "phpunit/phpunit": "^8.5",
         "psr/cache": "^1.0",
         "symfony/phpunit-bridge": "^5.2",
-        "kununu/scripts": "^2.0"
+        "kununu/scripts": "*"
     },
     "suggest": {
         "psr/cache": "Load fixtures for implementation of the PSR6 standard",
