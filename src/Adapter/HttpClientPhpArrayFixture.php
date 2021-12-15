@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Adapter;
 
-use Exception;
 use Kununu\DataFixtures\Exception\InvalidFileException;
 use Kununu\DataFixtures\Tools\FixturesHttpClientInterface;
 use SplFileInfo;
@@ -44,14 +43,14 @@ abstract class HttpClientPhpArrayFixture implements HttpClientFixtureInterface
 
     private function loadFile(string $fileName): array
     {
-        try {
-            if (file_exists($fileName) && is_readable($fileName)) {
+        if (file_exists($fileName) && is_readable($fileName)) {
+            try {
                 return include $fileName;
+            } catch (Throwable $e) {
+                throw new InvalidFileException($e->getMessage(), $e->getCode());
             }
-
-            throw new Exception(sprintf('Invalid file: %s', $fileName));
-        } catch (Throwable $e) {
-            throw new InvalidFileException($e->getMessage(), $e->getCode());
         }
+
+        throw new InvalidFileException(sprintf('Invalid file: %s', $fileName));
     }
 }
