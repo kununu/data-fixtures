@@ -6,9 +6,9 @@ namespace Kununu\DataFixtures\Tests\Adapter;
 use Kununu\DataFixtures\Exception\InvalidFileException;
 use Kununu\DataFixtures\Tests\TestFixtures\HttpClientFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\HttpClientFixture2;
+use Kununu\DataFixtures\Tests\Utils\FakeHttpClientInterface;
 use Kununu\DataFixtures\Tools\FixturesHttpClientInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class HttpClientPhpArrayFixtureTest extends TestCase
 {
@@ -43,8 +43,6 @@ JSON
 
         $fixture = new HttpClientFixture1();
         $fixture->load($this->httpClient);
-
-        $this->assertTrue($fixture->triedToLoadFeatures());
     }
 
     public function testFileNotFound(): void
@@ -71,12 +69,14 @@ JSON
 
     public function testNotAFixtureHttpClient(): void
     {
-        $httpClient = $this->createMock(HttpClientInterface::class);
+        $httpClient = $this->createMock(FakeHttpClientInterface::class);
+
+        $this->httpClient
+            ->expects($this->never())
+            ->method('addResponses');
 
         $fixture = new HttpClientFixture2();
         $fixture->load($httpClient);
-
-        $this->assertFalse($fixture->triedToLoadFeatures());
     }
 
     protected function setUp(): void

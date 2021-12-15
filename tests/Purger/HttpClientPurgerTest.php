@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Purger;
 
 use Kununu\DataFixtures\Purger\HttpClientPurger;
+use Kununu\DataFixtures\Tests\Utils\FakeHttpClientInterface;
 use Kununu\DataFixtures\Tools\FixturesHttpClientInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class HttpClientPurgerTest extends TestCase
 {
@@ -19,15 +19,16 @@ final class HttpClientPurgerTest extends TestCase
 
         $purger = new HttpClientPurger($httpClient);
         $purger->purge();
-
-        $this->assertTrue($purger->purgeWasExecuted());
     }
 
     public function testPurgeWithNoFixturesHttpClient(): void
     {
-        $purger = new HttpClientPurger($this->createMock(HttpClientInterface::class));
-        $purger->purge();
+        $httpClient = $this->createMock(FakeHttpClientInterface::class);
+        $httpClient
+            ->expects($this->never())
+            ->method('clearResponses');
 
-        $this->assertFalse($purger->purgeWasExecuted());
+        $purger = new HttpClientPurger($httpClient);
+        $purger->purge();
     }
 }

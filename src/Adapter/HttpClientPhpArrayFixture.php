@@ -11,13 +11,9 @@ use Throwable;
 
 abstract class HttpClientPhpArrayFixture implements HttpClientFixtureInterface
 {
-    private $triedToLoadFeatures = false;
-
     final public function load(HttpClientInterface $httpClient): void
     {
         if (!is_a($httpClient, FixturesHttpClientInterface::class)) {
-            $this->triedToLoadFeatures = false;
-
             return;
         }
 
@@ -30,13 +26,6 @@ abstract class HttpClientPhpArrayFixture implements HttpClientFixtureInterface
 
             $httpClient->addResponses($this->loadFile($fileName));
         }
-
-        $this->triedToLoadFeatures = true;
-    }
-
-    final public function triedToLoadFeatures(): bool
-    {
-        return $this->triedToLoadFeatures;
     }
 
     abstract protected function fileNames(): array;
