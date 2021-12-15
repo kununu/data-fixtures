@@ -16,6 +16,7 @@ Currently, this package supports the following types of fixtures:
 - *[Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)* which relies on [Doctrine DBAL](https://github.com/doctrine/dbal) by using it's [Connection](https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Connection.php) implementation
 - *[Cache Pool Fixtures](/docs/FixtureTypes/cache-pool-fixtures.md)* which relies on implementations of the [PSR-6](https://github.com/php-fig/cache) standard
 - *[Elasticsearch Fixtures](/docs/FixtureTypes/elasticsearch.md)* which relies on the [Elasticsearch-PHP client](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html)
+- *[Symfony Http Client Fixtures](/docs/FixtureTypes/symfony-http-client.md)* which relies on the [Symfony Http Client](https://github.com/symfony/http-client) and [Symfony Http Foundation](https://github.com/symfony/http-foundation).
 
 If you are interested in knowing more about the concepts of the package or you need to create a new fixture type check out [How to create a new Fixture Type](/docs/how-to-create-new-fixture-type.md).
 
@@ -34,11 +35,12 @@ composer require --dev kununu/data-fixtures
 
 #### 2. Enable any fixture type
 
-In order to enable the fixture types that you are interested, check out their documention:
+In order to enable the fixture types that you are interested, check out their documentation:
 
 - [Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)
 - [Cache Pool Fixtures](/docs/FixtureTypes/cache-pool-fixtures.md)
 - [Elasticsearch Fixtures](/docs/FixtureTypes/elasticsearch.md)
+- [Symfony Http Client Fixtures](/docs/FixtureTypes/symfony-http-client.md)
 
 --------------------
 

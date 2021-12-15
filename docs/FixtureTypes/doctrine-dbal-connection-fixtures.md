@@ -88,7 +88,7 @@ If you want to know more options on how you can load fixtures in the Loader chec
 
 ### 3. Append Fixtures
 
-By default when loading fixtures the database is purged. If you want to change this behavior and instead append the fixtures, you can pass *false* as second argument to the ConnectionExecutor.
+By default when loading fixtures the database is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the ConnectionExecutor.
 
 ```php
 $executor = new Kununu\DataFixtures\Executor\ConnectionExecutor($conn, $purger);
