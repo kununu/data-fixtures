@@ -57,7 +57,7 @@ If you want to know more options on how you can load fixtures in the Loader chec
 
 ### 3. Append Fixtures
 
-By default when loading fixtures the cache storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *false* as second argument to the CachePoolExecutor.
+By default when loading fixtures the cache storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the CachePoolExecutor.
 
 ```php
 $executor = new Kununu\DataFixtures\Executor\CachePoolExecutor($cache, $purger);

@@ -29,13 +29,17 @@
         "phpunit/phpunit": "^8.5",
         "psr/cache": "^1.0",
         "symfony/phpunit-bridge": "^5.2",
+        "symfony/http-client": "^4.4 | ^5.2",
+        "symfony/http-foundation": "^4.4 | ^5.2",
         "kununu/scripts": "*"
     },
     "suggest": {
         "psr/cache": "Load fixtures for implementation of the PSR6 standard",
         "doctrine/dbal": "Load fixtures using Doctrine DBAL",
         "elasticsearch/elasticsearch": "Load fixtures with Elasticsearch",
-        "kununu/testing-bundle": "Use this package in a Symfony application"
+        "kununu/testing-bundle": "Use this package in a Symfony application",
+        "symfony/http-client": "Load fixtures with mocked data for Symfony Http client",
+        "symfony/http-foundation": "Load fixtures with mocked data for Symfony Http client"
     },
     "autoload": {
         "psr-4": {
