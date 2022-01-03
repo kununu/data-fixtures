@@ -18,7 +18,7 @@ final class HttpClientExecutor implements ExecutorInterface
         $this->purger = $purger;
     }
 
-    public function execute(array $fixtures, $append = false): void
+    public function execute(array $fixtures, bool $append = false): void
     {
         if ($append === false) {
             $this->purger->purge();

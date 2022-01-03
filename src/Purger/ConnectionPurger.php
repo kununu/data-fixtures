@@ -7,6 +7,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
+use Throwable;
 
 final class ConnectionPurger implements PurgerInterface
 {
@@ -18,13 +19,15 @@ final class ConnectionPurger implements PurgerInterface
     private $connection;
     private $tables;
     private $excludedTables;
+    private $transactional;
     private $purgeMode = self::PURGE_MODE_DELETE;
 
-    public function __construct(Connection $connection, array $excludedTables = [])
+    public function __construct(Connection $connection, array $excludedTables = [], bool $transactional = true)
     {
         $this->connection = $connection;
         $this->tables = $this->getDatabaseTables($connection);
         $this->excludedTables = $excludedTables;
+        $this->transactional = $transactional;
     }
 
     public function purge(): void
@@ -37,7 +40,9 @@ final class ConnectionPurger implements PurgerInterface
 
         $platform = $this->connection->getDatabasePlatform();
 
-        $this->connection->beginTransaction();
+        if ($this->transactional) {
+            $this->connection->beginTransaction();
+        }
 
         try {
             $this->executeQuery($this->connection, $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
@@ -46,9 +51,13 @@ final class ConnectionPurger implements PurgerInterface
                 $this->purgeTable($platform, $tableName);
             }
 
-            $this->connection->commit();
-        } catch (\Throwable $e) {
-            $this->connection->rollBack();
+            if ($this->transactional) {
+                $this->connection->commit();
+            }
+        } catch (Throwable $e) {
+            if ($this->transactional) {
+                $this->connection->rollBack();
+            }
             throw $e;
         } finally {
             $this->executeQuery($this->connection, $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
@@ -72,7 +81,7 @@ final class ConnectionPurger implements PurgerInterface
     private function purgeTable(AbstractPlatform $platform, string $tableName): void
     {
         if ($this->purgeMode === self::PURGE_MODE_DELETE) {
-            $this->executeQuery($this->connection, 'DELETE FROM ' . $this->connection->quoteIdentifier($tableName));
+            $this->executeQuery($this->connection, sprintf('DELETE FROM %s', $this->connection->quoteIdentifier($tableName)));
         } else {
             $this->executeQuery($this->connection, $platform->getTruncateTableSQL($this->connection->quoteIdentifier($tableName), true));
         }

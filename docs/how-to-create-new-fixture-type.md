@@ -1,8 +1,11 @@
 # How to create a new Fixture Type
 
-This package already provides implementations to load fixtures for some storage types. You can find the list of all supported storage types [here](/README.md/#Fixtures-types).
+This package already provides implementations to load fixtures for some storage types.
+
+You can find the list of all supported storage types [here](/README.md#Fixtures-types).
 Still, if you have the need to create a new type you can do it and it's pretty simple.
-For example, let's imagine that you need to load fixtures(in this case files) to a specific directory. To get this new type of fixtures up and running you will need to create a set of elements:
+
+For example, let's imagine that you need to load fixtures (in this case files) to a specific directory. To get this new type of fixtures up and running you will need to create a set of elements:
 - [Fixture Interface](#Create-fixture-type-interface)
 - [Purger](#Create-Purger)
 - [Loader](#Create-Loader)
@@ -12,10 +15,14 @@ For example, let's imagine that you need to load fixtures(in this case files) to
 ## Create fixture type interface
 
 Any fixture that you create will need to implement the [FixtureInterface](/src/FixtureInterface.php) provided by this package.
-In this example we will create the *DirectoryFilesFixtureInterface*, which exposes a method called *load* that will receive the directory name on which the fixtures should be loaded. It's then up to your concrete fixtures to save the files in the directory. We will create those concrete fixtures later.
+
+In this example we will create the *DirectoryFilesFixtureInterface*, which exposes a method called *load* that will receive the directory name on which the fixtures should be loaded.
+
+It's then up to your concrete fixtures to save the files in the directory. We will create those concrete fixtures later.
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Adapter;
 
@@ -30,12 +37,15 @@ interface DirectoryFilesFixtureInterface extends FixtureInterface
 ## Create Purger
 
 A purger is a class responsible for clearing the contents of a data storage.
+
 In order to create a new Purger you need to implement the [PurgerInterface](/src/Purger/PurgerInterface.php).
+
 In this example, the Purger will be responsible for removing all files in a specific directory.
 
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Purger;
 
@@ -64,10 +74,15 @@ final class DirectoryPurger implements PurgerInterface
 
 ## Create Loader
 
-A loader is a class responsible for loading data fixtures of a specific type in multiple ways. In order to ease the creating of a loader this package already provides a default [loader](/src/Loader/Loader.php) which only requires you to define which types of fixtures it supports. In this example we will create the *DirectoryFixturesLoader* which extends the *default* loader.
+A loader is a class responsible for loading data fixtures of a specific type in multiple ways.
+
+In order to ease the creating of a loader this package already provides a default [loader](/src/Loader/Loader.php) which only requires you to define which types of fixtures it supports.
+
+In this example we will create the *DirectoryFixturesLoader* which extends the *default* loader.
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Loader;
 
@@ -84,12 +99,15 @@ final class DirectoryFixturesLoader extends Loader
 
 ## Create Executor
 
-A Executor is a class responsible of orchestrating the flow: calling the purger and loading the fixtures.
+An Executor is a class responsible for orchestrating the flow: calling the purger and loading the fixtures.
+
 In order to create a new Executor you need to implement the [ExecutorInterface](/src/Executor/ExecutorInterface.php).
+
 In this example, the Executor will be responsible for calling the Purger and load each fixture.
 
 ```php
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Executor;
 
@@ -107,7 +125,7 @@ final class DirectoryExecutor implements ExecutorInterface
         $this->purger = $purger;
     }
 
-    public function execute(array $fixtures, $append = false) : void
+    public function execute(array $fixtures, bool $append = false) : void
     {
         if ($append === false) {
             $this->purger->purge();
@@ -123,16 +141,17 @@ final class DirectoryExecutor implements ExecutorInterface
         $fixture->load($this->dirname);
     }
 }
-
 ```
 
 ## Create Fixtures
 
 Now that we created all the pieces required to load fixtures into a directory it's time to create the concrete fixtures.
+
 In this example we will create two fixtures classes that will save files to a directory.
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures;
 
@@ -154,11 +173,11 @@ final class DirectoryFixture1 implements DirectoryFilesFixtureInterface
         file_put_contents($fileName, $file);
     }
 }
-
 ```
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Purger;
 
@@ -182,13 +201,13 @@ final class DirectoryFixture2 implements DirectoryFilesFixtureInterface
 }
 ```
 
-
 ## Putting it all together
 
 Now that you created your fixtures, the Purger, the Executor and the Loader it's time to put it all together:
 
 ```php
 <?php
+declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 

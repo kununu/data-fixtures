@@ -5,5 +5,5 @@ namespace Kununu\DataFixtures\Executor;
 
 interface ExecutorInterface
 {
-    public function execute(array $fixtures, $append = false): void;
+    public function execute(array $fixtures, bool $append = false): void;
 }

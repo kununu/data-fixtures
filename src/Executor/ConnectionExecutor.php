@@ -15,16 +15,20 @@ final class ConnectionExecutor implements ExecutorInterface
 
     private $connection;
     private $purger;
+    private $transactional;
 
-    public function __construct(Connection $connection, PurgerInterface $purger)
+    public function __construct(Connection $connection, PurgerInterface $purger, bool $transactional = true)
     {
         $this->connection = $connection;
         $this->purger = $purger;
+        $this->transactional = $transactional;
     }
 
     public function execute(array $fixtures, $append = false): void
     {
-        $this->connection->beginTransaction();
+        if ($this->transactional) {
+            $this->connection->beginTransaction();
+        }
 
         try {
             if ($append === false) {
@@ -37,9 +41,13 @@ final class ConnectionExecutor implements ExecutorInterface
                 $this->load($fixture);
             }
 
-            $this->connection->commit();
+            if ($this->transactional) {
+                $this->connection->commit();
+            }
         } catch (Throwable $e) {
-            $this->connection->rollBack();
+            if ($this->transactional) {
+                $this->connection->rollBack();
+            }
             throw $e;
         } finally {
             $this->executeQuery($this->connection, $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
