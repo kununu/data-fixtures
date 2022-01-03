@@ -14,7 +14,9 @@ composer require doctrine/dbal
 
 ### 1. Create fixture classes
 
-The first step to load *Connection Fixtures* is to create fixtures classes. This classes must implement the [ConnectionFixtureInterface](/src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](/src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql*  files.
+The first step to load *Connection Fixtures* is to create fixtures classes.
+
+This classes must implement the [ConnectionFixtureInterface](/src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](/src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql* files.
 
 
 ```php
@@ -128,5 +130,6 @@ $purger->setPurgeMode(2); // PURGE_MODE_TRUNCATE
 
 ## Notes
 
-- Connection Executor and Connection Purger are transactional.
-- Connection Executor and Connection Purger disable foreign keys checks before running and enable them after they run.
+- `Kununu\DataFixtures\Executor\ConnectionExecutor` and `Kununu\DataFixtures\Purger\ConnectionPurger` are **transactional**.
+  - If you need to run **non-transactional** fixtures then use `Kununu\DataFixtures\Executor\NonTransactionalConnectionExecutor` and `Kununu\DataFixtures\Purger\NonTransactionalConnectionPurger`  
+- Both kinds of executor/purger disable foreign keys checks before running and enable them after they run.
