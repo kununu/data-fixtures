@@ -111,7 +111,7 @@ checkout *[Load Fixtures](/README.md#loading-fixtures)*.
 
 ### 3. Append Fixtures
 
-By default when loading fixtures the Http Client responses internal storage is purged. If you want to change this
+By default, when loading fixtures the Http Client responses internal storage is purged. If you want to change this
 behavior and instead append the fixtures, you can pass *true* as second argument to the HttpClientExecutor.
 
 ```php

@@ -4,7 +4,8 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": ">=7.2"
+        "php": ">=7.2",
+        "ext-json": "*"
     },
     "keywords": [
         "database",
@@ -50,6 +51,14 @@
         "psr-4": {
             "Kununu\\DataFixtures\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": "phpunit --no-coverage tests",
+        "test-coverage": "phpunit --coverage-clover tests/.results/coverage.xml --coverage-html tests/.results/html/ tests"
+    },
+    "scripts-descriptions": {
+        "test": "Run all tests",
+        "test-coverage": "Run all tests with coverage report"
     },
     "config": {
         "sort-packages": true,

@@ -4,14 +4,12 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Adapter;
 
 use Doctrine\DBAL\Connection;
-use Kununu\DataFixtures\Exception\InvalidFileException;
-use Kununu\DataFixtures\Tests\TestFixtures\ConnectionSqlFixture1;
-use Kununu\DataFixtures\Tests\TestFixtures\InvalidConnectionSqlFixture;
+use Kununu\DataFixtures\Tests\TestFixtures\ConnectionSqlDirectoryFixture1;
 use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-final class ConnectionSqlFixtureTest extends TestCase
+final class ConnectionSqlDirectoryFixtureTest extends TestCase
 {
     use ConnectionUtilsTrait;
 
@@ -39,15 +37,7 @@ SQL;
             )
             ->willReturn(1);
 
-        $fixture = new ConnectionSqlFixture1();
+        $fixture = new ConnectionSqlDirectoryFixture1();
         $fixture->load($connection);
-    }
-
-    public function testThatLoadThrowsExceptionWhenCannotGetContentsOfFile(): void
-    {
-        $this->expectException(InvalidFileException::class);
-
-        $fixture = new InvalidConnectionSqlFixture();
-        $fixture->load($this->createMock(Connection::class));
     }
 }
