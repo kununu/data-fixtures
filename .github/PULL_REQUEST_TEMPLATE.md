@@ -6,7 +6,7 @@ The objective of this PR is to ...
 <!-- If applicable to bug/enhancement issue(s) use this section to add link(s), otherwise remove it -->
 ## Issues
 
-- https://github.com/kununu/testing-bundle/issues/NNN
+- https://github.com/kununu/data-fixtures/issues/NNN
 
 <!-- Add more details on your implementation -->
 ## Details
