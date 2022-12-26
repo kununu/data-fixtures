@@ -24,7 +24,7 @@ final class HttpClientFixturesLoaderTest extends TestCase
         $this->assertCount(2, $this->loader->getFixtures());
 
         $this->loader->loadFromDirectory(__DIR__ . '/../TestFixtures/');
-        $this->assertCount(4, $this->loader->getFixtures());
+        $this->assertCount(6, $this->loader->getFixtures());
 
         $this->loader->clearFixtures();
         $this->assertEmpty($this->loader->getFixtures());

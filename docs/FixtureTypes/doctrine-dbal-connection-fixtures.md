@@ -18,7 +18,6 @@ The first step to load *Connection Fixtures* is to create fixtures classes.
 
 This classes must implement the [ConnectionFixtureInterface](/src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](/src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql* files.
 
-
 ```php
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
@@ -90,7 +89,7 @@ If you want to know more options on how you can load fixtures in the Loader chec
 
 ### 3. Append Fixtures
 
-By default when loading fixtures the database is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the ConnectionExecutor.
+By default, when loading fixtures the database is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the ConnectionExecutor.
 
 ```php
 $executor = new Kununu\DataFixtures\Executor\ConnectionExecutor($conn, $purger);
@@ -116,7 +115,7 @@ $executor->execute($loader->getFixtures());
 ### 5. Purge mode
 
 The Purger allows you to change the *Sql* statement used to purge the tables.
-By default the Purger will run a *DELETE* statement to purge the tables but you can change it to use a *TRUNCATE* statement instead.
+By default, the Purger will run a *DELETE* statement to purge the tables but you can change it to use a *TRUNCATE* statement instead.
 
 ```php
 ...

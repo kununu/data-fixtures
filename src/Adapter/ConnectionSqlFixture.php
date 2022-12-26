@@ -4,52 +4,28 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Adapter;
 
 use Doctrine\DBAL\Connection;
-use Kununu\DataFixtures\Exception\InvalidFileException;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
-use SplFileInfo;
 
-abstract class ConnectionSqlFixture implements ConnectionFixtureInterface
+abstract class ConnectionSqlFixture extends AbstractFileLoaderFixture implements ConnectionFixtureInterface
 {
     use ConnectionToolsTrait;
 
     final public function load(Connection $connection): void
     {
-        foreach ($this->fileNames() as $fileName) {
-            $file = new SplFileInfo($fileName);
-
-            if ($file->getExtension() !== 'sql') {
-                continue;
-            }
-
-            if ($sql = $this->getSql($file)) {
+        parent::loadFiles(function(?string $sql) use ($connection): void {
+            if (is_string($sql)) {
                 $this->executeQuery($connection, $sql);
             }
-        }
-    }
-
-    abstract protected function fileNames(): array;
-
-    private function getSql(SplFileInfo $fileInfo): ?string
-    {
-        $contents = trim($this->getFileContents($fileInfo));
-
-        return $contents === '' ? null : $contents;
-    }
-
-    private function getFileContents(SplFileInfo $fileInfo): string
-    {
-        set_error_handler(function(int $type, string $msg) use (&$errorNumber, &$error): void {
-            $errorNumber = $type;
-            $error = $msg;
         });
+    }
 
-        $content = file_get_contents($fileInfo->getPathname());
-        restore_error_handler();
+    protected function getFileExtension(): string
+    {
+        return 'sql';
+    }
 
-        if (false === $content) {
-            throw new InvalidFileException($error, $errorNumber);
-        }
-
-        return $content;
+    protected function getLoadMode(): string
+    {
+        return self::LOAD_MODE_LOAD;
     }
 }

@@ -13,12 +13,14 @@ This package provides a simple way to manage and execute the loading of data fix
 
 Currently, this package supports the following types of fixtures:
 
-- *[Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)* which relies on [Doctrine DBAL](https://github.com/doctrine/dbal) by using it's [Connection](https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Connection.php) implementation
+- *[Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)* which relies on [Doctrine DBAL](https://github.com/doctrine/dbal) by using the [Connection](https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Connection.php) implementation
 - *[Cache Pool Fixtures](/docs/FixtureTypes/cache-pool-fixtures.md)* which relies on implementations of the [PSR-6](https://github.com/php-fig/cache) standard
 - *[Elasticsearch Fixtures](/docs/FixtureTypes/elasticsearch.md)* which relies on the [Elasticsearch-PHP client](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html)
 - *[Symfony Http Client Fixtures](/docs/FixtureTypes/symfony-http-client.md)* which relies on the [Symfony Http Client](https://github.com/symfony/http-client) and [Symfony Http Foundation](https://github.com/symfony/http-foundation).
 
-If you are interested in knowing more about the concepts of the package or you need to create a new fixture type check out [How to create a new Fixture Type](/docs/how-to-create-new-fixture-type.md).
+Also check [Directory Loader](/docs/FixtureTypes/directory-loader.md) to check how to load fixtures from files in a directory.
+
+If you are interested in knowing more about the concepts of the package, or you need to create a new fixture type check out [How to create a new Fixture Type](/docs/how-to-create-new-fixture-type.md).
 
 --------------------------
 ## Install
@@ -46,10 +48,10 @@ In order to enable the fixture types that you are interested, check out their do
 
 ## Append Fixtures
 
-By default when loading fixtures the data storage is purged. If you want to change this behavior and instead append the fixtures you can pass *false* as second argument to any executor.
+By default, when loading fixtures the data storage is purged. If you want to change this behavior and instead append the fixtures you can pass *false* as second argument to any executor.
 
 ```php
-// By default the data storage is purged
+// By default, the data storage is purged
 $executor->execute($loader->getFixtures());
 // If you want you can `append` the fixtures instead of purging the database
 $executor->execute($loader->getFixtures(), true);
@@ -118,11 +120,28 @@ If you are interested in contributing read our [contributing guidelines](/CONTRI
 
 ## Tests
 
-Run the tests by doing:
+If not yet, first install composer dependencies:
 
-```
+```bash
 composer install
+```
+
+Run the tests by doing: 
+
+```bash
 vendor/bin/phpunit
+```
+
+To run tests without coverage report:
+```bash
+composer install
+composer test
+```
+
+To run tests with coverage report:
+```bash
+composer install
+composer test-coverage
 ```
 
 ------------------------------

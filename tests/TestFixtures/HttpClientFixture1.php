@@ -10,8 +10,8 @@ final class HttpClientFixture1 extends HttpClientPhpArrayFixture
     protected function fileNames(): array
     {
         return [
-            __DIR__ . '/Http/fixture1.php',
-            __DIR__ . '/Http/fixture2.nonPhp',
+            __DIR__ . '/Responses/HttpClientArrayDirectoryFixture1/fixture1.php',
+            __DIR__ . '/Http/HttpClientArrayDirectoryFixture1/fixture2.nonPhp',
         ];
     }
 }

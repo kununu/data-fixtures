@@ -25,7 +25,7 @@ If applicable, add screenshots to help explain your problem.
 **Environment (please complete the following information):**
 - OS: [e.g. Linux]
 - PHP Version: [e.g. 8.0]
--  Testing Framework: [e.g. PHPUnit 9.5.2]
+- Testing Framework: [e.g. PHPUnit 9.5.2]
 - Other relevant libraries: [e.g. Elasticsearch Client 7.2]
 
 **Additional context**

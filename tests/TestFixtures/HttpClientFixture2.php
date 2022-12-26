@@ -10,7 +10,7 @@ final class HttpClientFixture2 extends HttpClientPhpArrayFixture
     protected function fileNames(): array
     {
         return [
-            __DIR__ . '/Http/badfile.php',
+            __DIR__ . '/Responses/badfile.php',
         ];
     }
 }

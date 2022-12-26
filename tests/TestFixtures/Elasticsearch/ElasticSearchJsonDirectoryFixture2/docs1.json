@@ -1,0 +1,20 @@
+[
+    {
+        "uuid": "17e05f79-2c6e-4a71-bacf-afc8fd8e5f73",
+        "name": "Document 1",
+        "attributes": {
+            "attrib_1": 1,
+            "attrib_2": "active",
+            "attrib_3": true
+        }
+    },
+    {
+        "uuid": "e3d49639-a8f7-4b21-96d7-e4a22e87e1da",
+        "name": "Document 2",
+        "attributes": {
+            "attrib_1": 2,
+            "attrib_2": "inactive",
+            "attrib_3": false
+        }
+    }
+]
