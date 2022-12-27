@@ -17,11 +17,16 @@ trait ElasticSearchFixtureTrait
                 ],
             ];
 
-            $params[] = $document;
+            $params[] = $this->prepareDocument($document);
         }
 
         return $params;
     }
 
     abstract protected function getDocumentIdForBulkIndexation(array $document);
+
+    protected function prepareDocument(array $document): array
+    {
+        return $document;
+    }
 }
