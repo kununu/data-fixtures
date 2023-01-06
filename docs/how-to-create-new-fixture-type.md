@@ -6,6 +6,7 @@ You can find the list of all supported storage types [here](/README.md#Fixtures-
 Still, if you have the need to create a new type you can do it and it's pretty simple.
 
 For example, let's imagine that you need to load fixtures (in this case files) to a specific directory. To get this new type of fixtures up and running you will need to create a set of elements:
+
 - [Fixture Interface](#Create-fixture-type-interface)
 - [Purger](#Create-Purger)
 - [Loader](#Create-Loader)
@@ -211,15 +212,21 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
+use Kununu\DataFixtures\Purger\DirectoryPurger;
+use Kununu\DataFixtures\Executor\DirectoryExecutor;
+use Kununu\DataFixtures\Loader\DirectoryFixturesLoader;
+use Kununu\DataFixtures\DirectoryFixture1;
+use Kununu\DataFixtures\DirectoryFixture2;
+
 $dirname = sprintf('%s/temp', __DIR__);
 
-$purger = new \Kununu\DataFixtures\Purger\DirectoryPurger($dirname);
+$purger = new DirectoryPurger($dirname);
 
-$executor = new Kununu\DataFixtures\Executor\DirectoryExecutor($dirname, $purger);
+$executor = new DirectoryExecutor($dirname, $purger);
 
-$loader = new Kununu\DataFixtures\Loader\DirectoryFixturesLoader();
-$loader->addFixture(new \Kununu\DataFixtures\DirectoryFixture1());
-$loader->addFixture(new \Kununu\DataFixtures\DirectoryFixture2());
+$loader = new DirectoryFixturesLoader();
+$loader->addFixture(new DirectoryFixture1());
+$loader->addFixture(new DirectoryFixture2());
 
 $executor->execute($loader->getFixtures());
 

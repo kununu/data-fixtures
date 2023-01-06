@@ -25,6 +25,9 @@ want to easily define an array of requests/responses on your fixtures you can ex
 class [HttpClientPhpArrayFixture](/src/Adapter/HttpClientPhpArrayFixture.php).
 
 ```php
+<?php
+declare(strict_types=1);
+
 use Kununu\DataFixtures\Adapter\HttpClientPhpArrayFixture;
 
 final class MyFixture extends HttpClientPhpArrayFixture
@@ -88,6 +91,9 @@ Note that you **need to** use the special [HttpClient](/src/Tools/HttpClient) pr
 on Symfony **MockHttpClient**.
 
 ```php
+<?php
+declare(strict_types=1);
+
 use Kununu\DataFixtures\Executor\HttpClientExecutor;
 use Kununu\DataFixtures\Loader\HttpClientFixturesLoader;
 use Kununu\DataFixtures\Purger\HttpClientPurger;

@@ -24,7 +24,7 @@ For any fixture extending this class:
 - All `*.php` files inside that directory will be loaded when invoking the `load` method of that fixture class.
   - Other files will be ignored.
 - Each of your `*.php` file should return an array of arrays, where each entry in the main array is a representation of the Elasticsearch document.
-- Your fixture class must also implement the `getDocumentIdForBulkIndexation` method as described in [Elasticsearch Fixtures](elasticsearch.md).
+- Your fixture class must also implement the `getDocumentIdForBulkIndexation` method, take into consideration the `prepareDocument` and `getDocumentType` methods, as described in [Elasticsearch Fixtures](elasticsearch.md).
 
 ## ElasticSearchJsonDirectoryFixture
 
@@ -36,7 +36,7 @@ For any fixture extending this class:
     - Other files will be ignored.
 - Each of your `*.json` file should be a JSON array of JSON objects, where each object in the main array is a representation of the Elasticsearch document.
 - Each file will be decoded to a PHP array, and from there the workflow is the same as `ElasticSearchArrayDirectoryFixture`.
-- Your fixture class must also implement the `getDocumentIdForBulkIndexation` method as described in [Elasticsearch Fixtures](elasticsearch.md).
+- Your fixture class must also implement the `getDocumentIdForBulkIndexation` method, take into consideration the `prepareDocument` and `getDocumentType` methods, as described in [Elasticsearch Fixtures](elasticsearch.md).
 
 ## HttpClientArrayDirectoryFixture
 

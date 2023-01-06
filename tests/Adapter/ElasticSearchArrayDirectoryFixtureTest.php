@@ -27,6 +27,7 @@ final class ElasticSearchArrayDirectoryFixtureTest extends TestCase
                                 'index' => [
                                     '_index' => 'my_index',
                                     '_id'    => 1,
+                                    '_type'  => '_doc',
                                 ],
                             ],
                             [
@@ -42,6 +43,7 @@ final class ElasticSearchArrayDirectoryFixtureTest extends TestCase
                                 'index' => [
                                     '_index' => 'my_index',
                                     '_id'    => 2,
+                                    '_type'  => '_doc',
                                 ],
                             ],
                             [
@@ -64,6 +66,7 @@ final class ElasticSearchArrayDirectoryFixtureTest extends TestCase
                                 'index' => [
                                     '_index' => 'my_index',
                                     '_id'    => 3,
+                                    '_type'  => '_doc',
                                 ],
                             ],
                             [

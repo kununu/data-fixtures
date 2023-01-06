@@ -11,4 +11,9 @@ final class ElasticSearchArrayDirectoryFixture1 extends ElasticSearchArrayDirect
     {
         return $document['id'];
     }
+
+    protected function getDocumentType(): ?string
+    {
+        return '_doc';
+    }
 }

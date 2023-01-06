@@ -23,7 +23,6 @@ final class ElasticSearchJsonDirectoryFixtureTest extends TestCase
             ->withConsecutive(
                 [
                     [
-                        'type' => '_doc',
                         'body' => [
                             [
                                 'index' => [
@@ -60,7 +59,6 @@ final class ElasticSearchJsonDirectoryFixtureTest extends TestCase
                 ],
                 [
                     [
-                        'type' => '_doc',
                         'body' => [
                             [
                                 'index' => [
@@ -91,7 +89,6 @@ final class ElasticSearchJsonDirectoryFixtureTest extends TestCase
             ->expects($this->once())
             ->method('bulk')
             ->with([
-                'type' => '_doc',
                 'body' => [
                     [
                         'index' => [

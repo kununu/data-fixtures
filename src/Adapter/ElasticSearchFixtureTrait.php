@@ -11,10 +11,13 @@ trait ElasticSearchFixtureTrait
 
         foreach ($documents as $document) {
             $params[] = [
-                'index' => [
-                    '_index' => $indexName,
-                    '_id'    => $this->getDocumentIdForBulkIndexation($document),
-                ],
+                'index' => array_merge(
+                    [
+                        '_index' => $indexName,
+                        '_id'    => $this->getDocumentIdForBulkIndexation($document),
+                    ],
+                    is_string($documentType = $this->getDocumentType()) ? ['_type' => $documentType] : []
+                ),
             ];
 
             $params[] = $this->prepareDocument($document);
@@ -28,5 +31,10 @@ trait ElasticSearchFixtureTrait
     protected function prepareDocument(array $document): array
     {
         return $document;
+    }
+
+    protected function getDocumentType(): ?string
+    {
+        return null;
     }
 }

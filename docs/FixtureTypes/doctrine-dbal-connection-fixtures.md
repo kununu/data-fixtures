@@ -19,6 +19,9 @@ The first step to load *Connection Fixtures* is to create fixtures classes.
 This classes must implement the [ConnectionFixtureInterface](/src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](/src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql* files.
 
 ```php
+<?php
+declare(strict_types=1);
+
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 
@@ -34,6 +37,9 @@ final class MyFixture implements ConnectionFixtureInterface
 ```
 
 ```php
+<?php
+declare(strict_types=1);
+
 use Kununu\DataFixtures\Adapter\ConnectionSqlFixture;
 
 final class MyFixtureSql extends ConnectionSqlFixture
@@ -66,19 +72,28 @@ INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('4', 'name4
 In order to load the fixtures that you created in the previous step you will need to configure the *Connection Executor*.
 
 ```php
-$config = new Doctrine\DBAL\Configuration();
+<?php
+declare(strict_types=1);
+
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
+use Kununu\DataFixtures\Executor\ConnectionExecutor;
+use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
+use Kununu\DataFixtures\Purger\ConnectionPurger;
+
+$config = new Configuration();
 
 $connectionParams = [
     'url' => 'mysql://username:password@localhost/test_database'
 ];
 
-$conn = Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
+$conn = DriverManager::getConnection($connectionParams, $config);
 
-$purger = new Kununu\DataFixtures\Purger\ConnectionPurger($conn);
+$purger = new ConnectionPurger($conn);
 
-$executor = new Kununu\DataFixtures\Executor\ConnectionExecutor($conn, $purger);
+$executor = new ConnectionExecutor($conn, $purger);
 
-$loader = new Kununu\DataFixtures\Loader\ConnectionFixturesLoader();
+$loader = new ConnectionFixturesLoader();
 $loader->addFixture(new MyFixtureSql());
 $loader->addFixture(new MyFixture());
 
@@ -92,7 +107,12 @@ If you want to know more options on how you can load fixtures in the Loader chec
 By default, when loading fixtures the database is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the ConnectionExecutor.
 
 ```php
-$executor = new Kununu\DataFixtures\Executor\ConnectionExecutor($conn, $purger);
+<?php
+declare(strict_types=1);
+
+use Kununu\DataFixtures\Executor\ConnectionExecutor;
+
+$executor = new ConnectionExecutor($conn, $purger);
 
 // If you want you can `append` the fixtures instead of purging the database
 $executor->execute($loader->getFixtures(), true);
@@ -104,10 +124,16 @@ When you do not append fixtures all tables from the database are purged. Still, 
 You can specify the tables being excluded from being purged by passing them as second argument to the Purger.
 
 ```php
-$excludedTables = ['country_codes', 'doctrine_migrations'];
-$purger = new Kununu\DataFixtures\Purger\ConnectionPurger($conn, $excludedTables);
+<?php
+declare(strict_types=1);
 
-$executor = new Kununu\DataFixtures\Executor\ConnectionExecutor($conn, $purger);
+use Kununu\DataFixtures\Executor\ConnectionExecutor;
+use Kununu\DataFixtures\Purger\ConnectionPurger;
+
+$excludedTables = ['country_codes', 'doctrine_migrations'];
+$purger = new ConnectionPurger($conn, $excludedTables);
+
+$executor = new ConnectionExecutor($conn, $purger);
 
 $executor->execute($loader->getFixtures());
 ```
@@ -118,13 +144,16 @@ The Purger allows you to change the *Sql* statement used to purge the tables.
 By default, the Purger will run a *DELETE* statement to purge the tables but you can change it to use a *TRUNCATE* statement instead.
 
 ```php
-...
-$purger = new Kununu\DataFixtures\Purger\ConnectionPurger($conn, $excludedTables);
+<?php
+declare(strict_types=1);
+
+use Kununu\DataFixtures\Purger\ConnectionPurger;
+
+$purger = new ConnectionPurger($conn, $excludedTables);
 
 // If you want you can change the Purge Mode
 $purger->setPurgeMode(1); // PURGE_MODE_DELETE
 $purger->setPurgeMode(2); // PURGE_MODE_TRUNCATE
-
 ```
 
 ## Notes

@@ -17,6 +17,9 @@ composer require psr/cache
 The first step to load Cache Pool Fixtures is to create fixtures classes. This classes must implement the [CachePoolFixtureInterface](/src/Adapter/CachePoolFixtureInterface.php).
 
 ```php
+<?php
+declare(strict_types=1);
+
 use Kununu\DataFixtures\Adapter\CachePoolFixtureInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -36,16 +39,25 @@ final class MyFixture implements CachePoolFixtureInterface
 In order to load the fixtures that you created in the previous step you will need to configure the CachePoolExecutor.
 
 ```php
-$memcached = new \Memcached();
+<?php
+declare(strict_types=1);
+
+use Kununu\DataFixtures\Executor\CachePoolExecutor;
+use Kununu\DataFixtures\Loader\CachePoolFixturesLoader;
+use Kununu\DataFixtures\Purger\CachePoolPurger;
+use Memcached;
+use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+
+$memcached = new Memcached();
 $memcached->addServer('localhost', 11211);
 
-$cache = new Symfony\Component\Cache\Adapter\MemcachedAdapter($memcached);
+$cache = new MemcachedAdapter($memcached);
 
-$purger = new Kununu\DataFixtures\Purger\CachePoolPurger($cache);
+$purger = new CachePoolPurger($cache);
 
-$executor = new Kununu\DataFixtures\Executor\CachePoolExecutor($cache, $purger);
+$executor = new CachePoolExecutor($cache, $purger);
 
-$loader = new Kununu\DataFixtures\Loader\CachePoolFixturesLoader();
+$loader = new CachePoolFixturesLoader();
 $loader->addFixture(new MyFixture());
 
 $executor->execute($loader->getFixtures());
@@ -60,7 +72,12 @@ If you want to know more options on how you can load fixtures in the Loader chec
 By default, when loading fixtures the cache storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the CachePoolExecutor.
 
 ```php
-$executor = new Kununu\DataFixtures\Executor\CachePoolExecutor($cache, $purger);
+<?php
+declare(strict_types=1);
+
+use Kununu\DataFixtures\Executor\CachePoolExecutor;
+
+$executor = new CachePoolExecutor($cache, $purger);
 
 // If you want you can `append` the fixtures instead of purging the cache storage
 $executor->execute($loader->getFixtures(), true);
