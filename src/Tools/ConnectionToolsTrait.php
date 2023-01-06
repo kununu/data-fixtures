@@ -13,21 +13,17 @@ trait ConnectionToolsTrait
     protected function getDatabaseTables(Connection $connection): array
     {
         // This way we support both doctrine/dbal ^2.9 and ^3.1
-        if (method_exists($connection, 'createSchemaManager')) {
-            return $connection->createSchemaManager()->listTableNames();
-        }
+        $method = method_exists($connection, 'createSchemaManager') ? 'createSchemaManager' : 'getSchemaManager';
 
-        return $connection->getSchemaManager()->listTableNames();
+        return $connection->$method()->listTableNames();
     }
 
     protected function executeQuery(Connection $connection, string $sql): int
     {
         // This way we support both doctrine/dbal ^2.9 and ^3.1
-        if (method_exists($connection, 'executeStatement')) {
-            return $connection->executeStatement($sql);
-        }
+        $method = method_exists($connection, 'executeStatement') ? 'executeStatement' : 'exec';
 
-        return $connection->exec($sql);
+        return $connection->$method($sql);
     }
 
     protected function getDisableForeignKeysChecksStatementByDriver(Driver $driver): string

@@ -26,9 +26,4 @@ abstract class ElasticSearchFileFixture extends AbstractFileLoaderFixture implem
             }
         );
     }
-
-    protected function getDocumentType(): ?string
-    {
-        return '_doc';
-    }
 }
