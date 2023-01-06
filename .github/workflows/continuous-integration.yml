@@ -21,7 +21,6 @@ jobs:
           - 7.3
           - 7.4
           - 8.0
-          - 8.1
         dependencies:
           - lowest
           - highest
@@ -37,7 +36,7 @@ jobs:
           coverage: xdebug
 
       - name: Install Composer Dependencies
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: "--prefer-stable"
@@ -62,7 +61,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: build-7.4-coverage
+          name: build-8.0-coverage
           path: tests/.results/
 
       - name: Fix Code Coverage Paths
