@@ -7,8 +7,9 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Exception;
 use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
+use Kununu\DataFixtures\Purger\PurgerInterface;
 
-final class ConnectionPurgerTest extends ConnectionPurgerTestCase
+final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 {
     public function testThatPurgerIsTransactionalAndCommits(): void
     {
@@ -181,5 +182,10 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
 
         $purger = new ConnectionPurger($this->getConnectionMock());
         $purger->setPurgeMode(10);
+    }
+
+    protected function getPurger(): PurgerInterface
+    {
+        // TODO: Implement getPurger() method.
     }
 }

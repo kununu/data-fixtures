@@ -14,10 +14,9 @@ final class HttpClientPurger implements PurgerInterface
 
     public function purge(): void
     {
-        if (!is_a($this->httpClient, FixturesHttpClientInterface::class)) {
-            return;
-        }
-
-        $this->httpClient->clearResponses();
+        match (true) {
+            is_a($this->httpClient, FixturesHttpClientInterface::class) => $this->httpClient->clearResponses(),
+            default                                                     => null
+        };
     }
 }

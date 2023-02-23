@@ -11,7 +11,7 @@ use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-abstract class ConnectionPurgerTestCase extends TestCase
+abstract class AbstractConnectionPurgerTestCase extends TestCase
 {
     use ConnectionUtilsTrait;
 
@@ -61,7 +61,7 @@ abstract class ConnectionPurgerTestCase extends TestCase
     ): array {
         $purgeStatements = match ($purgeMode) {
             // PURGE_MODE_DELETE
-            1 => $this->getDeleteModeConnectionWithConsecutiveArguments($tables, $excludedTables),
+            1       => $this->getDeleteModeConnectionWithConsecutiveArguments($tables, $excludedTables),
             // PURGE_MODE_TRUNCATE
             2       => $this->getTruncateModeConnectionWithConsecutiveArguments($tables, $excludedTables),
             default => []

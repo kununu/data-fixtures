@@ -4,31 +4,42 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Purger;
 
 use Kununu\DataFixtures\Purger\HttpClientPurger;
+use Kununu\DataFixtures\Purger\PurgerInterface;
 use Kununu\DataFixtures\Tests\Utils\FakeHttpClientInterface;
 use Kununu\DataFixtures\Tools\FixturesHttpClientInterface;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
-final class HttpClientPurgerTest extends TestCase
+final class HttpClientPurgerTest extends AbstractPurgerTestCase
 {
+    private MockObject|FakeHttpClientInterface|FixturesHttpClientInterface $httpClient;
+
     public function testPurge(): void
     {
-        $httpClient = $this->createMock(FixturesHttpClientInterface::class);
-        $httpClient
+        $this->httpClient
             ->expects($this->once())
             ->method('clearResponses');
 
-        $purger = new HttpClientPurger($httpClient);
-        $purger->purge();
+        $this->purger->purge();
     }
 
     public function testPurgeWithNoFixturesHttpClient(): void
     {
-        $httpClient = $this->createMock(FakeHttpClientInterface::class);
-        $httpClient
+        $this->httpClient = $this->createMock(FakeHttpClientInterface::class);
+        $this->httpClient
             ->expects($this->never())
             ->method('clearResponses');
 
-        $purger = new HttpClientPurger($httpClient);
-        $purger->purge();
+        $this->purger->purge();
+    }
+
+    protected function setUp(): void
+    {
+        $this->httpClient = $this->createMock(FixturesHttpClientInterface::class);
+        parent::setUp();
+    }
+
+    protected function getPurger(): PurgerInterface
+    {
+        return new HttpClientPurger($this->httpClient);
     }
 }

@@ -3,8 +3,15 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Loader;
 
+use ArrayIterator;
+use InvalidArgumentException;
+use Iterator;
 use Kununu\DataFixtures\FixtureInterface;
 use Kununu\DataFixtures\InitializableFixtureInterface;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ReflectionClass;
+use SplFileInfo;
 
 abstract class Loader implements LoaderInterface
 {
@@ -16,12 +23,12 @@ abstract class Loader implements LoaderInterface
     final public function loadFromDirectory(string $dir): void
     {
         if (!is_dir($dir)) {
-            throw new \InvalidArgumentException(sprintf('"%s" does not exist', $dir));
+            throw new InvalidArgumentException(sprintf('"%s" does not exist', $dir));
         }
 
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir),
-            \RecursiveIteratorIterator::LEAVES_ONLY
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir),
+            RecursiveIteratorIterator::LEAVES_ONLY
         );
 
         $this->loadFromIterator($iterator);
@@ -30,22 +37,22 @@ abstract class Loader implements LoaderInterface
     final public function loadFromFile(string $fileName): void
     {
         if (!is_readable($fileName)) {
-            throw new \InvalidArgumentException(sprintf('"%s" does not exist or is not readable', $fileName));
+            throw new InvalidArgumentException(sprintf('"%s" does not exist or is not readable', $fileName));
         }
 
-        $this->loadFromIterator(new \ArrayIterator([new \SplFileInfo($fileName)]));
+        $this->loadFromIterator(new ArrayIterator([new SplFileInfo($fileName)]));
     }
 
     final public function loadFromClassName(string $className): void
     {
-        $reflClass = new \ReflectionClass($className);
-        $this->loadFromIterator(new \ArrayIterator([new \SplFileInfo($reflClass->getFileName())]));
+        $reflClass = new ReflectionClass($className);
+        $this->loadFromIterator(new ArrayIterator([new SplFileInfo($reflClass->getFileName())]));
     }
 
     final public function getFixture(string $className): FixtureInterface
     {
         if (!isset($this->fixtures[$className])) {
-            throw new \InvalidArgumentException(sprintf('"%s" is not a registered fixture', $className));
+            throw new InvalidArgumentException(sprintf('"%s" is not a registered fixture', $className));
         }
 
         return $this->fixtures[$className];
@@ -90,7 +97,7 @@ abstract class Loader implements LoaderInterface
         return $class;
     }
 
-    private function loadFromIterator(\Iterator $iterator): void
+    private function loadFromIterator(Iterator $iterator): void
     {
         $includedFiles = [];
         foreach ($iterator as $file) {
@@ -108,7 +115,7 @@ abstract class Loader implements LoaderInterface
         sort($declared);
 
         foreach ($declared as $className) {
-            $reflClass = new \ReflectionClass($className);
+            $reflClass = new ReflectionClass($className);
             $sourceFile = $reflClass->getFileName();
 
             if (in_array($sourceFile, $includedFiles) && $this->supports($className)) {
