@@ -3,7 +3,7 @@
 This package already provides implementations to load fixtures for some storage types.
 
 You can find the list of all supported storage types [here](/README.md#Fixtures-types).
-Still, if you have the need to create a new type you can do it and it's pretty simple.
+Still, if you have the need to create a new type you can do it, and it's pretty simple.
 
 For example, let's imagine that you need to load fixtures (in this case files) to a specific directory. To get this new type of fixtures up and running you will need to create a set of elements:
 

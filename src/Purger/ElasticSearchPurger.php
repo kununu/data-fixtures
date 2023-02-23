@@ -8,13 +8,8 @@ use stdClass;
 
 final class ElasticSearchPurger implements PurgerInterface
 {
-    private $elasticSearch;
-    private $indexName;
-
-    public function __construct(Client $elasticSearch, string $indexName)
+    public function __construct(private Client $elasticSearch, private string $indexName)
     {
-        $this->elasticSearch = $elasticSearch;
-        $this->indexName = $indexName;
     }
 
     public function purge(): void
@@ -24,8 +19,8 @@ final class ElasticSearchPurger implements PurgerInterface
 
         $this->elasticSearch->deleteByQuery(
             [
-                'index' => $this->indexName,
-                'body'  => [
+                'index'     => $this->indexName,
+                'body'      => [
                     'query' => [
                         'match_all' => new stdClass(),
                     ],

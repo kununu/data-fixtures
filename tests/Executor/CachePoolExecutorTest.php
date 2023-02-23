@@ -5,18 +5,13 @@ namespace Kununu\DataFixtures\Tests\Executor;
 
 use Kununu\DataFixtures\Adapter\CachePoolFixtureInterface;
 use Kununu\DataFixtures\Executor\CachePoolExecutor;
-use Kununu\DataFixtures\Purger\PurgerInterface;
+use Kununu\DataFixtures\Executor\ExecutorInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 
-final class CachePoolExecutorTest extends TestCase
+final class CachePoolExecutorTest extends AbstractExecutorTestCase
 {
-    /** @var CacheItemPoolInterface|MockObject */
-    private $cache;
-
-    /** @var PurgerInterface|MockObject */
-    private $purger;
+    private MockObject|CacheItemPoolInterface $cache;
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
@@ -24,9 +19,7 @@ final class CachePoolExecutorTest extends TestCase
             ->expects($this->never())
             ->method('purge');
 
-        $executor = new CachePoolExecutor($this->cache, $this->purger);
-
-        $executor->execute([], true);
+        $this->executor->execute([], true);
     }
 
     public function testThatPurgesWhenAppendIsDisabled(): void
@@ -35,9 +28,7 @@ final class CachePoolExecutorTest extends TestCase
             ->expects($this->once())
             ->method('purge');
 
-        $executor = new CachePoolExecutor($this->cache, $this->purger);
-
-        $executor->execute([]);
+        $this->executor->execute([]);
     }
 
     public function testThatFixturesAreLoaded(): void
@@ -48,16 +39,18 @@ final class CachePoolExecutorTest extends TestCase
         $fixture2 = $this->createMock(CachePoolFixtureInterface::class);
         $fixture2->expects($this->once())->method('load')->with($this->cache);
 
-        $executor = new CachePoolExecutor($this->cache, $this->purger);
+        $this->executor->execute([$fixture1, $fixture2]);
+    }
 
-        $executor->execute([$fixture1, $fixture2]);
+    protected function getExecutor(): ExecutorInterface
+    {
+        return new CachePoolExecutor($this->cache, $this->purger);
     }
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->cache = $this->createMock(CacheItemPoolInterface::class);
-        $this->purger = $this->createMock(PurgerInterface::class);
+
+        parent::setUp();
     }
 }

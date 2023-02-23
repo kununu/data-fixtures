@@ -8,11 +8,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class HttpClientPurger implements PurgerInterface
 {
-    private $httpClient;
-
-    public function __construct(HttpClientInterface $httpClient)
+    public function __construct(private HttpClientInterface $httpClient)
     {
-        $this->httpClient = $httpClient;
     }
 
     public function purge(): void

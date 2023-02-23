@@ -8,17 +8,14 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class CachePoolPurger implements PurgerInterface
 {
-    private $cachePool;
-
-    public function __construct(CacheItemPoolInterface $cachePool)
+    public function __construct(private CacheItemPoolInterface $cachePool)
     {
-        $this->cachePool = $cachePool;
     }
 
     public function purge(): void
     {
         if (!$this->cachePool->clear()) {
-            throw new PurgeFailedException(sprintf('Failed to purge cache pool "%s"', get_class($this->cachePool)));
+            throw new PurgeFailedException(sprintf('Failed to purge cache pool "%s"', $this->cachePool::class));
         }
     }
 }

@@ -4,16 +4,14 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Executor;
 
 use Kununu\DataFixtures\Adapter\HttpClientFixtureInterface;
+use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\Executor\HttpClientExecutor;
-use Kununu\DataFixtures\Purger\PurgerInterface;
 use Kununu\DataFixtures\Tools\FixturesHttpClientInterface;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
-final class HttpClientExecutorTest extends TestCase
+final class HttpClientExecutorTest extends AbstractExecutorTestCase
 {
-    private $httpClient;
-    private $purger;
-    private $executor;
+    private MockObject|FixturesHttpClientInterface $httpClient;
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
@@ -53,7 +51,11 @@ final class HttpClientExecutorTest extends TestCase
     protected function setUp(): void
     {
         $this->httpClient = $this->createMock(FixturesHttpClientInterface::class);
-        $this->purger = $this->createMock(PurgerInterface::class);
-        $this->executor = new HttpClientExecutor($this->httpClient, $this->purger);
+        parent::setUp();
+    }
+
+    protected function getExecutor(): ExecutorInterface
+    {
+        return new HttpClientExecutor($this->httpClient, $this->purger);
     }
 }

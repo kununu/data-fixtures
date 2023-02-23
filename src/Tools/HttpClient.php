@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tools;
 
+use Generator;
 use ReflectionClass;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
@@ -12,7 +13,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class HttpClient extends MockHttpClient implements FixturesHttpClientInterface
 {
-    private $responses;
+    private ?array $responses = null;
 
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
@@ -59,7 +60,7 @@ final class HttpClient extends MockHttpClient implements FixturesHttpClientInter
 
     private function recreateResponseFactory(array $responses): void
     {
-        $responseFactory = (static function() use ($responses) {
+        $responseFactory = (static function() use ($responses): Generator {
             yield from $responses;
         })();
 

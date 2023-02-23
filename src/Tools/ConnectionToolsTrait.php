@@ -28,27 +28,19 @@ trait ConnectionToolsTrait
 
     protected function getDisableForeignKeysChecksStatementByDriver(Driver $driver): string
     {
-        if ($driver instanceof AbstractMySQLDriver) {
-            return 'SET FOREIGN_KEY_CHECKS=0';
-        }
-
-        if ($driver instanceof AbstractSQLiteDriver) {
-            return 'PRAGMA foreign_keys = OFF';
-        }
-
-        return '';
+        return match (true) {
+            $driver instanceof AbstractMySQLDriver  => 'SET FOREIGN_KEY_CHECKS=0',
+            $driver instanceof AbstractSQLiteDriver => 'PRAGMA foreign_keys = OFF',
+            default                                 => ''
+        };
     }
 
     protected function getEnableForeignKeysChecksStatementByDriver(Driver $driver): string
     {
-        if ($driver instanceof AbstractMySQLDriver) {
-            return 'SET FOREIGN_KEY_CHECKS=1';
-        }
-
-        if ($driver instanceof AbstractSQLiteDriver) {
-            return 'PRAGMA foreign_keys = ON';
-        }
-
-        return '';
+        return match (true) {
+            $driver instanceof AbstractMySQLDriver  => 'SET FOREIGN_KEY_CHECKS=1',
+            $driver instanceof AbstractSQLiteDriver => 'PRAGMA foreign_keys = ON',
+            default                                 => ''
+        };
     }
 }
