@@ -6,6 +6,7 @@ namespace Kununu\DataFixtures\Tests\Adapter;
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Tests\TestFixtures\ConnectionSqlDirectoryFixture1;
 use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
+use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -13,11 +14,10 @@ final class ConnectionSqlDirectoryFixtureTest extends TestCase
 {
     use ConnectionUtilsTrait;
 
+    private MockObject|Connection $connection;
+
     public function testLoad(): void
     {
-        /** @var Connection|MockObject $connection */
-        $connection = $this->createMock(Connection::class);
-
         $fixture1Content = <<<'SQL'
 INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('1', 'name', 'description;');
 INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('2', 'name2', 'description2\n');
@@ -28,16 +28,20 @@ INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('3', 'name3
 INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('4', 'name4', 'description4');
 SQL;
 
-        $connection
+        $this->connection
             ->expects($this->exactly(2))
-            ->method($this->getExecuteQueryMethodName($connection))
-            ->withConsecutive(
-                [$fixture1Content],
-                [$fixture2Content]
-            )
-            ->willReturn(1);
+            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->willReturnCallback(fn (string $fixtureContent) => match ($fixtureContent) {
+                $fixture1Content, $fixture2Content => 1,
+                default => throw new LogicException(sprintf('Unknown fixture content "%s"', $fixtureContent))
+            });
 
         $fixture = new ConnectionSqlDirectoryFixture1();
-        $fixture->load($connection);
+        $fixture->load($this->connection);
+    }
+
+    protected function setUp(): void
+    {
+        $this->connection = $this->createMock(Connection::class);
     }
 }

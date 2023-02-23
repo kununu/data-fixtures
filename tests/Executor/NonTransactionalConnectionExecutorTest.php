@@ -7,29 +7,32 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Exception;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
+use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\Executor\NonTransactionalConnectionExecutor;
-use Kununu\DataFixtures\Purger\PurgerInterface;
 use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
+use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-final class NonTransactionalConnectionExecutorTest extends TestCase
+final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestCase
 {
     use ConnectionUtilsTrait;
 
-    /** @var Connection|MockObject */
-    private $connection;
+    private const SQL_1 = 'SET FOREIGN_KEY_CHECKS=0';
+    private const SQL_2 = 'SET FOREIGN_KEY_CHECKS=1';
 
-    /** @var PurgerInterface|MockObject */
-    private $purger;
+    private MockObject|Connection $connection;
 
     public function testThatExecutorIsNotTransactionalAndLoadsFixture(): void
     {
         $this->connection
             ->expects($this->exactly(2))
             ->method($this->getExecuteQueryMethodName($this->connection))
-            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1'])
-            ->willReturn(1);
+            ->willReturnCallback(
+                fn (string $sql): int => match ($sql) {
+                    self::SQL_1, self::SQL_2 => 1,
+                    default => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                }
+            );
 
         $this->connection
             ->expects($this->never())
@@ -49,9 +52,7 @@ final class NonTransactionalConnectionExecutorTest extends TestCase
             ->method('load')
             ->with($this->connection);
 
-        $executor = new NonTransactionalConnectionExecutor($this->connection, $this->purger);
-
-        $executor->execute([$fixture], true);
+        $this->executor->execute([$fixture], true);
     }
 
     public function testThatExecutorIsNotTransactionalAndDoesNotRollbacks(): void
@@ -61,8 +62,12 @@ final class NonTransactionalConnectionExecutorTest extends TestCase
         $this->connection
             ->expects($this->exactly(2))
             ->method($this->getExecuteQueryMethodName($this->connection))
-            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1'])
-            ->willReturn(1);
+            ->willReturnCallback(
+                fn (string $sql): int => match ($sql) {
+                    self::SQL_1, self::SQL_2 => 1,
+                    default => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                }
+            );
 
         $this->connection
             ->expects($this->never())
@@ -87,20 +92,22 @@ final class NonTransactionalConnectionExecutorTest extends TestCase
             ->with($this->connection)
             ->willThrowException(new Exception());
 
-        $executor = new NonTransactionalConnectionExecutor($this->connection, $this->purger);
-
-        $executor->execute([$fixture]);
+        $this->executor->execute([$fixture]);
     }
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->connection = $this->createMock(Connection::class);
         $this->connection
             ->expects($this->any())
             ->method('getDriver')
             ->willReturn($this->createMock(AbstractMySQLDriver::class));
-        $this->purger = $this->createMock(PurgerInterface::class);
+
+        parent::setUp();
+    }
+
+    protected function getExecutor(): ExecutorInterface
+    {
+        return new NonTransactionalConnectionExecutor($this->connection, $this->purger);
     }
 }

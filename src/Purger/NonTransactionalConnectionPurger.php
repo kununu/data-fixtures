@@ -7,7 +7,7 @@ use Doctrine\DBAL\Connection;
 
 final class NonTransactionalConnectionPurger implements PurgerInterface
 {
-    private $purger;
+    private PurgerInterface $purger;
 
     public function __construct(Connection $connection, array $excludedTables = [])
     {

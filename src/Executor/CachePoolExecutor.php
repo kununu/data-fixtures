@@ -9,13 +9,8 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class CachePoolExecutor implements ExecutorInterface
 {
-    private $cache;
-    private $purger;
-
-    public function __construct(CacheItemPoolInterface $cache, PurgerInterface $purger)
+    public function __construct(private CacheItemPoolInterface $cache, private PurgerInterface $purger)
     {
-        $this->cache = $cache;
-        $this->purger = $purger;
     }
 
     public function execute(array $fixtures, bool $append = false): void

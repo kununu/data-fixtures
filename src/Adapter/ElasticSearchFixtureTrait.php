@@ -26,8 +26,6 @@ trait ElasticSearchFixtureTrait
         return $params;
     }
 
-    abstract protected function getDocumentIdForBulkIndexation(array $document);
-
     protected function prepareDocument(array $document): array
     {
         return $document;
@@ -37,4 +35,6 @@ trait ElasticSearchFixtureTrait
     {
         return null;
     }
+
+    abstract protected function getDocumentIdForBulkIndexation(array $document);
 }

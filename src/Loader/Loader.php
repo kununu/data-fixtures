@@ -17,8 +17,8 @@ abstract class Loader implements LoaderInterface
 {
     private const FILE_EXTENSION = '.php';
 
-    private $fixtures = [];
-    private $initalizableFixtures = [];
+    private array $fixtures = [];
+    private array $initalizableFixtures = [];
 
     final public function loadFromDirectory(string $dir): void
     {
@@ -60,9 +60,7 @@ abstract class Loader implements LoaderInterface
 
     final public function addFixture(FixtureInterface $fixture): void
     {
-        $fixtureClass = get_class($fixture);
-
-        if (!isset($this->fixtures[$fixtureClass])) {
+        if (!isset($this->fixtures[$fixtureClass = $fixture::class])) {
             $this->fixtures[$fixtureClass] = $fixture;
         }
     }
@@ -72,7 +70,7 @@ abstract class Loader implements LoaderInterface
         return $this->fixtures;
     }
 
-    final public function registerInitializableFixture(string $className, ...$args): void
+    final public function registerInitializableFixture(string $className, mixed ...$args): void
     {
         if (!isset($this->initalizableFixtures[$className])) {
             $this->initalizableFixtures[$className] = $args;

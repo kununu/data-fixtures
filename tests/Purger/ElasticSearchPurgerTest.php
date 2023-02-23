@@ -6,33 +6,34 @@ namespace Kununu\DataFixtures\Tests\Purger;
 use Elasticsearch\Client;
 use Elasticsearch\Namespaces\IndicesNamespace;
 use Kununu\DataFixtures\Purger\ElasticSearchPurger;
-use PHPUnit\Framework\TestCase;
+use Kununu\DataFixtures\Purger\PurgerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
 
-final class ElasticSearchPurgerTest extends TestCase
+final class ElasticSearchPurgerTest extends AbstractPurgerTestCase
 {
+    private MockObject|Client $client;
+
     public function testPurge(): void
     {
-        $elasticSearch = $this->createMock(Client::class);
-
         $indices = $this->createMock(IndicesNamespace::class);
         $indices
             ->expects($this->exactly(2))
             ->method('refresh')
             ->with(['index' => 'my_index']);
 
-        $elasticSearch
+        $this->client
             ->expects($this->any())
             ->method('indices')
             ->willReturn($indices);
 
-        $elasticSearch
+        $this->client
             ->expects($this->once())
             ->method('deleteByQuery')
             ->with(
                 [
-                    'index' => 'my_index',
-                    'body'  => [
+                    'index'     => 'my_index',
+                    'body'      => [
                         'query' => [
                             'match_all' => new stdClass(),
                         ],
@@ -42,7 +43,17 @@ final class ElasticSearchPurgerTest extends TestCase
             )
             ->willReturn(true);
 
-        $purger = new ElasticSearchPurger($elasticSearch, 'my_index');
-        $purger->purge();
+        $this->purger->purge();
+    }
+
+    protected function setUp(): void
+    {
+        $this->client = $this->createMock(Client::class);
+        parent::setUp();
+    }
+
+    protected function getPurger(): PurgerInterface
+    {
+        return new ElasticSearchPurger($this->client, 'my_index');
     }
 }

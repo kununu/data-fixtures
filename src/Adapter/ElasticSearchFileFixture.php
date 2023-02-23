@@ -9,20 +9,17 @@ abstract class ElasticSearchFileFixture extends AbstractFileLoaderFixture implem
 {
     use ElasticSearchFixtureTrait;
 
-    final public function load(Client $elasticSearch, string $indexName): void
+    public function load(Client $elasticSearch, string $indexName): void
     {
         parent::loadFiles(
-            function(array $documents) use ($elasticSearch, $indexName): void {
-                if (empty($documents)) {
-                    return;
-                }
-
-                $elasticSearch->bulk(
+            fn (array $documents) => match (true) {
+                empty($documents) => null,
+                default           => $elasticSearch->bulk(
                     array_merge(
                         ['body' => $this->prepareBodyForBulkIndexation($indexName, $documents)],
                         is_string($documentType = $this->getDocumentType()) ? ['type' => $documentType] : []
                     )
-                );
+                )
             }
         );
     }

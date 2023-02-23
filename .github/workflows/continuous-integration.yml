@@ -13,13 +13,10 @@ env:
 jobs:
   build:
     name: PHPUnit
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         php-version:
-          - 7.2
-          - 7.3
-          - 7.4
           - 8.0
         dependencies:
           - lowest
@@ -61,7 +58,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: build-7.4-coverage
+          name: build-8-coverage
           path: tests/.results/
 
       - name: Fix Code Coverage Paths

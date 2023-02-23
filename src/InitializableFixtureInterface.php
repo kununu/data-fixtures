@@ -5,5 +5,5 @@ namespace Kununu\DataFixtures;
 
 interface InitializableFixtureInterface
 {
-    public function initializeFixture(...$args): void;
+    public function initializeFixture(mixed ...$args): void;
 }

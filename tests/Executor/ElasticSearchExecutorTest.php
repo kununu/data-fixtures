@@ -7,19 +7,14 @@ use Elasticsearch\Client;
 use Elasticsearch\Namespaces\IndicesNamespace;
 use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
 use Kununu\DataFixtures\Executor\ElasticSearchExecutor;
-use Kununu\DataFixtures\Purger\PurgerInterface;
+use Kununu\DataFixtures\Executor\ExecutorInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-final class ElasticSearchExecutorTest extends TestCase
+final class ElasticSearchExecutorTest extends AbstractExecutorTestCase
 {
     private const INDEX_NAME = 'my_index';
 
-    /** @var Client|MockObject */
-    private $client;
-
-    /** @var PurgerInterface|MockObject */
-    private $purger;
+    private MockObject|Client $client;
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
@@ -27,9 +22,7 @@ final class ElasticSearchExecutorTest extends TestCase
             ->expects($this->never())
             ->method('purge');
 
-        $executor = new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
-
-        $executor->execute([], true);
+        $this->executor->execute([], true);
     }
 
     public function testThatPurgesWhenAppendIsDisabled(): void
@@ -38,9 +31,7 @@ final class ElasticSearchExecutorTest extends TestCase
             ->expects($this->once())
             ->method('purge');
 
-        $executor = new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
-
-        $executor->execute([]);
+        $this->executor->execute([]);
     }
 
     public function testThatFixturesAreLoaded(): void
@@ -68,16 +59,18 @@ final class ElasticSearchExecutorTest extends TestCase
             ->method('indices')
             ->willReturn($indices);
 
-        $executor = new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
-
-        $executor->execute([$fixture1, $fixture2]);
+        $this->executor->execute([$fixture1, $fixture2]);
     }
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->client = $this->createMock(Client::class);
-        $this->purger = $this->createMock(PurgerInterface::class);
+
+        parent::setUp();
+    }
+
+    protected function getExecutor(): ExecutorInterface
+    {
+        return new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
     }
 }

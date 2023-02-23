@@ -10,12 +10,11 @@ use PHPUnit\Framework\TestCase;
 
 final class ElasticSearchFixtureTest extends TestCase
 {
+    private MockObject|Client $client;
+
     public function testLoad(): void
     {
-        /** @var Client|MockObject $client */
-        $client = $this->createMock(Client::class);
-
-        $client
+        $this->client
             ->expects($this->once())
             ->method('bulk')
             ->with([
@@ -54,6 +53,11 @@ final class ElasticSearchFixtureTest extends TestCase
                 ],
             ]);
 
-        (new ElasticSearchFixture3())->load($client, 'my_index');
+        (new ElasticSearchFixture3())->load($this->client, 'my_index');
+    }
+
+    protected function setUp(): void
+    {
+        $this->client = $this->createMock(Client::class);
     }
 }

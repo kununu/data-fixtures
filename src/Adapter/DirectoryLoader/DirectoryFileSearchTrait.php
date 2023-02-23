@@ -12,17 +12,16 @@ trait DirectoryFileSearchTrait
         return $this->searchFileNames($this->getFileExtension(), $this->getDirectory());
     }
 
-    abstract protected function getFileExtension(): string;
-
-    abstract protected function getDirectory(): string;
-
     protected function searchFileNames(string $extension, string $subDirectory): array
     {
         $root = $this->root($subDirectory);
         $files = [];
         if ($handle = opendir($root)) {
             while (false !== ($file = readdir($handle))) {
-                if ('.' !== $file && '..' !== $file && $extension === strtolower(substr($file, strrpos($file, '.') + 1))) {
+                if ('.' !== $file &&
+                    '..' !== $file &&
+                    $extension === strtolower(substr($file, strrpos($file, '.') + 1))
+                ) {
                     $files[] = sprintf('%s/%s', $root, $file);
                 }
             }
@@ -32,6 +31,10 @@ trait DirectoryFileSearchTrait
 
         return $files;
     }
+
+    abstract protected function getFileExtension(): string;
+
+    abstract protected function getDirectory(): string;
 
     private function root(string $subDirectory): string
     {

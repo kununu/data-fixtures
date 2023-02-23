@@ -5,11 +5,12 @@ namespace Kununu\DataFixtures\Tests\Adapter;
 
 use Kununu\DataFixtures\Tests\TestFixtures\HttpClientArrayDirectoryFixture1;
 use Kununu\DataFixtures\Tools\FixturesHttpClientInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class HttpClientArrayDirectoryFixtureTest extends TestCase
 {
-    private $httpClient;
+    private MockObject|FixturesHttpClientInterface $httpClient;
 
     public function testLoad(): void
     {

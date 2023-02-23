@@ -14,12 +14,6 @@ abstract class AbstractFileLoaderFixture
     protected const LOAD_MODE_LOAD = 'load';
     protected const LOAD_MODE_LOAD_JSON = 'loadJson';
 
-    abstract protected function fileNames(): array;
-
-    abstract protected function getFileExtension(): string;
-
-    abstract protected function getLoadMode(): string;
-
     protected function loadFiles(callable $contentLoader): void
     {
         $extension = $this->getFileExtension();
@@ -32,30 +26,36 @@ abstract class AbstractFileLoaderFixture
                 continue;
             }
 
-            switch ($loadMode) {
-                case self::LOAD_MODE_INCLUDE:
-                    $content = $this->includeFile($fileName);
-                    break;
-                case self::LOAD_MODE_LOAD:
-                    $content = $this->loadFile($file);
-                    break;
-                case self::LOAD_MODE_LOAD_JSON:
-                    if (is_string($content = $this->loadFile($file))) {
-                        $content = json_decode($content, true);
-                        if (json_last_error() !== JSON_ERROR_NONE) {
-                            throw new InvalidArgumentException(sprintf('Error decoding JSON file: "%s"', $fileName));
-                        }
-                    } else {
-                        $content = [];
-                    }
-
-                    break;
-                default:
-                    throw new InvalidArgumentException(sprintf('Invalid load mode: "%s"', $loadMode));
-            }
+            $content = match ($loadMode) {
+                self::LOAD_MODE_INCLUDE   => $this->includeFile($fileName),
+                self::LOAD_MODE_LOAD      => $this->loadFile($file),
+                self::LOAD_MODE_LOAD_JSON => $this->loadJson($file, $fileName),
+                default                   => throw new InvalidArgumentException(sprintf('Invalid load mode: "%s"', $loadMode)),
+            };
 
             $contentLoader($content);
         }
+    }
+
+    abstract protected function fileNames(): array;
+
+    abstract protected function getFileExtension(): string;
+
+    abstract protected function getLoadMode(): string;
+
+    private function loadJson(SplFileInfo $file, string $fileName): array
+    {
+        if (is_string($content = $this->loadFile($file))) {
+            try {
+                $content = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
+            } catch (Throwable) {
+                throw new InvalidArgumentException(sprintf('Error decoding JSON file: "%s"', $fileName));
+            }
+
+            return $content;
+        }
+
+        return [];
     }
 
     private function includeFile(string $fileName): array

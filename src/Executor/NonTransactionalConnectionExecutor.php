@@ -8,14 +8,14 @@ use Kununu\DataFixtures\Purger\PurgerInterface;
 
 final class NonTransactionalConnectionExecutor implements ExecutorInterface
 {
-    private $executor;
+    private ExecutorInterface $executor;
 
     public function __construct(Connection $connection, PurgerInterface $purger)
     {
         $this->executor = new ConnectionExecutor($connection, $purger, false);
     }
 
-    public function execute(array $fixtures, $append = false): void
+    public function execute(array $fixtures, bool $append = false): void
     {
         $this->executor->execute($fixtures, $append);
     }

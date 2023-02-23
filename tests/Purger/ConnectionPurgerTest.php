@@ -3,18 +3,16 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Purger;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Exception;
 use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
-use PHPUnit\Framework\MockObject\MockObject;
+use Kununu\DataFixtures\Purger\PurgerInterface;
 
-final class ConnectionPurgerTest extends ConnectionPurgerTestCase
+final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 {
     public function testThatPurgerIsTransactionalAndCommits(): void
     {
-        /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
 
         $connection
@@ -46,7 +44,6 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
     {
         $this->expectException(Exception::class);
 
-        /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
 
         $connection
@@ -81,7 +78,6 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
 
     public function testThatWhenNoTablesAreProvidedNothingIsPurged(): void
     {
-        /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock(true, []);
 
         $connection
@@ -94,13 +90,14 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
 
     public function testThatExcludedTablesAreNotPurged(): void
     {
-        /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
 
         $connection
             ->expects($this->exactly(4))
             ->method($this->getExecuteQueryMethodName($connection))
-            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement(1, self::TABLES, self::EXCLUDED_TABLES))
+            ->withConsecutive(
+                ...$this->getConsecutiveArgumentsForConnectionExecStatement(1, self::TABLES, self::EXCLUDED_TABLES)
+            )
             ->willReturn(1);
 
         $purger = new ConnectionPurger(
@@ -113,7 +110,6 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
 
     public function testThatPurgesWithDeleteMode(): void
     {
-        /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock();
 
         $connection
@@ -129,7 +125,6 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
 
     public function testThatPurgesWithTruncateMode(): void
     {
-        /** @var MockObject|Connection $connection */
         $connection = $this->getConnectionMock(false);
 
         $platform = $this->createMock(AbstractPlatform::class);
@@ -143,9 +138,7 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
                 ['table_3', true]
             )
             ->willReturnOnConsecutiveCalls(
-                ...array_map(function($element) {
-                    return $element[0];
-                }, $this->getTruncateModeConnectionWithConsecutiveArguments())
+                ...array_map(fn ($element) => $element[0], $this->getTruncateModeConnectionWithConsecutiveArguments())
             );
 
         $connection
@@ -167,10 +160,7 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
 
     public function testChangePurgeModeToDelete(): void
     {
-        /** @var MockObject|Connection $connection */
-        $connection = $this->getConnectionMock();
-
-        $purger = new ConnectionPurger($connection);
+        $purger = new ConnectionPurger($this->getConnectionMock());
 
         $purger->setPurgeMode(1);
 
@@ -179,10 +169,7 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
 
     public function testChangePurgeModeToTruncate(): void
     {
-        /** @var MockObject|Connection $connection */
-        $connection = $this->getConnectionMock();
-
-        $purger = new ConnectionPurger($connection);
+        $purger = new ConnectionPurger($this->getConnectionMock());
 
         $purger->setPurgeMode(2);
 
@@ -193,10 +180,12 @@ final class ConnectionPurgerTest extends ConnectionPurgerTestCase
     {
         $this->expectException(InvalidConnectionPurgeModeException::class);
 
-        /** @var MockObject|Connection $connection */
-        $connection = $this->getConnectionMock();
-
-        $purger = new ConnectionPurger($connection);
+        $purger = new ConnectionPurger($this->getConnectionMock());
         $purger->setPurgeMode(10);
+    }
+
+    protected function getPurger(): PurgerInterface
+    {
+        // TODO: Implement getPurger() method.
     }
 }

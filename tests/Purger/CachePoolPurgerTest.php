@@ -5,14 +5,13 @@ namespace Kununu\DataFixtures\Tests\Purger;
 
 use Kununu\DataFixtures\Exception\PurgeFailedException;
 use Kununu\DataFixtures\Purger\CachePoolPurger;
+use Kununu\DataFixtures\Purger\PurgerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 
-final class CachePoolPurgerTest extends TestCase
+final class CachePoolPurgerTest extends AbstractPurgerTestCase
 {
-    /** @var MockObject|CacheItemPoolInterface */
-    private $cache;
+    private MockObject|CacheItemPoolInterface $cache;
 
     public function testThatCacheItemPoolIsPurged(): void
     {
@@ -21,8 +20,7 @@ final class CachePoolPurgerTest extends TestCase
             ->method('clear')
             ->willReturn(true);
 
-        $purger = new CachePoolPurger($this->cache);
-        $purger->purge();
+        $this->purger->purge();
     }
 
     public function testThatWhenCacheItemPoolFailsToPurgeThenAnExceptionIsThrown(): void
@@ -34,14 +32,17 @@ final class CachePoolPurgerTest extends TestCase
             ->method('clear')
             ->willReturn(false);
 
-        $purger = new CachePoolPurger($this->cache);
-        $purger->purge();
+        $this->purger->purge();
     }
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->cache = $this->createMock(CacheItemPoolInterface::class);
+        parent::setUp();
+    }
+
+    protected function getPurger(): PurgerInterface
+    {
+        return new CachePoolPurger($this->cache);
     }
 }

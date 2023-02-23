@@ -10,10 +10,6 @@ trait ConnectionUtilsTrait
     public function getExecuteQueryMethodName(Connection $connection): string
     {
         // This way we support both doctrine/dbal ^2.9 and ^3.1
-        if (method_exists($connection, 'executeStatement')) {
-            return 'executeStatement';
-        }
-
-        return 'exec';
+        return method_exists($connection, 'executeStatement') ? 'executeStatement' : 'exec';
     }
 }

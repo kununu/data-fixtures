@@ -8,28 +8,31 @@ use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Exception;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
-use Kununu\DataFixtures\Purger\PurgerInterface;
+use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
+use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-final class ConnectionExecutorTest extends TestCase
+final class ConnectionExecutorTest extends AbstractExecutorTestCase
 {
     use ConnectionUtilsTrait;
 
-    /** @var Connection|MockObject */
-    private $connection;
+    private const SQL_1 = 'SET FOREIGN_KEY_CHECKS=0';
+    private const SQL_2 = 'SET FOREIGN_KEY_CHECKS=1';
 
-    /** @var PurgerInterface|MockObject */
-    private $purger;
+    private MockObject|Connection $connection;
 
     public function testThatExecutorIsTransactionalAndCommits(): void
     {
         $this->connection
             ->expects($this->exactly(2))
             ->method($this->getExecuteQueryMethodName($this->connection))
-            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1'])
-            ->willReturn(1);
+            ->willReturnCallback(
+                fn (string $sql): int => match ($sql) {
+                    self::SQL_1, self::SQL_2 => 1,
+                    default => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                }
+            );
 
         $this->connection
             ->expects($this->once())
@@ -43,9 +46,7 @@ final class ConnectionExecutorTest extends TestCase
             ->expects($this->never())
             ->method('purge');
 
-        $executor = new ConnectionExecutor($this->connection, $this->purger);
-
-        $executor->execute([], true);
+        $this->executor->execute([], true);
     }
 
     public function testThatExecutorIsTransactionalAndRollbacks(): void
@@ -55,8 +56,12 @@ final class ConnectionExecutorTest extends TestCase
         $this->connection
             ->expects($this->exactly(2))
             ->method($this->getExecuteQueryMethodName($this->connection))
-            ->withConsecutive(['SET FOREIGN_KEY_CHECKS=0'], ['SET FOREIGN_KEY_CHECKS=1'])
-            ->willReturn(1);
+            ->willReturnCallback(
+                fn (string $sql): int => match ($sql) {
+                    self::SQL_1, self::SQL_2 => 1,
+                    default => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                }
+            );
 
         $this->connection
             ->expects($this->once())
@@ -75,9 +80,7 @@ final class ConnectionExecutorTest extends TestCase
             ->expects($this->once())
             ->method('purge');
 
-        $executor = new ConnectionExecutor($this->connection, $this->purger);
-
-        $executor->execute([]);
+        $this->executor->execute([]);
     }
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
@@ -91,9 +94,7 @@ final class ConnectionExecutorTest extends TestCase
             ->expects($this->never())
             ->method('purge');
 
-        $executor = new ConnectionExecutor($this->connection, $this->purger);
-
-        $executor->execute([], true);
+        $this->executor->execute([], true);
     }
 
     public function testThatPurgesWhenAppendIsDisabled(): void
@@ -107,9 +108,7 @@ final class ConnectionExecutorTest extends TestCase
             ->expects($this->once())
             ->method('purge');
 
-        $executor = new ConnectionExecutor($this->connection, $this->purger);
-
-        $executor->execute([]);
+        $this->executor->execute([]);
     }
 
     public function testThatFixturesAreLoaded(): void
@@ -120,25 +119,33 @@ final class ConnectionExecutorTest extends TestCase
             ->willReturn(1);
 
         $fixture1 = $this->createMock(ConnectionFixtureInterface::class);
-        $fixture1->expects($this->once())->method('load')->with($this->connection);
+        $fixture1
+            ->expects($this->once())
+            ->method('load')
+            ->with($this->connection);
 
         $fixture2 = $this->createMock(ConnectionFixtureInterface::class);
-        $fixture2->expects($this->once())->method('load')->with($this->connection);
+        $fixture2
+            ->expects($this->once())
+            ->method('load')
+            ->with($this->connection);
 
-        $executor = new ConnectionExecutor($this->connection, $this->purger);
-
-        $executor->execute([$fixture1, $fixture2]);
+        $this->executor->execute([$fixture1, $fixture2]);
     }
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->connection = $this->createMock(Connection::class);
         $this->connection
             ->expects($this->any())
             ->method('getDriver')
             ->willReturn($this->createMock(AbstractMySQLDriver::class));
-        $this->purger = $this->createMock(PurgerInterface::class);
+
+        parent::setUp();
+    }
+
+    protected function getExecutor(): ExecutorInterface
+    {
+        return new ConnectionExecutor($this->connection, $this->purger);
     }
 }

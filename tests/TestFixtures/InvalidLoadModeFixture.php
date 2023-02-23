@@ -9,8 +9,7 @@ final class InvalidLoadModeFixture extends AbstractFileLoaderFixture
 {
     public function load(): void
     {
-        parent::loadFiles(function($content): void {
-        });
+        parent::loadFiles(fn ($content) => null);
     }
 
     protected function fileNames(): array

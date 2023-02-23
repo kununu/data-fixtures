@@ -9,15 +9,11 @@ use Kununu\DataFixtures\Purger\PurgerInterface;
 
 final class ElasticSearchExecutor implements ExecutorInterface
 {
-    private $elasticSearch;
-    private $indexName;
-    private $purger;
-
-    public function __construct(Client $elasticSearch, string $indexName, PurgerInterface $purger)
-    {
-        $this->elasticSearch = $elasticSearch;
-        $this->indexName = $indexName;
-        $this->purger = $purger;
+    public function __construct(
+        private Client $elasticSearch,
+        private string $indexName,
+        private PurgerInterface $purger
+    ) {
     }
 
     public function execute(array $fixtures, bool $append = false): void

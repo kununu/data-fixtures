@@ -9,14 +9,14 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class CachePoolFixture1 implements CachePoolFixtureInterface, InitializableFixtureInterface
 {
-    private $arg1;
-    private $arg2;
+    private ?int $arg1 = null;
+    private ?array $arg2 = null;
 
     public function load(CacheItemPoolInterface $cachePool): void
     {
     }
 
-    public function initializeFixture(...$args): void
+    public function initializeFixture(mixed ...$args): void
     {
         foreach ($args as $index => $arg) {
             if (0 === $index && is_int($arg)) {

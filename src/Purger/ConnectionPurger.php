@@ -16,18 +16,15 @@ final class ConnectionPurger implements PurgerInterface
     private const PURGE_MODE_DELETE = 1;
     private const PURGE_MODE_TRUNCATE = 2;
 
-    private $connection;
-    private $tables;
-    private $excludedTables;
-    private $transactional;
-    private $purgeMode = self::PURGE_MODE_DELETE;
+    private array $tables;
+    private int $purgeMode = self::PURGE_MODE_DELETE;
 
-    public function __construct(Connection $connection, array $excludedTables = [], bool $transactional = true)
-    {
-        $this->connection = $connection;
+    public function __construct(
+        private Connection $connection,
+        private array $excludedTables = [],
+        private bool $transactional = true
+    ) {
         $this->tables = $this->getDatabaseTables($connection);
-        $this->excludedTables = $excludedTables;
-        $this->transactional = $transactional;
     }
 
     public function purge(): void
@@ -45,7 +42,10 @@ final class ConnectionPurger implements PurgerInterface
         }
 
         try {
-            $this->executeQuery($this->connection, $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+            $this->executeQuery(
+                $this->connection,
+                $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver())
+            );
 
             foreach ($tablesToPurge as $tableName) {
                 $this->purgeTable($platform, $tableName);
@@ -60,7 +60,10 @@ final class ConnectionPurger implements PurgerInterface
             }
             throw $e;
         } finally {
-            $this->executeQuery($this->connection, $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver()));
+            $this->executeQuery(
+                $this->connection,
+                $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver())
+            );
         }
     }
 
@@ -80,10 +83,10 @@ final class ConnectionPurger implements PurgerInterface
 
     private function purgeTable(AbstractPlatform $platform, string $tableName): void
     {
-        if ($this->purgeMode === self::PURGE_MODE_DELETE) {
-            $this->executeQuery($this->connection, sprintf('DELETE FROM %s', $this->connection->quoteIdentifier($tableName)));
-        } else {
-            $this->executeQuery($this->connection, $platform->getTruncateTableSQL($this->connection->quoteIdentifier($tableName), true));
-        }
+        $query = $this->purgeMode === self::PURGE_MODE_DELETE
+            ? sprintf('DELETE FROM %s', $this->connection->quoteIdentifier($tableName))
+            : $platform->getTruncateTableSQL($tableName, true);
+
+        $this->executeQuery($this->connection, $query);
     }
 }

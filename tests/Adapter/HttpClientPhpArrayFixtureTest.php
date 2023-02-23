@@ -9,11 +9,12 @@ use Kununu\DataFixtures\Tests\TestFixtures\HttpClientFixture2;
 use Kununu\DataFixtures\Tests\TestFixtures\InvalidHttpClientFixture;
 use Kununu\DataFixtures\Tests\Utils\FakeHttpClientInterface;
 use Kununu\DataFixtures\Tools\FixturesHttpClientInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class HttpClientPhpArrayFixtureTest extends TestCase
 {
-    private $httpClient;
+    private MockObject|FixturesHttpClientInterface $httpClient;
 
     public function testLoad(): void
     {
