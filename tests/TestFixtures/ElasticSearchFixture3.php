@@ -39,7 +39,7 @@ final class ElasticSearchFixture3 extends ElasticSearchFixture
         );
     }
 
-    protected function getDocumentIdForBulkIndexation(array $document)
+    protected function getDocumentIdForBulkIndexation(array $document): mixed
     {
         return $document['id'];
     }

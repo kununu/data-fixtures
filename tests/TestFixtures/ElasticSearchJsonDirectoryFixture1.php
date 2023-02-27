@@ -7,7 +7,7 @@ use Kununu\DataFixtures\Adapter\DirectoryLoader\ElasticSearchJsonDirectoryFixtur
 
 final class ElasticSearchJsonDirectoryFixture1 extends ElasticSearchJsonDirectoryFixture
 {
-    protected function getDocumentIdForBulkIndexation(array $document)
+    protected function getDocumentIdForBulkIndexation(array $document): mixed
     {
         return $document['uuid'];
     }

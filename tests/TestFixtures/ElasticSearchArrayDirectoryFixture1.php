@@ -7,7 +7,7 @@ use Kununu\DataFixtures\Adapter\DirectoryLoader\ElasticSearchArrayDirectoryFixtu
 
 final class ElasticSearchArrayDirectoryFixture1 extends ElasticSearchArrayDirectoryFixture
 {
-    protected function getDocumentIdForBulkIndexation(array $document)
+    protected function getDocumentIdForBulkIndexation(array $document): mixed
     {
         return $document['id'];
     }
