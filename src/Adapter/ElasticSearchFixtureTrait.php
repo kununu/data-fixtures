@@ -36,5 +36,5 @@ trait ElasticSearchFixtureTrait
         return null;
     }
 
-    abstract protected function getDocumentIdForBulkIndexation(array $document);
+    abstract protected function getDocumentIdForBulkIndexation(array $document): mixed;
 }

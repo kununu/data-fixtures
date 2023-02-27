@@ -67,7 +67,7 @@ final class MyFixture extends ElasticSearchFixture
      * Implement this method to retrieve the document id on Elasticsearch from the document array
      * (or generate one)
      */
-    protected function getDocumentIdForBulkIndexation(array $document)
+    protected function getDocumentIdForBulkIndexation(array $document): mixed
     {
         return sprintf('%d_%s', $document['id'], $document['doc_type']) ;
     }
@@ -176,7 +176,7 @@ final class MyFixture extends ElasticSearchFileFixture
      * Implement this method to retrieve the document id on Elasticsearch from the document array
      * (or generate one)
      */
-    protected function getDocumentIdForBulkIndexation(array $document)
+    protected function getDocumentIdForBulkIndexation(array $document): mixed
     {
         return sprintf('%d_%s', $document['id'], $document['doc_type']) ;
     }
@@ -241,7 +241,7 @@ final class MyFixture extends ElasticSearchFileFixture
      * Implement this method to retrieve the document id on Elasticsearch from the document array
      * (or generate one)
      */
-    protected function getDocumentIdForBulkIndexation(array $document)
+    protected function getDocumentIdForBulkIndexation(array $document): mixed
     {
         return sprintf('%d_%s', $document['id'], $document['doc_type']) ;
     }
