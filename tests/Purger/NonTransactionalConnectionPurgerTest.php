@@ -40,7 +40,7 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
             ->expects($this->exactly(3))
             ->method($this->getExecuteQueryMethodName($connection))
             ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement(1, ['table_1']))
-            ->willReturnCallback(fn (string $sql): int => match (true) {
+            ->willReturnCallback(fn(string $sql): int => match (true) {
                 'DELETE FROM `table_1`' === $sql => throw new Exception(),
                 default                          => 1
             });

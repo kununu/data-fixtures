@@ -33,7 +33,7 @@ SQL;
         $this->connection
             ->expects($this->exactly(2))
             ->method($this->getExecuteQueryMethodName($this->connection))
-            ->willReturnCallback(fn (string $fixtureContent) => match ($fixtureContent) {
+            ->willReturnCallback(fn(string $fixtureContent) => match ($fixtureContent) {
                 $fixture1Content, $fixture2Content => 1,
                 default => throw new LogicException(sprintf('Unknown fixture content "%s"', $fixtureContent))
             });

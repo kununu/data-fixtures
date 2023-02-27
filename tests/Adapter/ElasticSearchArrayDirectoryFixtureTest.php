@@ -78,7 +78,7 @@ final class ElasticSearchArrayDirectoryFixtureTest extends TestCase
             ->method('bulk')
             ->with(
                 $this->callback(
-                    fn (array $bulk): bool => ($bulk == $bulk1 || $bulk == $bulk2)
+                    fn(array $bulk): bool => ($bulk == $bulk1 || $bulk == $bulk2)
                 )
             );
 
