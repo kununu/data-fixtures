@@ -42,7 +42,7 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
         $connection
             ->expects($this->any())
             ->method('quoteIdentifier')
-            ->willReturnCallback(fn (string $str): string => sprintf('`%s`', $str));
+            ->willReturnCallback(fn(string $str): string => sprintf('`%s`', $str));
 
         if ($withPlatform) {
             $connection

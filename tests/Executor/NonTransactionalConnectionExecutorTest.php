@@ -28,7 +28,7 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
             ->expects($this->exactly(2))
             ->method($this->getExecuteQueryMethodName($this->connection))
             ->willReturnCallback(
-                fn (string $sql): int => match ($sql) {
+                fn(string $sql): int => match ($sql) {
                     self::SQL_1, self::SQL_2 => 1,
                     default => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
                 }
@@ -63,7 +63,7 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
             ->expects($this->exactly(2))
             ->method($this->getExecuteQueryMethodName($this->connection))
             ->willReturnCallback(
-                fn (string $sql): int => match ($sql) {
+                fn(string $sql): int => match ($sql) {
                     self::SQL_1, self::SQL_2 => 1,
                     default => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
                 }

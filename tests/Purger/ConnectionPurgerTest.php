@@ -138,7 +138,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
                 ['table_3', true]
             )
             ->willReturnOnConsecutiveCalls(
-                ...array_map(fn ($element) => $element[0], $this->getTruncateModeConnectionWithConsecutiveArguments())
+                ...array_map(fn($element) => $element[0], $this->getTruncateModeConnectionWithConsecutiveArguments())
             );
 
         $connection
