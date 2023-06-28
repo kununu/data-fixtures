@@ -5,8 +5,8 @@ namespace Kununu\DataFixtures\Tools;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Driver\AbstractMySQLDriver;
-use Doctrine\DBAL\Driver\AbstractSQLiteDriver;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\DBAL\Platforms\SqlitePlatform;
 
 trait ConnectionToolsTrait
 {
@@ -28,19 +28,23 @@ trait ConnectionToolsTrait
 
     protected function getDisableForeignKeysChecksStatementByDriver(Driver $driver): string
     {
+        $databasePlatform = $driver->getDatabasePlatform();
+
         return match (true) {
-            $driver instanceof AbstractMySQLDriver  => 'SET FOREIGN_KEY_CHECKS=0',
-            $driver instanceof AbstractSQLiteDriver => 'PRAGMA foreign_keys = OFF',
-            default                                 => ''
+            $databasePlatform instanceof AbstractMySQLPlatform => 'SET FOREIGN_KEY_CHECKS=0',
+            $databasePlatform instanceof SqlitePlatform        => 'PRAGMA foreign_keys = OFF',
+            default                                            => '',
         };
     }
 
     protected function getEnableForeignKeysChecksStatementByDriver(Driver $driver): string
     {
+        $databasePlatform = $driver->getDatabasePlatform();
+
         return match (true) {
-            $driver instanceof AbstractMySQLDriver  => 'SET FOREIGN_KEY_CHECKS=1',
-            $driver instanceof AbstractSQLiteDriver => 'PRAGMA foreign_keys = ON',
-            default                                 => ''
+            $databasePlatform instanceof AbstractMySQLPlatform => 'SET FOREIGN_KEY_CHECKS=1',
+            $databasePlatform instanceof SqlitePlatform        => 'PRAGMA foreign_keys = ON',
+            default                                            => '',
         };
     }
 }
