@@ -27,12 +27,12 @@
     "require-dev": {
         "doctrine/dbal": "^2.9 || ^3.1",
         "elasticsearch/elasticsearch": "^7.0",
+        "kununu/scripts": ">=4.0",
         "phpunit/phpunit": "^9.5",
         "psr/cache": "^1.0",
-        "symfony/phpunit-bridge": "^5.2",
         "symfony/http-client": "^4.4 | ^5.2",
         "symfony/http-foundation": "^4.4 | ^5.2",
-        "kununu/scripts": ">=3.0.1"
+        "symfony/phpunit-bridge": "^5.2"
     },
     "suggest": {
         "psr/cache": "Load fixtures for implementation of the PSR6 standard",
