@@ -122,4 +122,9 @@ final class ConnectionToolsTest extends TestCase
     {
         return is_string($driver) ? $this->createMock($driver) : $driver;
     }
+
+    private static function dbalSupportsAbstractMySQLPlatform(): bool
+    {
+        return class_exists('\Doctrine\DBAL\Platforms\AbstractMySQLPlatform');
+    }
 }

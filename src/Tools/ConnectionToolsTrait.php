@@ -31,31 +31,28 @@ trait ConnectionToolsTrait
     protected function getDisableForeignKeysChecksStatementByDriver(Driver $driver): string
     {
         $databasePlatform = $driver->getDatabasePlatform();
-        $dbal3 = self::dbalSupportsAbstractMySQLPlatform();
 
-        // This way we support both doctrine/dbal ^2.9 and ^3.1
         return match (true) {
-            ($dbal3 && $databasePlatform instanceof AbstractMySQLPlatform) || (!$dbal3 & $driver instanceof AbstractMySQLDriver) => 'SET FOREIGN_KEY_CHECKS=0',
-            ($dbal3 && $databasePlatform instanceof SqlitePlatform) || (!$dbal3 && $driver instanceof AbstractSQLiteDriver)      => 'PRAGMA foreign_keys = OFF',
-            default                                                                                                              => '',
+            $driver instanceof AbstractMySQLDriver,
+            $databasePlatform instanceof AbstractMySQLPlatform => 'SET FOREIGN_KEY_CHECKS=0',
+
+            $driver instanceof AbstractSQLiteDriver,
+            $databasePlatform instanceof SqlitePlatform        => 'PRAGMA foreign_keys = OFF',
+            default                                            => '',
         };
     }
 
     protected function getEnableForeignKeysChecksStatementByDriver(Driver $driver): string
     {
         $databasePlatform = $driver->getDatabasePlatform();
-        $dbal3 = self::dbalSupportsAbstractMySQLPlatform();
 
-        // This way we support both doctrine/dbal ^2.9 and ^3.1
         return match (true) {
-            ($dbal3 && $databasePlatform instanceof AbstractMySQLPlatform) || (!$dbal3 && $driver instanceof AbstractMySQLDriver)  => 'SET FOREIGN_KEY_CHECKS=1',
-            ($dbal3 && $databasePlatform instanceof SqlitePlatform) || (!$dbal3 && $driver instanceof AbstractSQLiteDriver)        => 'PRAGMA foreign_keys = ON',
-            default                                                                                                                => '',
-        };
-    }
+            $driver instanceof AbstractMySQLDriver,
+            $databasePlatform instanceof AbstractMySQLPlatform => 'SET FOREIGN_KEY_CHECKS=1',
 
-    protected static function dbalSupportsAbstractMySQLPlatform(): bool
-    {
-        return class_exists('Doctrine\DBAL\Platforms\AbstractMySQLPlatform');
+            $driver instanceof AbstractSQLiteDriver,
+            $databasePlatform instanceof SqlitePlatform        => 'PRAGMA foreign_keys = ON',
+            default                                            => '',
+        };
     }
 }
