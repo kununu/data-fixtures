@@ -37,7 +37,7 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
         $connection
             ->expects($this->any())
             ->method('getDriver')
-            ->willReturn($this->createMock(AbstractMySQLDriver::class));
+            ->willReturn($this->getMockForAbstractClass(AbstractMySQLDriver::class));
 
         $connection
             ->expects($this->any())

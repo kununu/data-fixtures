@@ -139,7 +139,7 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
         $this->connection
             ->expects($this->any())
             ->method('getDriver')
-            ->willReturn($this->createMock(AbstractMySQLDriver::class));
+            ->willReturn($this->getMockForAbstractClass(AbstractMySQLDriver::class));
 
         parent::setUp();
     }

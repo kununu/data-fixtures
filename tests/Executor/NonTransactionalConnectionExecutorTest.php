@@ -101,7 +101,7 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
         $this->connection
             ->expects($this->any())
             ->method('getDriver')
-            ->willReturn($this->createMock(AbstractMySQLDriver::class));
+            ->willReturn($this->getMockForAbstractClass(AbstractMySQLDriver::class));
 
         parent::setUp();
     }
