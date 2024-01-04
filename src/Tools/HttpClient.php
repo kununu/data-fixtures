@@ -14,11 +14,19 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 final class HttpClient extends MockHttpClient implements FixturesHttpClientInterface
 {
     private ?array $responses = null;
+    private ?array $bodyValidators = null;
 
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
-        if (!($response = $this->responses[$this->responseKey($method, $url)] ?? null) instanceof MockResponse) {
+        $key = $this->responseKey($method, $url);
+        $response = $this->responses[$key] ?? null;
+        $bodyValidator = $this->bodyValidators[$key] ?? null;
+        if (!$response instanceof MockResponse) {
             $response = new MockResponse('', ['http_code' => Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+
+        if (is_callable($bodyValidator)) {
+            $response = $bodyValidator($response, $options);
         }
 
         $this->recreateResponseFactory([$response]);
@@ -32,15 +40,24 @@ final class HttpClient extends MockHttpClient implements FixturesHttpClientInter
             $this->responses = [];
         }
 
+        if (null === $this->bodyValidators) {
+            $this->bodyValidators = [];
+        }
+
         foreach ($responses as $response) {
-            [$url, $method, $code, $body] = $this->extractResponseData($response);
-            $this->responses[$this->responseKey($method, $url)] = new MockResponse($body, ['http_code' => $code]);
+            [$url, $method, $code, $body, $bodyValidator] = $this->extractResponseData($response);
+            $key = $this->responseKey($method, $url);
+            if (is_callable($bodyValidator)) {
+                $this->bodyValidators[$key] = $bodyValidator;
+            }
+            $this->responses[$key] = new MockResponse($body, ['http_code' => $code]);
         }
     }
 
     public function clearResponses(): void
     {
         $this->responses = [];
+        $this->bodyValidators = [];
     }
 
     private function extractResponseData(array $response): array
@@ -50,6 +67,7 @@ final class HttpClient extends MockHttpClient implements FixturesHttpClientInter
             $response['method'] ?? Request::METHOD_GET,
             (int) ($response['code'] ?? Response::HTTP_OK),
             $response['body'] ?? '',
+            $response['bodyValidator'] ?? null,
         ];
     }
 
@@ -60,9 +78,7 @@ final class HttpClient extends MockHttpClient implements FixturesHttpClientInter
 
     private function recreateResponseFactory(array $responses): void
     {
-        $responseFactory = (static function() use ($responses): Generator {
-            yield from $responses;
-        })();
+        $responseFactory = (static fn(): Generator => yield from $responses)();
 
         $reflectionClass = new ReflectionClass(MockHttpClient::class);
         $reflectionProperty = $reflectionClass->getProperty('responseFactory');

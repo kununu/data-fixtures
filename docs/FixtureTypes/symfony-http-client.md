@@ -51,10 +51,21 @@ declare(strict_types=1);
 //
 // Format:
 // [
-//      'url'       => Url of the request (REQUIRED)
-//      'method'    => Http method (default: GET)
-//      'code'      => Http code to return (default: 200)
-//      'body'      => Body of the response (default: an empty string)
+//      'url'           => Url of the request (REQUIRED)
+//      'method'        => Http method (default: GET)
+//      'code'          => Http code to return (default: 200)
+//      'body'          => Body of the response (default: an empty string)
+//      'bodyValidator' => A callable to validate the body (e.g. in POST requests) and change the response
+//                         based on the body contents (default: null)
+//
+//                         The callable has the following signature:
+// 
+//                         function(MockResponse $response, array $options = []): MockResponse
+//                          
+//                          - $response - The MockResponse object that is the "normal" response
+//                          - $options  - The request options (which contains the body, auth headers, etc.)
+//
+//                          Return value: A MockResponse object which can be the original or a new one
 // ]
 //
 return [    
@@ -76,6 +87,24 @@ return [
 }
 JSON
         ,
+    [
+        'url'           => 'https://my.server/data',
+        'method'        => 'POST',
+        // Example of how to manipulate the response based on the body context
+        'bodyValidator' => function(MockResponse $response, array $options = []): MockResponse {
+            // Get the id from the json body if available
+            $id = $options['json']['id'] ?? null;
+
+            // We only want a "good" response for a specific id
+            if ($id === 5000) {
+                return $response;
+            }
+
+            // For all other cases return a 404
+            return new MockResponse('', ['http_code' => Response::HTTP_NOT_FOUND]);
+        
+        }        
+    ],
     ],
 ];
 ```
