@@ -2,7 +2,7 @@
 <!-- https://docs.phpunit.de/en/10.5/ -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="vendor/autoload.php"
-         colors="true" beStrictAboutChangesToGlobalState="true" testdox="true">
+         colors="true" beStrictAboutChangesToGlobalState="true" cacheDirectory=".phpunit.cache" testdox="true">
   <coverage>
     <report>
       <clover outputFile="tests/.results/tests-clover.xml"/>
