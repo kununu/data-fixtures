@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Adapter;
 
-trait ElasticSearchFixtureTrait
+trait ElasticsearchFixtureTrait
 {
     protected function prepareBodyForBulkIndexation(string $indexName, array $documents): array
     {

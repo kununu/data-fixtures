@@ -16,15 +16,15 @@ final class ConnectionPurger implements PurgerInterface
     private const PURGE_MODE_DELETE = 1;
     private const PURGE_MODE_TRUNCATE = 2;
 
-    private array $tables;
+    private readonly array $tables;
     private int $purgeMode = self::PURGE_MODE_DELETE;
 
     public function __construct(
-        private Connection $connection,
-        private array $excludedTables = [],
-        private bool $transactional = true
+        private readonly Connection $connection,
+        private readonly array $excludedTables = [],
+        private readonly bool $transactional = true
     ) {
-        $this->tables = $this->getDatabaseTables($connection);
+        $this->tables = $this->connection->createSchemaManager()->listTableNames();
     }
 
     public function purge(): void
@@ -42,8 +42,7 @@ final class ConnectionPurger implements PurgerInterface
         }
 
         try {
-            $this->executeQuery(
-                $this->connection,
+            $this->connection->executeStatement(
                 $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver())
             );
 
@@ -60,8 +59,7 @@ final class ConnectionPurger implements PurgerInterface
             }
             throw $e;
         } finally {
-            $this->executeQuery(
-                $this->connection,
+            $this->connection->executeStatement(
                 $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver())
             );
         }
@@ -87,6 +85,6 @@ final class ConnectionPurger implements PurgerInterface
             ? sprintf('DELETE FROM %s', $this->connection->quoteIdentifier($tableName))
             : $platform->getTruncateTableSQL($tableName, true);
 
-        $this->executeQuery($this->connection, $query);
+        $this->connection->executeStatement($query);
     }
 }

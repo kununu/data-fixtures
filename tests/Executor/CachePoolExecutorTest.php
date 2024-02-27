@@ -34,10 +34,16 @@ final class CachePoolExecutorTest extends AbstractExecutorTestCase
     public function testThatFixturesAreLoaded(): void
     {
         $fixture1 = $this->createMock(CachePoolFixtureInterface::class);
-        $fixture1->expects($this->once())->method('load')->with($this->cache);
+        $fixture1
+            ->expects($this->once())
+            ->method('load')
+            ->with($this->cache);
 
         $fixture2 = $this->createMock(CachePoolFixtureInterface::class);
-        $fixture2->expects($this->once())->method('load')->with($this->cache);
+        $fixture2
+            ->expects($this->once())
+            ->method('load')
+            ->with($this->cache);
 
         $this->executor->execute([$fixture1, $fixture2]);
     }

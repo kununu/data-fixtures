@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Adapter\DirectoryLoader;
 
-use Kununu\DataFixtures\Adapter\ElasticSearchPhpArrayFixture;
+use Kununu\DataFixtures\Adapter\ElasticsearchPhpArrayFixture;
 
-abstract class ElasticSearchArrayDirectoryFixture extends ElasticSearchPhpArrayFixture
+abstract class ElasticsearchArrayDirectoryFixture extends ElasticsearchPhpArrayFixture
 {
     use DirectoryFileSearchTrait;
 

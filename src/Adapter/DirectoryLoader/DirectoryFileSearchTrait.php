@@ -18,9 +18,9 @@ trait DirectoryFileSearchTrait
         $files = [];
         if ($handle = opendir($root)) {
             while (false !== ($file = readdir($handle))) {
-                if ('.' !== $file &&
-                    '..' !== $file &&
-                    $extension === strtolower(substr($file, strrpos($file, '.') + 1))
+                if ('.' !== $file
+                    && '..' !== $file
+                    && $extension === strtolower(substr($file, strrpos($file, '.') + 1))
                 ) {
                     $files[] = sprintf('%s/%s', $root, $file);
                 }

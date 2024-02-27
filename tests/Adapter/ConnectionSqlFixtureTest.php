@@ -7,15 +7,12 @@ use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Exception\InvalidFileException;
 use Kununu\DataFixtures\Tests\TestFixtures\ConnectionSqlFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\InvalidConnectionSqlFixture;
-use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class ConnectionSqlFixtureTest extends TestCase
 {
-    use ConnectionUtilsTrait;
-
     private MockObject|Connection $connection;
 
     public function testLoad(): void
@@ -32,10 +29,11 @@ SQL;
 
         $this->connection
             ->expects($this->exactly(2))
-            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->method('executeStatement')
             ->willReturnCallback(fn(string $fixtureContent) => match ($fixtureContent) {
-                $fixture1Content, $fixture2Content => 1,
-                default => throw new LogicException(sprintf('Unknown fixture content "%s"', $fixtureContent))
+                $fixture1Content,
+                $fixture2Content => 1,
+                default          => throw new LogicException(sprintf('Unknown fixture content "%s"', $fixtureContent))
             });
 
         $fixture = new ConnectionSqlFixture1();

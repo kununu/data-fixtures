@@ -38,6 +38,7 @@ final class CachePoolPurgerTest extends AbstractPurgerTestCase
     protected function setUp(): void
     {
         $this->cache = $this->createMock(CacheItemPoolInterface::class);
+
         parent::setUp();
     }
 

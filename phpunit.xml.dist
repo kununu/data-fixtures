@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://phpunit.readthedocs.io/en/9.6/ -->
+<!-- https://docs.phpunit.de/en/10.5/ -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd" bootstrap="vendor/autoload.php"
-         colors="true" beStrictAboutChangesToGlobalState="true">
-    <coverage>
-        <include>
-            <directory>src</directory>
-        </include>
-        <report>
-            <clover outputFile="tests/.results/tests-clover.xml"/>
-            <html outputDirectory="tests/.results/html/"/>
-        </report>
-    </coverage>
-    <testsuites>
-        <testsuite name="DataFixtures Test Suite">
-            <directory>tests</directory>
-        </testsuite>
-    </testsuites>
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
-    </listeners>
-    <logging>
-        <junit outputFile="tests/.results/tests-junit.xml"/>
-    </logging>
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="vendor/autoload.php"
+         colors="true" beStrictAboutChangesToGlobalState="true" testdox="true">
+  <coverage>
+    <report>
+      <clover outputFile="tests/.results/tests-clover.xml"/>
+      <html outputDirectory="tests/.results/html/"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="DataFixtures Test Suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <logging>
+    <junit outputFile="tests/.results/tests-junit.xml"/>
+  </logging>
+  <source>
+    <include>
+      <directory>src</directory>
+    </include>
+  </source>
 </phpunit>

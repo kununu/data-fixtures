@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Executor;
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
+use Kununu\DataFixtures\Adapter\ElasticsearchFixtureInterface;
 use Kununu\DataFixtures\Purger\PurgerInterface;
 
-final class ElasticSearchExecutor implements ExecutorInterface
+final class ElasticsearchExecutor implements ExecutorInterface
 {
     public function __construct(
         private Client $elasticSearch,
@@ -29,7 +29,7 @@ final class ElasticSearchExecutor implements ExecutorInterface
         $this->elasticSearch->indices()->refresh(['index' => $this->indexName]);
     }
 
-    private function load(ElasticSearchFixtureInterface $fixture): void
+    private function load(ElasticsearchFixtureInterface $fixture): void
     {
         $fixture->load($this->elasticSearch, $this->indexName);
     }

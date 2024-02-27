@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\TestFixtures;
 
-use Kununu\DataFixtures\Adapter\DirectoryLoader\ElasticSearchJsonDirectoryFixture;
+use Kununu\DataFixtures\Adapter\DirectoryLoader\ElasticsearchJsonDirectoryFixture;
 
-final class ElasticSearchJsonDirectoryFixture1 extends ElasticSearchJsonDirectoryFixture
+final class ElasticsearchJsonDirectoryFixture2 extends ElasticsearchJsonDirectoryFixture
 {
     protected function getDocumentIdForBulkIndexation(array $document): mixed
     {

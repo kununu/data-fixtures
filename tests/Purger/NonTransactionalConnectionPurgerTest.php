@@ -14,8 +14,15 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
 
         $connection
             ->expects($this->exactly(5))
-            ->method($this->getExecuteQueryMethodName($connection))
-            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement())
+            ->method('executeStatement')
+            ->with(
+                $this->callback(
+                    fn(string $statement): bool => in_array(
+                        $statement,
+                        $this->getConsecutiveArgumentsForConnectionExecStatement(itemsAsArray: false)
+                    )
+                )
+            )
             ->willReturn(1);
 
         $connection
@@ -38,12 +45,24 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
 
         $connection
             ->expects($this->exactly(3))
-            ->method($this->getExecuteQueryMethodName($connection))
-            ->withConsecutive(...$this->getConsecutiveArgumentsForConnectionExecStatement(1, ['table_1']))
-            ->willReturnCallback(fn(string $sql): int => match (true) {
-                'DELETE FROM `table_1`' === $sql => throw new Exception(),
-                default                          => 1
-            });
+            ->method('executeStatement')
+            ->with(
+                $this->callback(
+                    fn(string $statement): bool => in_array(
+                        $statement,
+                        $this->getConsecutiveArgumentsForConnectionExecStatement(
+                            tables: [self::TABLE_1],
+                            itemsAsArray: false
+                        )
+                    )
+                )
+            )
+            ->willReturnCallback(
+                fn(string $sql): int => match (true) {
+                    'DELETE FROM `table_1`' === $sql => throw new Exception(),
+                    default                          => 1
+                }
+            );
 
         $connection
             ->expects($this->never())

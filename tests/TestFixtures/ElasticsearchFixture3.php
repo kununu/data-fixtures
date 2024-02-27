@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\TestFixtures;
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Adapter\ElasticSearchFixture;
+use Kununu\DataFixtures\Adapter\ElasticsearchFixture;
 
-final class ElasticSearchFixture3 extends ElasticSearchFixture
+final class ElasticsearchFixture3 extends ElasticsearchFixture
 {
     public const DOCUMENTS = [
         [
@@ -29,14 +29,12 @@ final class ElasticSearchFixture3 extends ElasticSearchFixture
         ],
     ];
 
-    public function load(Client $elasticSearch, string $indexName): void
+    public function load(Client $elasticSearch, string $indexName, bool $throwOnFail = true): void
     {
-        $elasticSearch->bulk(
-            [
-                'type' => '_doc',
-                'body' => $this->prepareBodyForBulkIndexation($indexName, self::DOCUMENTS),
-            ]
-        );
+        $elasticSearch->bulk([
+            'type' => '_doc',
+            'body' => $this->prepareBodyForBulkIndexation($indexName, self::DOCUMENTS),
+        ]);
     }
 
     protected function getDocumentIdForBulkIndexation(array $document): mixed

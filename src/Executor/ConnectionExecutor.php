@@ -14,9 +14,9 @@ final class ConnectionExecutor implements ExecutorInterface
     use ConnectionToolsTrait;
 
     public function __construct(
-        private Connection $connection,
-        private PurgerInterface $purger,
-        private bool $transactional = true
+        private readonly Connection $connection,
+        private readonly PurgerInterface $purger,
+        private readonly bool $transactional = true
     ) {
     }
 
@@ -31,8 +31,7 @@ final class ConnectionExecutor implements ExecutorInterface
                 $this->purger->purge();
             }
 
-            $this->executeQuery(
-                $this->connection,
+            $this->connection->executeStatement(
                 $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver())
             );
 
@@ -49,8 +48,7 @@ final class ConnectionExecutor implements ExecutorInterface
             }
             throw $e;
         } finally {
-            $this->executeQuery(
-                $this->connection,
+            $this->connection->executeStatement(
                 $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver())
             );
         }

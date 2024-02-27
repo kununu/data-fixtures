@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Adapter;
 
-abstract class ElasticSearchJsonFileFixture extends ElasticSearchFileFixture
+abstract class ElasticsearchPhpArrayFixture extends ElasticsearchFileFixture
 {
     protected function getFileExtension(): string
     {
-        return 'json';
+        return 'php';
     }
 
     protected function getLoadMode(): string
     {
-        return self::LOAD_MODE_LOAD_JSON;
+        return self::LOAD_MODE_INCLUDE;
     }
 }
