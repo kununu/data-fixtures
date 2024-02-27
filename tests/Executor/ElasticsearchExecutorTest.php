@@ -5,12 +5,12 @@ namespace Kununu\DataFixtures\Tests\Executor;
 
 use Elasticsearch\Client;
 use Elasticsearch\Namespaces\IndicesNamespace;
-use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
-use Kununu\DataFixtures\Executor\ElasticSearchExecutor;
+use Kununu\DataFixtures\Adapter\ElasticsearchFixtureInterface;
+use Kununu\DataFixtures\Executor\ElasticsearchExecutor;
 use Kununu\DataFixtures\Executor\ExecutorInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 
-final class ElasticSearchExecutorTest extends AbstractExecutorTestCase
+final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
 {
     private const INDEX_NAME = 'my_index';
 
@@ -36,13 +36,13 @@ final class ElasticSearchExecutorTest extends AbstractExecutorTestCase
 
     public function testThatFixturesAreLoaded(): void
     {
-        $fixture1 = $this->createMock(ElasticSearchFixtureInterface::class);
+        $fixture1 = $this->createMock(ElasticsearchFixtureInterface::class);
         $fixture1
             ->expects($this->once())
             ->method('load')
             ->with($this->client, self::INDEX_NAME);
 
-        $fixture2 = $this->createMock(ElasticSearchFixtureInterface::class);
+        $fixture2 = $this->createMock(ElasticsearchFixtureInterface::class);
         $fixture2
             ->expects($this->once())
             ->method('load')
@@ -71,6 +71,6 @@ final class ElasticSearchExecutorTest extends AbstractExecutorTestCase
 
     protected function getExecutor(): ExecutorInterface
     {
-        return new ElasticSearchExecutor($this->client, self::INDEX_NAME, $this->purger);
+        return new ElasticsearchExecutor($this->client, self::INDEX_NAME, $this->purger);
     }
 }

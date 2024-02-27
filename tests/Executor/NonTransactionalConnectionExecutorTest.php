@@ -9,14 +9,11 @@ use Exception;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\Executor\NonTransactionalConnectionExecutor;
-use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 
 final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestCase
 {
-    use ConnectionUtilsTrait;
-
     private const SQL_1 = 'SET FOREIGN_KEY_CHECKS=0';
     private const SQL_2 = 'SET FOREIGN_KEY_CHECKS=1';
 
@@ -26,11 +23,12 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
     {
         $this->connection
             ->expects($this->exactly(2))
-            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->method('executeStatement')
             ->willReturnCallback(
                 fn(string $sql): int => match ($sql) {
-                    self::SQL_1, self::SQL_2 => 1,
-                    default => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                    self::SQL_1,
+                    self::SQL_2 => 1,
+                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
                 }
             );
 
@@ -61,11 +59,12 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
 
         $this->connection
             ->expects($this->exactly(2))
-            ->method($this->getExecuteQueryMethodName($this->connection))
+            ->method('executeStatement')
             ->willReturnCallback(
                 fn(string $sql): int => match ($sql) {
-                    self::SQL_1, self::SQL_2 => 1,
-                    default => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                    self::SQL_1,
+                    self::SQL_2 => 1,
+                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
                 }
             );
 
@@ -101,7 +100,7 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
         $this->connection
             ->expects($this->any())
             ->method('getDriver')
-            ->willReturn($this->getMockForAbstractClass(AbstractMySQLDriver::class));
+            ->willReturn($this->createMock(AbstractMySQLDriver::class));
 
         parent::setUp();
     }

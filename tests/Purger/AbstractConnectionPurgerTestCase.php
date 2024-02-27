@@ -7,16 +7,18 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Kununu\DataFixtures\Tests\Utils\ConnectionUtilsTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractConnectionPurgerTestCase extends TestCase
 {
-    use ConnectionUtilsTrait;
-
-    protected const TABLES = ['table_1', 'table_2', 'table_3'];
-    protected const EXCLUDED_TABLES = ['table_4', 'table_2', 'table_5'];
+    protected const TABLE_1 = 'table_1';
+    protected const TABLE_2 = 'table_2';
+    protected const TABLE_3 = 'table_3';
+    protected const TABLE_4 = 'table_4';
+    protected const TABLE_5 = 'table_5';
+    protected const TABLES = [self::TABLE_1, self::TABLE_2, self::TABLE_3];
+    protected const EXCLUDED_TABLES = [self::TABLE_4, self::TABLE_2, self::TABLE_5];
 
     protected function getConnectionMock(bool $withPlatform = true, array $tables = self::TABLES): MockObject|Connection
     {
@@ -28,16 +30,15 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
             ->method('listTableNames')
             ->willReturn($tables);
 
-        // To support doctrine/dbal ^2.9 and ^3.1
         $connection
             ->expects($this->any())
-            ->method(method_exists($connection, 'createSchemaManager') ? 'createSchemaManager' : 'getSchemaManager')
+            ->method('createSchemaManager')
             ->willReturn($schemaManager);
 
         $connection
             ->expects($this->any())
             ->method('getDriver')
-            ->willReturn($this->getMockForAbstractClass(AbstractMySQLDriver::class));
+            ->willReturn($this->createMock(AbstractMySQLDriver::class));
 
         $connection
             ->expects($this->any())
@@ -57,47 +58,55 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
     protected function getConsecutiveArgumentsForConnectionExecStatement(
         ?int $purgeMode = 1,
         ?array $tables = self::TABLES,
-        ?array $excludedTables = []
+        ?array $excludedTables = [],
+        bool $itemsAsArray = true
     ): array {
         $purgeStatements = match ($purgeMode) {
             // PURGE_MODE_DELETE
-            1       => $this->getDeleteModeConnectionWithConsecutiveArguments($tables, $excludedTables),
+            1       => $this->getDeleteModeConsecutiveArguments($tables, $excludedTables, $itemsAsArray),
             // PURGE_MODE_TRUNCATE
-            2       => $this->getTruncateModeConnectionWithConsecutiveArguments($tables, $excludedTables),
+            2       => $this->getTruncateModeConsecutiveArguments($tables, $excludedTables, $itemsAsArray),
             default => []
         };
 
+        $disableForeignKeyChecks = 'SET FOREIGN_KEY_CHECKS=0';
+        $enableForeignKeyChecks = 'SET FOREIGN_KEY_CHECKS=1';
+
         return array_merge(
-            [['SET FOREIGN_KEY_CHECKS=0']],
+            [$itemsAsArray ? [$disableForeignKeyChecks] : $disableForeignKeyChecks],
             $purgeStatements,
-            [['SET FOREIGN_KEY_CHECKS=1']]
+            [$itemsAsArray ? [$enableForeignKeyChecks] : $enableForeignKeyChecks]
         );
     }
 
-    protected function getDeleteModeConnectionWithConsecutiveArguments(
+    protected function getDeleteModeConsecutiveArguments(
         array $tables = self::TABLES,
-        array $excludedTables = []
+        array $excludedTables = [],
+        bool $itemsAsArray = true
     ): array {
         $return = [];
 
         foreach ($tables as $tableName) {
             if (!in_array($tableName, $excludedTables)) {
-                $return[] = [sprintf('DELETE FROM `%s`', $tableName)];
+                $statement = sprintf('DELETE FROM `%s`', $tableName);
+                $return[] = $itemsAsArray ? [$statement] : $statement;
             }
         }
 
         return $return;
     }
 
-    protected function getTruncateModeConnectionWithConsecutiveArguments(
+    protected function getTruncateModeConsecutiveArguments(
         array $tables = self::TABLES,
-        array $excludedTables = []
+        array $excludedTables = [],
+        bool $itemsAsArray = true
     ): array {
         $return = [];
 
         foreach ($tables as $tableName) {
             if (!in_array($tableName, $excludedTables)) {
-                $return[] = [sprintf('TRUNCATE `%s`', $tableName)];
+                $statement = sprintf('TRUNCATE `%s`', $tableName);
+                $return[] = $itemsAsArray ? [$statement] : $statement;
             }
         }
 

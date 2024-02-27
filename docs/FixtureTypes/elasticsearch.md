@@ -14,7 +14,7 @@ composer require elastic/elasticsearch
 
 ### 1. Create fixture classes
 
-The first step to load Elasticsearch Fixtures is to create fixtures classes. This classes must implement the [ElasticSearchFixtureInterface](/src/Adapter/ElasticSearchFixtureInterface.php) or if you want to easily use *bulk* inserts on your fixtures you can extend the class [ElasticSearchFixture](/src/Adapter/ElasticSearchFixture.php).
+The first step to load Elasticsearch Fixtures is to create fixtures classes. This classes must implement the [ElasticsearchFixtureInterface](/src/Adapter/ElasticsearchFixtureInterface.php) or if you want to easily use *bulk* inserts on your fixtures you can extend the class [ElasticsearchFixture](/src/Adapter/ElasticsearchFixture.php).
 
 
 #### Inserting a single document
@@ -24,9 +24,9 @@ The first step to load Elasticsearch Fixtures is to create fixtures classes. Thi
 declare(strict_types=1);
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
+use Kununu\DataFixtures\Adapter\ElasticsearchFixtureInterface;
 
-final class MyFixture implements ElasticSearchFixtureInterface
+final class MyFixture implements ElasticsearchFixtureInterface
 {
     public function load(Client $elasticSearch, string $indexName): void
     {
@@ -48,9 +48,9 @@ final class MyFixture implements ElasticSearchFixtureInterface
 declare(strict_types=1);
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Adapter\ElasticSearchFixture;
+use Kununu\DataFixtures\Adapter\ElasticsearchFixture;
 
-final class MyFixture extends ElasticSearchFixture
+final class MyFixture extends ElasticsearchFixture
 {
     public function load(Client $elasticSearch, string $indexName): void
     {
@@ -118,7 +118,7 @@ final class MyFixture extends ElasticSearchFixture
 
 #### Bulk insert documents from files
 
-To include a series of files extend `Kununu\DataFixtures\Adapter\ElasticSearchFileFixture`.
+To include a series of files extend `Kununu\DataFixtures\Adapter\ElasticsearchFileFixture`.
 
 There are two options here:
 
@@ -148,9 +148,9 @@ Example:
 declare(strict_types=1);
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Adapter\ElasticSearchFileFixture;
+use Kununu\DataFixtures\Adapter\ElasticsearchFileFixture;
 
-final class MyFixture extends ElasticSearchFileFixture
+final class MyFixture extends ElasticsearchFileFixture
 {
 	protected function fileNames(): array
 	{
@@ -213,9 +213,9 @@ Or for JSON files:
 declare(strict_types=1);
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Adapter\ElasticSearchFileFixture;
+use Kununu\DataFixtures\Adapter\ElasticsearchFileFixture;
 
-final class MyFixture extends ElasticSearchFileFixture
+final class MyFixture extends ElasticsearchFileFixture
 {
 	protected function fileNames(): array
 	{
@@ -319,17 +319,17 @@ In order to load the fixtures that you created in the previous step you will nee
 declare(strict_types=1);
 
 use Elasticsearch\ClientBuilder;
-use Kununu\DataFixtures\Executor\ElasticSearchExecutor;
-use Kununu\DataFixtures\Loader\ElasticSearchFixturesLoader;
-use Kununu\DataFixtures\Purger\ElasticSearchPurger;
+use Kununu\DataFixtures\Executor\ElasticsearchExecutor;
+use Kununu\DataFixtures\Loader\ElasticsearchFixturesLoader;
+use Kununu\DataFixtures\Purger\ElasticsearchPurger;
 
 $client = ClientBuilder::create()->build();
 
-$purger = new ElasticSearchPurger($client, 'my_index');
+$purger = new ElasticsearchPurger($client, 'my_index');
 
-$executor = new ElasticSearchExecutor($client, 'my_index', $purger);
+$executor = new ElasticsearchExecutor($client, 'my_index', $purger);
 
-$loader = new ElasticSearchFixturesLoader();
+$loader = new ElasticsearchFixturesLoader();
 $loader->addFixture(new MyFixture());
 
 $executor->execute($loader->getFixtures());
@@ -348,9 +348,9 @@ By default, when loading fixtures the Elasticsearch index is purged. If you want
 <?php
 declare(strict_types=1);
 
-use Kununu\DataFixtures\Executor\ElasticSearchExecutor;
+use Kununu\DataFixtures\Executor\ElasticsearchExecutor;
 
-$executor = new ElasticSearchExecutor($client, 'my_index', $purger);
+$executor = new ElasticsearchExecutor($client, 'my_index', $purger);
 
 // If you want you can `append` the fixtures instead of purging the Elasticsearch index
 $executor->execute($loader->getFixtures(), true);

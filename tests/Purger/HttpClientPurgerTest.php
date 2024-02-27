@@ -35,6 +35,7 @@ final class HttpClientPurgerTest extends AbstractPurgerTestCase
     protected function setUp(): void
     {
         $this->httpClient = $this->createMock(FixturesHttpClientInterface::class);
+
         parent::setUp();
     }
 

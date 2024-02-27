@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Adapter;
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Tests\TestFixtures\ElasticSearchArrayDirectoryFixture1;
+use Kununu\DataFixtures\Tests\TestFixtures\ElasticsearchArrayDirectoryFixture1;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-final class ElasticSearchArrayDirectoryFixtureTest extends TestCase
+final class ElasticsearchArrayDirectoryFixtureTest extends TestCase
 {
     private MockObject|Client $client;
 
@@ -80,9 +80,10 @@ final class ElasticSearchArrayDirectoryFixtureTest extends TestCase
                 $this->callback(
                     fn(array $bulk): bool => ($bulk == $bulk1 || $bulk == $bulk2)
                 )
-            );
+            )
+            ->willReturn(['errors' => false]);
 
-        (new ElasticSearchArrayDirectoryFixture1())->load($this->client, 'my_index');
+        (new ElasticsearchArrayDirectoryFixture1())->load($this->client, 'my_index');
     }
 
     protected function setUp(): void

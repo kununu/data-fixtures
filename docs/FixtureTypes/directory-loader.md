@@ -15,7 +15,7 @@ For any fixture extending this class:
 - All `*.sql` files inside that directory will be loaded when invoking the `load` method of that fixture class.
   - Other files will be ignored.
 
-## ElasticSearchArrayDirectoryFixture
+## ElasticsearchArrayDirectoryFixture
 
 For any fixture extending this class:
 
@@ -26,7 +26,7 @@ For any fixture extending this class:
 - Each of your `*.php` file should return an array of arrays, where each entry in the main array is a representation of the Elasticsearch document.
 - Your fixture class must also implement the `getDocumentIdForBulkIndexation` method, take into consideration the `prepareDocument` and `getDocumentType` methods, as described in [Elasticsearch Fixtures](elasticsearch.md).
 
-## ElasticSearchJsonDirectoryFixture
+## ElasticsearchJsonDirectoryFixture
 
 For any fixture extending this class:
 
@@ -35,7 +35,7 @@ For any fixture extending this class:
 - All `*.json` files inside that directory will be loaded when invoking the `load` method of that fixture class.
     - Other files will be ignored.
 - Each of your `*.json` file should be a JSON array of JSON objects, where each object in the main array is a representation of the Elasticsearch document.
-- Each file will be decoded to a PHP array, and from there the workflow is the same as `ElasticSearchArrayDirectoryFixture`.
+- Each file will be decoded to a PHP array, and from there the workflow is the same as `ElasticsearchArrayDirectoryFixture`.
 - Your fixture class must also implement the `getDocumentIdForBulkIndexation` method, take into consideration the `prepareDocument` and `getDocumentType` methods, as described in [Elasticsearch Fixtures](elasticsearch.md).
 
 ## HttpClientArrayDirectoryFixture
@@ -57,7 +57,7 @@ Your fixtures should be at directory level like this:
   * MyConnectionFixture1.php
   * MyConnectionFixture2.php
   * MyHttpClientFixture1.php
-  * MyElasticSearchFixtureFromJson.php
+  * MyElasticsearchFixtureFromJson.php
   +- Sql\
   | +- MyConnectionFixture1\
   | |   * sql-file.sql
@@ -66,10 +66,10 @@ Your fixtures should be at directory level like this:
   | |   * this-file-is-ignored-because-it-has-a-different-extension.txt
   | |   * my-fixtures.sql
   +- Elasticsearch\
-  | +- MyElasticSearchFixtureFromArray\
+  | +- MyElasticsearchFixtureFromArray\
   | |   * my-elasticsearch-docs-array1.php
   | |   * my-elasticsearch-docs-array2.php
-  | +- MyElasticSearchFixtureFromJson\
+  | +- MyElasticsearchFixtureFromJson\
   | |   * my-elasticsearch-docs-json1.json
   | |   * my-elasticsearch-docs-json2.json
   +- Responses\

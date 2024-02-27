@@ -12,8 +12,8 @@ abstract class ConnectionSqlFixture extends AbstractFileLoaderFixture implements
 
     final public function load(Connection $connection): void
     {
-        parent::loadFiles(fn (?string $sql) => match (true) {
-            is_string($sql) => $this->executeQuery($connection, $sql),
+        parent::loadFiles(fn(?string $sql) => match (true) {
+            is_string($sql) => $connection->executeStatement($sql),
             default         => null
         });
     }

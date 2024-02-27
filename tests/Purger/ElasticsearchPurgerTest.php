@@ -5,12 +5,12 @@ namespace Kununu\DataFixtures\Tests\Purger;
 
 use Elasticsearch\Client;
 use Elasticsearch\Namespaces\IndicesNamespace;
-use Kununu\DataFixtures\Purger\ElasticSearchPurger;
+use Kununu\DataFixtures\Purger\ElasticsearchPurger;
 use Kununu\DataFixtures\Purger\PurgerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
 
-final class ElasticSearchPurgerTest extends AbstractPurgerTestCase
+final class ElasticsearchPurgerTest extends AbstractPurgerTestCase
 {
     private MockObject|Client $client;
 
@@ -49,11 +49,12 @@ final class ElasticSearchPurgerTest extends AbstractPurgerTestCase
     protected function setUp(): void
     {
         $this->client = $this->createMock(Client::class);
+
         parent::setUp();
     }
 
     protected function getPurger(): PurgerInterface
     {
-        return new ElasticSearchPurger($this->client, 'my_index');
+        return new ElasticsearchPurger($this->client, 'my_index');
     }
 }

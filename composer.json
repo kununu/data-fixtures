@@ -22,18 +22,17 @@
     }
   ],
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.1",
     "ext-json": "*"
   },
   "require-dev": {
-    "doctrine/dbal": "^2.9 || ^3.1",
-    "elasticsearch/elasticsearch": "^7.0",
+    "doctrine/dbal": "^3.8",
+    "elasticsearch/elasticsearch": "^7.1",
     "kununu/scripts": ">=4.0",
-    "phpunit/phpunit": "^9.5",
-    "psr/cache": "^1.0",
-    "symfony/http-client": "^4.4 | ^5.2",
-    "symfony/http-foundation": "^4.4 | ^5.2",
-    "symfony/phpunit-bridge": "^5.2"
+    "phpunit/phpunit": "^10.5",
+    "psr/cache": "^2.0",
+    "symfony/http-client": "^6.4",
+    "symfony/http-foundation": "^6.4"
   },
   "suggest": {
     "psr/cache": "Load fixtures for implementation of the PSR6 standard",
@@ -54,8 +53,8 @@
     }
   },
   "scripts": {
-    "test": "phpunit --no-coverage tests",
-    "test-coverage": "XDEBUG_MODE=coverage phpunit --coverage-clover tests/.results/coverage.xml --coverage-html tests/.results/html/ tests"
+    "test": "phpunit --no-coverage --no-logging --no-progress",
+    "test-coverage": "XDEBUG_MODE=coverage phpunit"
   },
   "scripts-descriptions": {
     "test": "Run all tests",

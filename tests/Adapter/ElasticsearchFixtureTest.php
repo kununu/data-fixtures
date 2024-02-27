@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Adapter;
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Tests\TestFixtures\ElasticSearchFixture3;
+use Kununu\DataFixtures\Tests\TestFixtures\ElasticsearchFixture3;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-final class ElasticSearchFixtureTest extends TestCase
+final class ElasticsearchFixtureTest extends TestCase
 {
     private MockObject|Client $client;
 
@@ -53,7 +53,7 @@ final class ElasticSearchFixtureTest extends TestCase
                 ],
             ]);
 
-        (new ElasticSearchFixture3())->load($this->client, 'my_index');
+        (new ElasticsearchFixture3())->load($this->client, 'my_index');
     }
 
     protected function setUp(): void

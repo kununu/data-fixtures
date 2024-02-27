@@ -7,7 +7,10 @@ use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Doctrine\DBAL\Driver\AbstractSQLiteDriver;
 use Doctrine\DBAL\Logging\Middleware;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -16,7 +19,7 @@ final class ConnectionToolsTest extends TestCase
 {
     use ConnectionToolsTrait;
 
-    /** @dataProvider providerMySQLDrivers */
+    #[DataProvider('mysqlDataProvider')]
     public function testGetDisableForeignKeyChecksForMySQL(Driver|string $driver): void
     {
         $this->assertEquals(
@@ -25,7 +28,7 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    /** @dataProvider providerMySQLDrivers */
+    #[DataProvider('mysqlDataProvider')]
     public function testGetEnableForeignKeyChecksForMySQL(Driver|string $driver): void
     {
         $this->assertEquals(
@@ -34,7 +37,7 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    /** @dataProvider providerSQLiteDrivers */
+    #[DataProvider('sqliteDataProvider')]
     public function testGetDisableForeignKeyChecksForSqlite(Driver|string $driver): void
     {
         $this->assertEquals(
@@ -43,7 +46,7 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    /** @dataProvider providerSQLiteDrivers */
+    #[DataProvider('sqliteDataProvider')]
     public function testGetEnableForeignKeyChecksForSqlite(Driver|string $driver): void
     {
         $this->assertEquals(
@@ -69,9 +72,9 @@ final class ConnectionToolsTest extends TestCase
     }
 
     /** @return array<string, array{Driver|string}> */
-    public static function providerMySQLDrivers(): array
+    public static function mysqlDataProvider(): array
     {
-        if (self::dbalSupportsAbstractMySQLPlatform()) {
+        if (class_exists(AbstractMySQLPlatform::class)) {
             $abstractMySQLDriver = new class() extends AbstractMySQLDriver {
                 public function connect(array $params)
                 {
@@ -80,24 +83,22 @@ final class ConnectionToolsTest extends TestCase
             };
 
             return [
-                'abstract mysql driver'                               => [$abstractMySQLDriver],
-                'abstract mysql driver wrapped in logging middleware' => [
+                'abstract_mysql_driver'                               => [$abstractMySQLDriver],
+                'abstract_mysql_driver_wrapped_in_logging_middleware' => [
                     (new Middleware(new NullLogger()))->wrap($abstractMySQLDriver),
                 ],
             ];
         }
 
         return [
-            'abstract mysql driver' => [AbstractMySQLDriver::class],
+            'abstract_mysql_driver' => [AbstractMySQLDriver::class],
         ];
     }
 
-    /**
-     * @return array<string, array{Driver}>
-     */
-    public static function providerSQLiteDrivers(): array
+    /** @return array<string, array{Driver|string}> */
+    public static function sqliteDataProvider(): array
     {
-        if (self::dbalSupportsAbstractMySQLPlatform()) {
+        if (class_exists(SqlitePlatform::class)) {
             $abstractSQLiteDriver = new class() extends AbstractSQLiteDriver {
                 public function connect(array $params)
                 {
@@ -106,8 +107,8 @@ final class ConnectionToolsTest extends TestCase
             };
 
             return [
-                'abstract sqlite driver'                               => [$abstractSQLiteDriver],
-                'abstract sqlite driver wrapped in logging middleware' => [
+                'abstract_sqlite_driver'                               => [$abstractSQLiteDriver],
+                'abstract_sqlite_driver wrapped_in_logging_middleware' => [
                     (new Middleware(new NullLogger()))->wrap($abstractSQLiteDriver),
                 ],
             ];
@@ -121,10 +122,5 @@ final class ConnectionToolsTest extends TestCase
     private function getDriver(Driver|string $driver): MockObject|Driver
     {
         return is_string($driver) ? $this->createMock($driver) : $driver;
-    }
-
-    private static function dbalSupportsAbstractMySQLPlatform(): bool
-    {
-        return class_exists('\Doctrine\DBAL\Platforms\AbstractMySQLPlatform');
     }
 }
