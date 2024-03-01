@@ -35,16 +35,8 @@ abstract class ElasticsearchFileFixture extends AbstractFileLoaderFixture implem
 
         if ($throwOnFail && ($result['errors'] ?? false)) {
             $errors = array_map(
-                fn(array $item): stdClass => (object) [
-                    self::INDEX => $item[self::UPDATE]['_index'],
-                    'id'        => $item[self::UPDATE]['_id'],
-                    'status'    => $item[self::UPDATE]['status'],
-                    self::ERROR => $item[self::UPDATE][self::ERROR],
-                ],
-                array_filter(
-                    $result['items'] ?? [],
-                    fn(array $item): bool => isset($item[self::UPDATE][self::ERROR])
-                )
+                fn(array $item): stdClass => (object) $item,
+                array_filter($result['items'] ?? [])
             );
 
             throw new LoadFailedException(static::class, $errors);
