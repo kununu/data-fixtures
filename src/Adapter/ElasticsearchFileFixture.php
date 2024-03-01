@@ -11,10 +11,6 @@ abstract class ElasticsearchFileFixture extends AbstractFileLoaderFixture implem
 {
     use ElasticsearchFixtureTrait;
 
-    private const INDEX = 'index';
-    private const UPDATE = 'update';
-    private const ERROR = 'error';
-
     public function load(Client $elasticSearch, string $indexName, bool $throwOnFail = true): void
     {
         parent::loadFiles(fn(array $documents) => $this->bulk($elasticSearch, $indexName, $documents, $throwOnFail));
