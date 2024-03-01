@@ -120,25 +120,6 @@ final class ElasticsearchJsonDirectoryFixtureTest extends TestCase
                 ],
             ],
         ];
-        $bulk2 = [
-            'body' => [
-                [
-                    'index' => [
-                        '_index' => 'my_index',
-                        '_id'    => 'd1cd10a0-7023-434c-8cd3-0196e1d34c2f',
-                    ],
-                ],
-                [
-                    'uuid'       => 'd1cd10a0-7023-434c-8cd3-0196e1d34c2f',
-                    'name'       => 'Document 3',
-                    'attributes' => [
-                        'attrib_1' => 3,
-                        'attrib_2' => 'inactive',
-                        'attrib_3' => false,
-                    ],
-                ],
-            ],
-        ];
 
         $this->client
             ->expects($this->once())
@@ -168,10 +149,12 @@ final class ElasticsearchJsonDirectoryFixtureTest extends TestCase
 Errors:
 [
     {
-        "index": "my_index",
-        "id": "17e05f79-2c6e-4a71-bacf-afc8fd8e5f73",
-        "status": "some status",
-        "error": "some error"
+        "update": {
+            "error": "some error",
+            "_index": "my_index",
+            "_id": "17e05f79-2c6e-4a71-bacf-afc8fd8e5f73",
+            "status": "some status"
+        }
     }
 ]
 TEXT
