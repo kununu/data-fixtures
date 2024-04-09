@@ -9,8 +9,10 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class HttpClientExecutor implements ExecutorInterface
 {
-    public function __construct(private HttpClientInterface $httpClient, private PurgerInterface $purger)
-    {
+    public function __construct(
+        private readonly HttpClientInterface $httpClient,
+        private readonly PurgerInterface $purger
+    ) {
     }
 
     public function execute(array $fixtures, bool $append = false): void
