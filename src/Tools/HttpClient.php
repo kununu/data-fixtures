@@ -82,7 +82,6 @@ final class HttpClient extends MockHttpClient implements FixturesHttpClientInter
 
         $reflectionClass = new ReflectionClass(MockHttpClient::class);
         $reflectionProperty = $reflectionClass->getProperty('responseFactory');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this, $responseFactory);
     }
 }

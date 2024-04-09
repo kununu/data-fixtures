@@ -8,7 +8,7 @@ use Kununu\DataFixtures\Purger\PurgerInterface;
 
 final class NonTransactionalConnectionExecutor implements ExecutorInterface
 {
-    private ExecutorInterface $executor;
+    private readonly ExecutorInterface $executor;
 
     public function __construct(Connection $connection, PurgerInterface $purger)
     {

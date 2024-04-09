@@ -8,7 +8,7 @@ use stdClass;
 
 final class ElasticsearchPurger implements PurgerInterface
 {
-    public function __construct(private Client $elasticSearch, private string $indexName)
+    public function __construct(private readonly Client $elasticSearch, private readonly string $indexName)
     {
     }
 
