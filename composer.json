@@ -28,7 +28,7 @@
   "require-dev": {
     "doctrine/dbal": "^3.8",
     "elasticsearch/elasticsearch": "^7.1",
-    "kununu/scripts": ">=4.0",
+    "kununu/scripts": ">=5.0",
     "phpunit/phpunit": "^10.5",
     "psr/cache": "^2.0",
     "symfony/http-client": "^6.4",
