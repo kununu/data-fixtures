@@ -10,8 +10,8 @@ abstract class ElasticsearchJsonFileFixture extends ElasticsearchFileFixture
         return 'json';
     }
 
-    protected function getLoadMode(): string
+    protected function getLoadMode(): LoadMode
     {
-        return self::LOAD_MODE_LOAD_JSON;
+        return LoadMode::LoadJson;
     }
 }

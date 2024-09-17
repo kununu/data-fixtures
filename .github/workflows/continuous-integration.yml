@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 8.1
+          - 8.3
         dependencies:
           - lowest
           - highest
@@ -58,7 +58,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: build-8.1-highest-coverage
+          name: build-8.3-highest-coverage
           path: tests/.results/
 
       - name: Fix Code Coverage Paths

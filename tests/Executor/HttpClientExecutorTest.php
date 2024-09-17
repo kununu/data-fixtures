@@ -11,12 +11,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class HttpClientExecutorTest extends AbstractExecutorTestCase
 {
-    private MockObject|FixturesHttpClientInterface $httpClient;
+    private MockObject&FixturesHttpClientInterface $httpClient;
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->purger
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -25,7 +25,7 @@ final class HttpClientExecutorTest extends AbstractExecutorTestCase
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->purger
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -35,13 +35,13 @@ final class HttpClientExecutorTest extends AbstractExecutorTestCase
     {
         $fixture1 = $this->createMock(HttpClientFixtureInterface::class);
         $fixture1
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->httpClient);
 
         $fixture2 = $this->createMock(HttpClientFixtureInterface::class);
         $fixture2
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->httpClient);
 
@@ -51,6 +51,7 @@ final class HttpClientExecutorTest extends AbstractExecutorTestCase
     protected function setUp(): void
     {
         $this->httpClient = $this->createMock(FixturesHttpClientInterface::class);
+
         parent::setUp();
     }
 

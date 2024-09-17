@@ -7,11 +7,11 @@ use Kununu\DataFixtures\Adapter\HttpClientFixtureInterface;
 use Kununu\DataFixtures\Purger\PurgerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class HttpClientExecutor implements ExecutorInterface
+final readonly class HttpClientExecutor implements ExecutorInterface
 {
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        private readonly PurgerInterface $purger
+        private HttpClientInterface $httpClient,
+        private PurgerInterface $purger,
     ) {
     }
 

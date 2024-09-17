@@ -14,12 +14,12 @@ use PHPUnit\Framework\TestCase;
 
 final class HttpClientPhpArrayFixtureTest extends TestCase
 {
-    private MockObject|FixturesHttpClientInterface $httpClient;
+    private MockObject&FixturesHttpClientInterface $httpClient;
 
     public function testLoad(): void
     {
         $this->httpClient
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('addResponses')
             ->with([
                 [
@@ -50,7 +50,7 @@ JSON
     public function testFileNotFound(): void
     {
         $this->httpClient
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('addResponses');
 
         $this->expectException(InvalidFileException::class);
@@ -61,7 +61,7 @@ JSON
     public function testInvalidFile(): void
     {
         $this->httpClient
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('addResponses');
 
         $this->expectException(InvalidFileException::class);
@@ -74,7 +74,7 @@ JSON
         $httpClient = $this->createMock(FakeHttpClientInterface::class);
 
         $this->httpClient
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('addResponses');
 
         $fixture = new HttpClientFixture2();

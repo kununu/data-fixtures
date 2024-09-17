@@ -5,9 +5,9 @@ namespace Kununu\DataFixtures\Purger;
 
 use Doctrine\DBAL\Connection;
 
-final class NonTransactionalConnectionPurger implements PurgerInterface
+final readonly class NonTransactionalConnectionPurger implements PurgerInterface
 {
-    private readonly PurgerInterface $purger;
+    private PurgerInterface $purger;
 
     public function __construct(Connection $connection, array $excludedTables = [])
     {

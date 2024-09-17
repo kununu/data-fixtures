@@ -7,7 +7,7 @@ use RuntimeException;
 
 final class LoadFailedException extends RuntimeException
 {
-    private const MESSAGE = <<<'TEXT'
+    private const string MESSAGE = <<<'TEXT'
 Failed to load fixture class "%s"
 
 Errors:

@@ -6,11 +6,9 @@ This means you can do predictable tests without relying on external services to 
 
 ## Install
 
-Before starting loading Http Client Fixtures make sure to
-add [Symfony Http Client](https://github.com/symfony/http-client)
-and [Symfony Http Foundation](https://github.com/symfony/http-foundation) as a dependencies of your project.
+Before starting loading Http Client Fixtures make sure to add [Symfony Http Client](https://github.com/symfony/http-client) and [Symfony Http Foundation](https://github.com/symfony/http-foundation) as a dependencies of your project.
 
-```bash
+```shell
 composer require symfony/http-client symfony/http-foundation
 ```
 
@@ -20,9 +18,7 @@ composer require symfony/http-client symfony/http-foundation
 
 The first step to load Http Client Fixtures is to create fixtures classes.
 
-These classes must implement the [HttpClientFixtureInterface](/src/Adapter/HttpClientFixtureInterface.php) or if you
-want to easily define an array of requests/responses on your fixtures you can extend the
-class [HttpClientPhpArrayFixture](/src/Adapter/HttpClientPhpArrayFixture.php).
+These classes must implement the [HttpClientFixtureInterface](../../src/Adapter/HttpClientFixtureInterface.php) or if you want to easily define an array of requests/responses on your fixtures you can extend the class [HttpClientPhpArrayFixture](../../src/Adapter/HttpClientPhpArrayFixture.php).
 
 ```php
 <?php
@@ -101,23 +97,19 @@ JSON
             }
 
             // For all other cases return a 404
-            return new MockResponse('', ['http_code' => Response::HTTP_NOT_FOUND]);
-        
+            return new MockResponse('', ['http_code' => Response::HTTP_NOT_FOUND]);        
         }        
-    ],
     ],
 ];
 ```
 
-If a request is made to an url that is not loaded by a fixture the client will return an **Http 500** status code.
+If a request is made to an url that is not loaded by a fixture the client will return a **Http 500** status code.
 
 ### 2. Load fixtures
 
-In order to load the fixtures that you created in the previous step you will need to configure the *Http Client
-Executor*.
+In order to load the fixtures that you created in the previous step you will need to configure the *Http Client Executor*.
 
-Note that you **need to** use the special [HttpClient](/src/Tools/HttpClient) provided with this library which is based
-on Symfony **MockHttpClient**.
+Note that you **need to** use the special [HttpClient](../../src/Tools/HttpClient.php) provided with this library which is based on Symfony **MockHttpClient**.
 
 ```php
 <?php
@@ -141,13 +133,11 @@ $loader->addFixture(new MyFixture());
 $executor->execute($loader->getFixtures());
 ```
 
-If you want to know more options on how you can load fixtures in the Loader
-checkout *[Load Fixtures](/README.md#loading-fixtures)*.
+If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](../../README.md#load-fixtures)*.
 
 ### 3. Append Fixtures
 
-By default, when loading fixtures the Http Client responses internal storage is purged. If you want to change this
-behavior and instead append the fixtures, you can pass *true* as second argument to the HttpClientExecutor.
+By default, when loading fixtures the Http Client responses internal storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the `HttpClientExecutor`.
 
 ```php
 $executor->execute($loader->getFixtures(), true);

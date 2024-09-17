@@ -7,12 +7,12 @@ use Elasticsearch\Client;
 use Kununu\DataFixtures\Adapter\ElasticsearchFixtureInterface;
 use Kununu\DataFixtures\Purger\PurgerInterface;
 
-final class ElasticsearchExecutor implements ExecutorInterface
+final readonly class ElasticsearchExecutor implements ExecutorInterface
 {
     public function __construct(
-        private readonly Client $elasticSearch,
-        private readonly string $indexName,
-        private readonly PurgerInterface $purger
+        private Client $elasticSearch,
+        private string $indexName,
+        private PurgerInterface $purger,
     ) {
     }
 

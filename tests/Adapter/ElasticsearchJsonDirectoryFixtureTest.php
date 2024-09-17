@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ElasticsearchJsonDirectoryFixtureTest extends TestCase
 {
-    private MockObject|Client $client;
+    private MockObject&Client $client;
 
     public function testLoadSuccess(): void
     {
@@ -72,11 +72,11 @@ final class ElasticsearchJsonDirectoryFixtureTest extends TestCase
         ];
 
         $this->client
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('bulk')
             ->with(
-                $this->callback(
-                    fn(array $bulk): bool => ($bulk == $bulk1 || $bulk == $bulk2)
+                self::callback(
+                    static fn(array $bulk): bool => ($bulk == $bulk1 || $bulk == $bulk2)
                 )
             )
             ->willReturn(['errors' => false]);
@@ -122,10 +122,10 @@ final class ElasticsearchJsonDirectoryFixtureTest extends TestCase
         ];
 
         $this->client
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('bulk')
             ->with(
-                $this->callback(
+                self::callback(
                     fn(array $bulk): bool => $bulk == $bulk1
                 )
             )
@@ -166,7 +166,7 @@ TEXT
     public function testLoadWithInvalidJson(): void
     {
         $this->client
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('bulk')
             ->with([
                 'body' => [

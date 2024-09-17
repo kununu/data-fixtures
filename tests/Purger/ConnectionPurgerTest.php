@@ -5,8 +5,8 @@ namespace Kununu\DataFixtures\Tests\Purger;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Exception;
-use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
+use Kununu\DataFixtures\Purger\PurgeMode;
 
 final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 {
@@ -15,7 +15,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects($this->exactly(5))
+            ->expects(self::exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -29,17 +29,17 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 
         $transactionStarted = false;
         $connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('beginTransaction')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
         $connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('commit')
             ->willReturnCallback(function() use (&$transactionStarted): void {
-                $this->assertTrue($transactionStarted);
+                self::assertTrue($transactionStarted);
             });
 
         $purger = new ConnectionPurger($connection);
@@ -53,7 +53,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects($this->exactly(5))
+            ->expects(self::exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -67,22 +67,23 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 
         $transactionStarted = false;
         $connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('beginTransaction')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
         $connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('commit')
             ->willReturnCallback(function() use (&$transactionStarted): void {
-                $this->assertTrue($transactionStarted);
+                self::assertTrue($transactionStarted);
+
                 throw new Exception('Failed to commit!');
             });
 
         $connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('rollback');
 
         $purger = new ConnectionPurger($connection);
@@ -94,7 +95,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock(true, []);
 
         $connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('executeStatement');
 
         $purger = new ConnectionPurger($connection);
@@ -106,7 +107,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects($this->exactly(4))
+            ->expects(self::exactly(4))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -131,7 +132,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects($this->exactly(5))
+            ->expects(self::exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -155,11 +156,11 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $platform = $this->createMock(AbstractPlatform::class);
 
         $platform
-            ->expects($this->exactly(3))
+            ->expects(self::exactly(3))
             ->method('getTruncateTableSQL')
             ->with(
                 $this->callback(
-                    fn(string $table): bool => in_array($table, [self::TABLE_1, self::TABLE_2, self::TABLE_3])
+                    static fn(string $table): bool => in_array($table, [self::TABLE_1, self::TABLE_2, self::TABLE_3])
                 )
             )
             ->willReturnOnConsecutiveCalls(
@@ -167,52 +168,27 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
             );
 
         $connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getDatabasePlatform')
             ->willReturn($platform);
 
         $connection
-            ->expects($this->exactly(5))
+            ->expects(self::exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
                     fn(string $statement): bool => in_array(
                         $statement,
-                        $this->getConsecutiveArgumentsForConnectionExecStatement(2, itemsAsArray: false)
+                        $this->getConsecutiveArgumentsForConnectionExecStatement(
+                            purgeMode: PurgeMode::Truncate,
+                            itemsAsArray: false
+                        )
                     )
                 )
             )
             ->willReturn(1);
 
-        $purger = new ConnectionPurger($connection);
-
-        $purger->setPurgeMode(2);
+        $purger = new ConnectionPurger($connection, purgeMode: PurgeMode::Truncate);
         $purger->purge();
-    }
-
-    public function testChangePurgeModeToDelete(): void
-    {
-        $purger = new ConnectionPurger($this->getConnectionMock());
-
-        $purger->setPurgeMode(1);
-
-        $this->assertEquals(1, $purger->getPurgeMode());
-    }
-
-    public function testChangePurgeModeToTruncate(): void
-    {
-        $purger = new ConnectionPurger($this->getConnectionMock());
-
-        $purger->setPurgeMode(2);
-
-        $this->assertEquals(2, $purger->getPurgeMode());
-    }
-
-    public function testChangePurgeModeToNotSupportedModeThrowsException(): void
-    {
-        $this->expectException(InvalidConnectionPurgeModeException::class);
-
-        $purger = new ConnectionPurger($this->getConnectionMock());
-        $purger->setPurgeMode(10);
     }
 }

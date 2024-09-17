@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class HttpClientTest extends TestCase
 {
-    private const REQUEST_1 = 'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data';
-    private const REQUEST_2 = 'https://my.server/f2895c23-28cb-4020-b038-717cca64bf2d/data';
+    private const string REQUEST_1 = 'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data';
+    private const string REQUEST_2 = 'https://my.server/f2895c23-28cb-4020-b038-717cca64bf2d/data';
 
     public function testHttpClient(): void
     {
@@ -19,7 +19,8 @@ final class HttpClientTest extends TestCase
         $httpClient->addResponses(require_once __DIR__ . '/responses.php');
 
         $response = $httpClient->request(Request::METHOD_GET, self::REQUEST_1);
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+
+        self::assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
 
         $response = $httpClient->request(
             Request::METHOD_POST,
@@ -30,8 +31,9 @@ final class HttpClientTest extends TestCase
                 ],
             ]
         );
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertJsonStringEqualsJsonString(
+
+        self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        self::assertJsonStringEqualsJsonString(
             <<<'JSON'
 {
     "id": 1000,
@@ -48,12 +50,14 @@ JSON
         );
 
         $response = $httpClient->request(Request::METHOD_POST, self::REQUEST_2);
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
-        $this->assertEmpty($response->getContent(false));
+
+        self::assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+        self::assertEmpty($response->getContent(false));
 
         $httpClient->clearResponses();
 
         $response = $httpClient->request(Request::METHOD_GET, self::REQUEST_1);
-        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
+
+        self::assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
     }
 }

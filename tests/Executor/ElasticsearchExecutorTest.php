@@ -14,12 +14,12 @@ final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
 {
     private const INDEX_NAME = 'my_index';
 
-    private MockObject|Client $client;
+    private MockObject&Client $client;
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->purger
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -28,7 +28,7 @@ final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->purger
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -38,24 +38,24 @@ final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
     {
         $fixture1 = $this->createMock(ElasticsearchFixtureInterface::class);
         $fixture1
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->client, self::INDEX_NAME);
 
         $fixture2 = $this->createMock(ElasticsearchFixtureInterface::class);
         $fixture2
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->client, self::INDEX_NAME);
 
         $indices = $this->createMock(IndicesNamespace::class);
         $indices
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('refresh')
             ->with(['index' => self::INDEX_NAME]);
 
         $this->client
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('indices')
             ->willReturn($indices);
 

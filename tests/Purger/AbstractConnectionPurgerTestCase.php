@@ -7,47 +7,48 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Kununu\DataFixtures\Purger\PurgeMode;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractConnectionPurgerTestCase extends TestCase
 {
-    protected const TABLE_1 = 'table_1';
-    protected const TABLE_2 = 'table_2';
-    protected const TABLE_3 = 'table_3';
-    protected const TABLE_4 = 'table_4';
-    protected const TABLE_5 = 'table_5';
-    protected const TABLES = [self::TABLE_1, self::TABLE_2, self::TABLE_3];
-    protected const EXCLUDED_TABLES = [self::TABLE_4, self::TABLE_2, self::TABLE_5];
+    protected const string TABLE_1 = 'table_1';
+    protected const string TABLE_2 = 'table_2';
+    protected const string TABLE_3 = 'table_3';
+    protected const string TABLE_4 = 'table_4';
+    protected const string TABLE_5 = 'table_5';
+    protected const array TABLES = [self::TABLE_1, self::TABLE_2, self::TABLE_3];
+    protected const array EXCLUDED_TABLES = [self::TABLE_4, self::TABLE_2, self::TABLE_5];
 
-    protected function getConnectionMock(bool $withPlatform = true, array $tables = self::TABLES): MockObject|Connection
+    protected function getConnectionMock(bool $withPlatform = true, array $tables = self::TABLES): MockObject&Connection
     {
         $connection = $this->createMock(Connection::class);
 
         $schemaManager = $this->createMock(AbstractSchemaManager::class);
         $schemaManager
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('listTableNames')
             ->willReturn($tables);
 
         $connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('createSchemaManager')
             ->willReturn($schemaManager);
 
         $connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getDriver')
             ->willReturn($this->createMock(AbstractMySQLDriver::class));
 
         $connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('quoteIdentifier')
             ->willReturnCallback(fn(string $str): string => sprintf('`%s`', $str));
 
         if ($withPlatform) {
             $connection
-                ->expects($this->any())
+                ->expects(self::any())
                 ->method('getDatabasePlatform')
                 ->willReturn($this->createMock(AbstractPlatform::class));
         }
@@ -56,17 +57,14 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
     }
 
     protected function getConsecutiveArgumentsForConnectionExecStatement(
-        ?int $purgeMode = 1,
+        PurgeMode $purgeMode = PurgeMode::Delete,
         ?array $tables = self::TABLES,
         ?array $excludedTables = [],
-        bool $itemsAsArray = true
+        bool $itemsAsArray = true,
     ): array {
         $purgeStatements = match ($purgeMode) {
-            // PURGE_MODE_DELETE
-            1       => $this->getDeleteModeConsecutiveArguments($tables, $excludedTables, $itemsAsArray),
-            // PURGE_MODE_TRUNCATE
-            2       => $this->getTruncateModeConsecutiveArguments($tables, $excludedTables, $itemsAsArray),
-            default => []
+            PurgeMode::Delete   => $this->getDeleteModeConsecutiveArguments($tables, $excludedTables, $itemsAsArray),
+            PurgeMode::Truncate => $this->getTruncateModeConsecutiveArguments($tables, $excludedTables, $itemsAsArray),
         };
 
         $disableForeignKeyChecks = 'SET FOREIGN_KEY_CHECKS=0';
@@ -82,7 +80,7 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
     protected function getDeleteModeConsecutiveArguments(
         array $tables = self::TABLES,
         array $excludedTables = [],
-        bool $itemsAsArray = true
+        bool $itemsAsArray = true,
     ): array {
         $return = [];
 
@@ -99,7 +97,7 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
     protected function getTruncateModeConsecutiveArguments(
         array $tables = self::TABLES,
         array $excludedTables = [],
-        bool $itemsAsArray = true
+        bool $itemsAsArray = true,
     ): array {
         $return = [];
 

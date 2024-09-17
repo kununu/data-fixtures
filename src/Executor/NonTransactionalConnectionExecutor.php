@@ -6,9 +6,9 @@ namespace Kununu\DataFixtures\Executor;
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Purger\PurgerInterface;
 
-final class NonTransactionalConnectionExecutor implements ExecutorInterface
+final readonly class NonTransactionalConnectionExecutor implements ExecutorInterface
 {
-    private readonly ExecutorInterface $executor;
+    private ExecutorInterface $executor;
 
     public function __construct(Connection $connection, PurgerInterface $purger)
     {

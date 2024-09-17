@@ -11,12 +11,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class HttpClientPurgerTest extends AbstractPurgerTestCase
 {
-    private MockObject|FakeHttpClientInterface|FixturesHttpClientInterface $httpClient;
+    private (MockObject&FakeHttpClientInterface)|(MockObject&FixturesHttpClientInterface) $httpClient;
 
     public function testPurge(): void
     {
         $this->httpClient
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('clearResponses');
 
         $this->purger->purge();
@@ -26,7 +26,7 @@ final class HttpClientPurgerTest extends AbstractPurgerTestCase
     {
         $this->httpClient = $this->createMock(FakeHttpClientInterface::class);
         $this->httpClient
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('clearResponses');
 
         $this->purger->purge();

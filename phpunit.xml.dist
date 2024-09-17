@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://docs.phpunit.de/en/10.5/ -->
+<!-- https://docs.phpunit.de/en/11.3/ -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="vendor/autoload.php"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.3/phpunit.xsd" bootstrap="vendor/autoload.php"
          colors="true" beStrictAboutChangesToGlobalState="true" cacheDirectory=".phpunit.cache" testdox="true">
   <coverage>
     <report>
@@ -10,7 +10,7 @@
     </report>
   </coverage>
   <testsuites>
-    <testsuite name="DataFixtures Test Suite">
+    <testsuite name="Tests">
       <directory>tests</directory>
     </testsuite>
   </testsuites>

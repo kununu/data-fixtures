@@ -6,7 +6,7 @@ The `Doctrine DBAL Connection Fixtures` allows you to load data fixtures for any
 
 Before starting loading Connection Fixtures make sure to add [Doctrine DBAL](https://github.com/doctrine/dbal) as a dependency of your project.
 
-```bash
+```shell
 composer require doctrine/dbal
 ```
 
@@ -16,7 +16,7 @@ composer require doctrine/dbal
 
 The first step to load *Connection Fixtures* is to create fixtures classes.
 
-This classes must implement the [ConnectionFixtureInterface](/src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](/src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql* files.
+This classes must implement the [ConnectionFixtureInterface](../../src/Adapter/ConnectionFixtureInterface.php) or extend the class [ConnectionSqlFixture](../../src/Adapter/ConnectionSqlFixture.php) which allows you to define fixtures using *Sql* files.
 
 ```php
 <?php
@@ -100,7 +100,7 @@ $loader->addFixture(new MyFixture());
 $executor->execute($loader->getFixtures());
 ```
 
-If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](/README.md#loading-fixtures)*.
+If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](../../README.md#load-fixtures)*.
 
 ### 3. Append Fixtures
 
@@ -141,19 +141,20 @@ $executor->execute($loader->getFixtures());
 ### 5. Purge mode
 
 The Purger allows you to change the *Sql* statement used to purge the tables.
-By default, the Purger will run a *DELETE* statement to purge the tables but you can change it to use a *TRUNCATE* statement instead.
+By default, the Purger will run a *DELETE* statement to purge the tables, but you can change it to use a *TRUNCATE* statement instead, by specifying the `purgeMode` parameter.  
 
 ```php
 <?php
 declare(strict_types=1);
 
 use Kununu\DataFixtures\Purger\ConnectionPurger;
+use Kununu\DataFixtures\Purger\PurgeMode;
 
-$purger = new ConnectionPurger($conn, $excludedTables);
+// Just passing here as an example, as the default is already PurgeMode::Delete
+$purger = new ConnectionPurger($conn, $excludedTables, purgeMode: PurgeMode::Delete);
 
-// If you want you can change the Purge Mode
-$purger->setPurgeMode(1); // PURGE_MODE_DELETE
-$purger->setPurgeMode(2); // PURGE_MODE_TRUNCATE
+// If you want to use truncate mode
+$purger = new ConnectionPurger($conn, $excludedTables, purgeMode: PurgeMode::Truncate);
 ```
 
 ## Notes

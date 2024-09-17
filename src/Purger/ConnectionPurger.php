@@ -5,24 +5,20 @@ namespace Kununu\DataFixtures\Purger;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Kununu\DataFixtures\Exception\InvalidConnectionPurgeModeException;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 use Throwable;
 
-final class ConnectionPurger implements PurgerInterface
+final readonly class ConnectionPurger implements PurgerInterface
 {
     use ConnectionToolsTrait;
 
-    private const PURGE_MODE_DELETE = 1;
-    private const PURGE_MODE_TRUNCATE = 2;
-
-    private readonly array $tables;
-    private int $purgeMode = self::PURGE_MODE_DELETE;
+    private array $tables;
 
     public function __construct(
-        private readonly Connection $connection,
-        private readonly array $excludedTables = [],
-        private readonly bool $transactional = true
+        private Connection $connection,
+        private array $excludedTables = [],
+        private bool $transactional = true,
+        private PurgeMode $purgeMode = PurgeMode::Delete,
     ) {
         $this->tables = $this->connection->createSchemaManager()->listTableNames();
     }
@@ -65,23 +61,9 @@ final class ConnectionPurger implements PurgerInterface
         }
     }
 
-    public function setPurgeMode(int $mode): void
-    {
-        if (!in_array($mode, [self::PURGE_MODE_DELETE, self::PURGE_MODE_TRUNCATE])) {
-            throw new InvalidConnectionPurgeModeException(sprintf('Purge Mode "%d" is not valid', $mode));
-        }
-
-        $this->purgeMode = $mode;
-    }
-
-    public function getPurgeMode(): int
-    {
-        return $this->purgeMode;
-    }
-
     private function purgeTable(AbstractPlatform $platform, string $tableName): void
     {
-        $query = $this->purgeMode === self::PURGE_MODE_DELETE
+        $query = PurgeMode::Delete->equals($this->purgeMode)
             ? sprintf('DELETE FROM %s', $this->connection->quoteIdentifier($tableName))
             : $platform->getTruncateTableSQL($tableName, true);
 

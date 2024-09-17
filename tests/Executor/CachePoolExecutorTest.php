@@ -11,12 +11,12 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class CachePoolExecutorTest extends AbstractExecutorTestCase
 {
-    private MockObject|CacheItemPoolInterface $cache;
+    private MockObject&CacheItemPoolInterface $cache;
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->purger
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -25,7 +25,7 @@ final class CachePoolExecutorTest extends AbstractExecutorTestCase
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->purger
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -35,13 +35,13 @@ final class CachePoolExecutorTest extends AbstractExecutorTestCase
     {
         $fixture1 = $this->createMock(CachePoolFixtureInterface::class);
         $fixture1
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->cache);
 
         $fixture2 = $this->createMock(CachePoolFixtureInterface::class);
         $fixture2
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->cache);
 

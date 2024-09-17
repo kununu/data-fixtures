@@ -2,20 +2,20 @@
 
 This package already provides implementations to load fixtures for some storage types.
 
-You can find the list of all supported storage types [here](/README.md#Fixtures-types).
+You can find the list of all supported storage types [here](../README.md#fixtures-types).
 Still, if you have the need to create a new type you can do it, and it's pretty simple.
 
 For example, let's imagine that you need to load fixtures (in this case files) to a specific directory. To get this new type of fixtures up and running you will need to create a set of elements:
 
-- [Fixture Interface](#Create-fixture-type-interface)
-- [Purger](#Create-Purger)
-- [Loader](#Create-Loader)
-- [Executor](#Create-Executor)
-- [Concrete Fixtures](#Create-Fixtures)
+- [Fixture Interface](#create-fixture-type-interface)
+- [Purger](#create-purger)
+- [Loader](#create-loader)
+- [Executor](#create-executor)
+- [Concrete Fixtures](#create-fixtures)
 
 ## Create fixture type interface
 
-Any fixture that you create will need to implement the [FixtureInterface](/src/FixtureInterface.php) provided by this package.
+Any fixture that you create will need to implement the [FixtureInterface](../src/FixtureInterface.php) provided by this package.
 
 In this example we will create the *DirectoryFilesFixtureInterface*, which exposes a method called *load* that will receive the directory name on which the fixtures should be loaded.
 
@@ -39,7 +39,7 @@ interface DirectoryFilesFixtureInterface extends FixtureInterface
 
 A purger is a class responsible for clearing the contents of a data storage.
 
-In order to create a new Purger you need to implement the [PurgerInterface](/src/Purger/PurgerInterface.php).
+In order to create a new Purger you need to implement the [PurgerInterface](../src/Purger/PurgerInterface.php).
 
 In this example, the Purger will be responsible for removing all files in a specific directory.
 
@@ -77,7 +77,7 @@ final class DirectoryPurger implements PurgerInterface
 
 A loader is a class responsible for loading data fixtures of a specific type in multiple ways.
 
-In order to ease the creating of a loader this package already provides a default [loader](/src/Loader/Loader.php) which only requires you to define which types of fixtures it supports.
+In order to ease the creating of a loader this package already provides a default [loader](../src/Loader/Loader.php) which only requires you to define which types of fixtures it supports.
 
 In this example we will create the *DirectoryFixturesLoader* which extends the *default* loader.
 
@@ -102,7 +102,7 @@ final class DirectoryFixturesLoader extends Loader
 
 An Executor is a class responsible for orchestrating the flow: calling the purger and loading the fixtures.
 
-In order to create a new Executor you need to implement the [ExecutorInterface](/src/Executor/ExecutorInterface.php).
+In order to create a new Executor you need to implement the [ExecutorInterface](../src/Executor/ExecutorInterface.php).
 
 In this example, the Executor will be responsible for calling the Purger and load each fixture.
 

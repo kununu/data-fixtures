@@ -22,8 +22,8 @@ abstract class HttpClientPhpArrayFixture extends AbstractFileLoaderFixture imple
         return 'php';
     }
 
-    protected function getLoadMode(): string
+    protected function getLoadMode(): LoadMode
     {
-        return self::LOAD_MODE_INCLUDE;
+        return LoadMode::Include;
     }
 }

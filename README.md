@@ -13,14 +13,14 @@ This package provides a simple way to manage and execute the loading of data fix
 
 Currently, this package supports the following types of fixtures:
 
-- *[Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)* which relies on [Doctrine DBAL](https://github.com/doctrine/dbal) by using the [Connection](https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Connection.php) implementation
-- *[Cache Pool Fixtures](/docs/FixtureTypes/cache-pool-fixtures.md)* which relies on implementations of the [PSR-6](https://github.com/php-fig/cache) standard
-- *[Elasticsearch Fixtures](/docs/FixtureTypes/elasticsearch.md)* which relies on the [Elasticsearch-PHP client](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html)
-- *[Symfony Http Client Fixtures](/docs/FixtureTypes/symfony-http-client.md)* which relies on the [Symfony Http Client](https://github.com/symfony/http-client) and [Symfony Http Foundation](https://github.com/symfony/http-foundation).
+- *[Doctrine DBAL Connection Fixtures](docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)* which relies on [Doctrine DBAL](https://github.com/doctrine/dbal) by using the [Connection](https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Connection.php) implementation
+- *[Cache Pool Fixtures](docs/FixtureTypes/cache-pool-fixtures.md)* which relies on implementations of the [PSR-6](https://github.com/php-fig/cache) standard
+- *[Elasticsearch Fixtures](docs/FixtureTypes/elasticsearch.md)* which relies on the [Elasticsearch-PHP client](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html)
+- *[Symfony Http Client Fixtures](docs/FixtureTypes/symfony-http-client.md)* which relies on the [Symfony Http Client](https://github.com/symfony/http-client) and [Symfony Http Foundation](https://github.com/symfony/http-foundation).
 
-Also check [Directory Loader](/docs/FixtureTypes/directory-loader.md) to check how to load fixtures from files in a directory.
+Also check [Directory Loader](docs/FixtureTypes/directory-loader.md) to check how to load fixtures from files in a directory.
 
-If you are interested in knowing more about the concepts of the package, or you need to create a new fixture type check out [How to create a new Fixture Type](/docs/how-to-create-new-fixture-type.md).
+If you are interested in knowing more about the concepts of the package, or you need to create a new fixture type check out [How to create a new Fixture Type](docs/how-to-create-new-fixture-type.md).
 
 --------------------------
 ## Install
@@ -31,7 +31,7 @@ Before installing this package be aware:
 - **You own the fixtures you load**
 - **This package should not be used in production mode!**
 
-```bash
+```shell
 composer require --dev kununu/data-fixtures
 ```
 
@@ -39,10 +39,10 @@ composer require --dev kununu/data-fixtures
 
 In order to enable the fixture types that you are interested, check out their documentation:
 
-- [Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)
-- [Cache Pool Fixtures](/docs/FixtureTypes/cache-pool-fixtures.md)
-- [Elasticsearch Fixtures](/docs/FixtureTypes/elasticsearch.md)
-- [Symfony Http Client Fixtures](/docs/FixtureTypes/symfony-http-client.md)
+- [Doctrine DBAL Connection Fixtures](docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)
+- [Cache Pool Fixtures](docs/FixtureTypes/cache-pool-fixtures.md)
+- [Elasticsearch Fixtures](docs/FixtureTypes/elasticsearch.md)
+- [Symfony Http Client Fixtures](docs/FixtureTypes/symfony-http-client.md)
 
 --------------------
 
@@ -61,15 +61,20 @@ $executor->execute($loader->getFixtures(), true);
 
 ## Load Fixtures
 
-In order to load fixtures the default [Loader](/src/Loader/Loader.php) provides a couple of options:
+In order to load fixtures the default [Loader](src/Loader/Loader.php) provides a couple of options:
 
-1) loadFromDirectory(string $dir)
-2) loadFromFile(string $fileName)
-3) loadFromClassName(string $className)
-4) addFixture(FixtureInterface $fixture)
+1) `loadFromDirectory(string $dir)`
+2) `loadFromFile(string $fileName)`
+3) `loadFromClassName(string $className)`
+4) `addFixture(FixtureInterface $fixture)`
 
 ```php
-$loader = new Kununu\DataFixtures\Loader\ConnectionFixturesLoader();
+<?php
+declare(strict_types=1);
+
+use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
+
+$loader = new ConnectionFixturesLoader();
 $loader->loadFromDirectory('/your/directory/');
 $loader->loadFromFile('/your/file.php');
 $loader->loadFromClassName(MyFixtureSql::class);
@@ -83,13 +88,18 @@ $loader->addFixture(new MyFixtureSql());
 If you want your Fixture classes to be initialized you can implement the `InitializableFixtureInterface`
 
 ```php
-public function initializeFixture(...$args): void;
+public function initializeFixture(mixed ...$args): void;
 ```
 
 Then before loading the fixtures you need to register them in the Loader:
 
 ```php
-$loader = new Kununu\DataFixtures\Loader\ConnectionFixturesLoader();
+<?php
+declare(strict_types=1);
+
+use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
+
+$loader = new ConnectionFixturesLoader();
 
 $this->loader->registerInitializableFixture(
 	YourFixtureClass::class,
@@ -114,7 +124,7 @@ $loader->addFixture(new YourFixtureClass());
 
 ## Contribute
 
-If you are interested in contributing read our [contributing guidelines](/CONTRIBUTING.md).
+If you are interested in contributing read our [contributing guidelines](CONTRIBUTING.md).
 
 ------------------------------
 
@@ -122,24 +132,24 @@ If you are interested in contributing read our [contributing guidelines](/CONTRI
 
 If not yet, first install composer dependencies:
 
-```bash
+```shell
 composer install
 ```
 
 Run the tests by doing: 
 
-```bash
+```shell
 vendor/bin/phpunit
 ```
 
 To run tests without coverage report:
-```bash
+```shell
 composer install
 composer test
 ```
 
 To run tests with coverage report:
-```bash
+```shell
 composer install
 composer test-coverage
 ```

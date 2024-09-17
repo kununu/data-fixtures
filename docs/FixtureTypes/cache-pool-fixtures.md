@@ -6,7 +6,7 @@ The `Cache Pool Fixtures` allows you to load data fixtures for any implementatio
 
 Before starting loading Cache Pool Fixtures make sure to add [PSR-6](https://github.com/php-fig/cache) as a dependency of your project.
 
-```bash
+```shell
 composer require psr/cache
 ```
 
@@ -14,7 +14,7 @@ composer require psr/cache
 
 ### 1. Create fixture classes
 
-The first step to load Cache Pool Fixtures is to create fixtures classes. This classes must implement the [CachePoolFixtureInterface](/src/Adapter/CachePoolFixtureInterface.php).
+The first step to load Cache Pool Fixtures is to create fixtures classes. This classes must implement the [CachePoolFixtureInterface](../../src/Adapter/CachePoolFixtureInterface.php).
 
 ```php
 <?php
@@ -65,11 +65,11 @@ $executor->execute($loader->getFixtures());
 $executor->execute($loader->getFixtures(), true);
 ```
 
-If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](/README.md#loading-fixtures)*.
+If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](../../README.md#load-fixtures)*.
 
 ### 3. Append Fixtures
 
-By default, when loading fixtures the cache storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the CachePoolExecutor.
+By default, when loading fixtures the cache storage is purged. If you want to change this behavior and instead append the fixtures, you can pass *true* as second argument to the `CachePoolExecutor`.
 
 ```php
 <?php

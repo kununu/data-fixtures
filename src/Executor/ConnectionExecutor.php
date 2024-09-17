@@ -9,14 +9,14 @@ use Kununu\DataFixtures\Purger\PurgerInterface;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 use Throwable;
 
-final class ConnectionExecutor implements ExecutorInterface
+final readonly class ConnectionExecutor implements ExecutorInterface
 {
     use ConnectionToolsTrait;
 
     public function __construct(
-        private readonly Connection $connection,
-        private readonly PurgerInterface $purger,
-        private readonly bool $transactional = true
+        private Connection $connection,
+        private PurgerInterface $purger,
+        private bool $transactional = true,
     ) {
     }
 

@@ -7,11 +7,11 @@ use Kununu\DataFixtures\Adapter\CachePoolFixtureInterface;
 use Kununu\DataFixtures\Purger\PurgerInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
-final class CachePoolExecutor implements ExecutorInterface
+final readonly class CachePoolExecutor implements ExecutorInterface
 {
     public function __construct(
-        private readonly CacheItemPoolInterface $cache,
-        private readonly PurgerInterface $purger
+        private CacheItemPoolInterface $cache,
+        private PurgerInterface $purger,
     ) {
     }
 

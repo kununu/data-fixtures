@@ -6,7 +6,7 @@ The `Elasticsearch Fixtures` allows you to load data fixtures for any Elasticsea
 
 Before starting loading Elasticsearch Fixtures make sure to add [Elasticsearch](https://github.com/elastic/elasticsearch) as a dependency of your project.
 
-```bash
+```shell
 composer require elastic/elasticsearch
 ```
 
@@ -14,7 +14,7 @@ composer require elastic/elasticsearch
 
 ### 1. Create fixture classes
 
-The first step to load Elasticsearch Fixtures is to create fixtures classes. This classes must implement the [ElasticsearchFixtureInterface](/src/Adapter/ElasticsearchFixtureInterface.php) or if you want to easily use *bulk* inserts on your fixtures you can extend the class [ElasticsearchFixture](/src/Adapter/ElasticsearchFixture.php).
+The first step to load Elasticsearch Fixtures is to create fixtures classes. This classes must implement the [ElasticsearchFixtureInterface](../../src/Adapter/ElasticsearchFixtureInterface.php) or if you want to easily use *bulk* inserts on your fixtures you can extend the class [ElasticsearchFixture](../../src/Adapter/ElasticsearchFixture.php).
 
 
 #### Inserting a single document
@@ -135,11 +135,11 @@ Get the files to load
 
 Get the file extension (should return `php` for PHP array files or `json` for JSON file)
 
-- `protected function getLoadMode(): string;`
+- `protected function getLoadMode(): LoadMode;`
 
 The load method to use.
-- `AbstractFileLoaderFixture::LOAD_MODE_INCLUDE` to include the PHP array files
-- `AbstractFileLoaderFixture::LOAD_MODE_LOAD_JSON` to load and convert the JSON files to array
+- `LoadMode::Include` to include the PHP array files
+- `LoadMode:LoadJson` to load and convert the JSON files to array
 
 Example:
 
@@ -149,6 +149,7 @@ declare(strict_types=1);
 
 use Elasticsearch\Client;
 use Kununu\DataFixtures\Adapter\ElasticsearchFileFixture;
+use Kununu\DataFixtures\Adapter\LoadMode;
 
 final class MyFixture extends ElasticsearchFileFixture
 {
@@ -166,10 +167,10 @@ final class MyFixture extends ElasticsearchFileFixture
         return 'php';
     }
 
-    protected function getLoadMode(): string
+    protected function getLoadMode(): LoadMode
     {
 		// Load the php files as includes
-        return self::LOAD_MODE_INCLUDE;
+        return LoadMode::Include;
     }
 
     /**
@@ -214,6 +215,7 @@ declare(strict_types=1);
 
 use Elasticsearch\Client;
 use Kununu\DataFixtures\Adapter\ElasticsearchFileFixture;
+use Kununu\DataFixtures\Adapter\LoadMode;
 
 final class MyFixture extends ElasticsearchFileFixture
 {
@@ -234,7 +236,7 @@ final class MyFixture extends ElasticsearchFileFixture
     protected function getLoadMode(): string
     {
 		// Load the json files contents as arrays
-        return self::LOAD_MODE_LOAD_JSON;
+        return LoadMode::LoadJson;
     }
 
     /**
@@ -338,7 +340,7 @@ $executor->execute($loader->getFixtures());
 $executor->execute($loader->getFixtures(), true);
 ```
 
-If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](/README.md#loading-fixtures)*.
+If you want to know more options on how you can load fixtures in the Loader checkout *[Load Fixtures](../../README.md#load-fixtures)*.
 
 ### 3. Append Fixtures
 
