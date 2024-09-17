@@ -45,6 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.job }}-${{ matrix.php-version }}-${{ matrix.dependencies }}-coverage
+          include-hidden-files: true
           path: tests/.results/
 
   sonarcloud:
