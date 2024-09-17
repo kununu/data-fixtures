@@ -54,7 +54,7 @@
   },
   "scripts": {
     "test": "phpunit --no-coverage --no-logging --no-progress",
-    "test-coverage": "XDEBUG_MODE=coverage phpunit"
+    "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
   },
   "scripts-descriptions": {
     "test": "Run all tests",
