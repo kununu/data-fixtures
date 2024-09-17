@@ -131,9 +131,10 @@ abstract class AbstractLoaderTestCase extends TestCase
     {
     }
 
-    protected function getNamedFixtureMock(string $name): MockObject|FixtureInterface
+    private function getNamedFixtureMock(string $name): MockObject|FixtureInterface
     {
-        return $this->getMockBuilder($this->getFixtureInterfaceName())
+        return $this
+            ->getMockBuilder($this->getFixtureInterfaceName())
             ->setMockClassName($this->generateMockClassName($name))
             ->getMock();
     }
