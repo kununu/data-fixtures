@@ -14,7 +14,7 @@ abstract class ConnectionSqlFixture extends AbstractFileLoaderFixture implements
     {
         parent::loadFiles(fn(?string $sql) => match (true) {
             is_string($sql) => $connection->executeStatement($sql),
-            default         => null
+            default         => null,
         });
     }
 
@@ -23,8 +23,8 @@ abstract class ConnectionSqlFixture extends AbstractFileLoaderFixture implements
         return 'sql';
     }
 
-    protected function getLoadMode(): string
+    protected function getLoadMode(): LoadMode
     {
-        return self::LOAD_MODE_LOAD;
+        return LoadMode::Load;
     }
 }

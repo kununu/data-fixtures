@@ -17,36 +17,36 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
     private const SQL_1 = 'SET FOREIGN_KEY_CHECKS=0';
     private const SQL_2 = 'SET FOREIGN_KEY_CHECKS=1';
 
-    private MockObject|Connection $connection;
+    private MockObject&Connection $connection;
 
     public function testThatExecutorIsNotTransactionalAndLoadsFixture(): void
     {
         $this->connection
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(
-                fn(string $sql): int => match ($sql) {
+                static fn(string $sql): int => match ($sql) {
                     self::SQL_1,
                     self::SQL_2 => 1,
-                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql)),
                 }
             );
 
         $this->connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('beginTransaction');
 
         $this->connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('commit');
 
         $this->purger
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('purge');
 
         $fixture = $this->createMock(ConnectionFixtureInterface::class);
         $fixture
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->connection);
 
@@ -58,35 +58,35 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
         $this->expectException(Exception::class);
 
         $this->connection
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(
-                fn(string $sql): int => match ($sql) {
+                static fn(string $sql): int => match ($sql) {
                     self::SQL_1,
                     self::SQL_2 => 1,
-                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql)),
                 }
             );
 
         $this->connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('beginTransaction');
 
         $this->connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('commit');
 
         $this->connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('rollBack');
 
         $this->purger
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('purge');
 
         $fixture = $this->createMock(ConnectionFixtureInterface::class);
         $fixture
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->connection)
             ->willThrowException(new Exception());
@@ -98,7 +98,7 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
     {
         $this->connection = $this->createMock(Connection::class);
         $this->connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getDriver')
             ->willReturn($this->createMock(AbstractMySQLDriver::class));
 

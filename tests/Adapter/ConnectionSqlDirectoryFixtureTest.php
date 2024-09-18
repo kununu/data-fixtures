@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ConnectionSqlDirectoryFixtureTest extends TestCase
 {
-    private MockObject|Connection $connection;
+    private MockObject&Connection $connection;
 
     public function testLoad(): void
     {
@@ -26,12 +26,12 @@ INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('4', 'name4
 SQL;
 
         $this->connection
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(fn(string $fixtureContent) => match ($fixtureContent) {
                 $fixture1Content,
                 $fixture2Content => 1,
-                default          => throw new LogicException(sprintf('Unknown fixture content "%s"', $fixtureContent))
+                default          => throw new LogicException(sprintf('Unknown fixture content "%s"', $fixtureContent)),
             });
 
         $fixture = new ConnectionSqlDirectoryFixture1();

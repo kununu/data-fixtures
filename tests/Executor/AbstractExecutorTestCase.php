@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractExecutorTestCase extends TestCase
 {
-    protected MockObject|PurgerInterface $purger;
+    protected MockObject&PurgerInterface $purger;
     protected ExecutorInterface $executor;
 
     abstract protected function getExecutor(): ExecutorInterface;

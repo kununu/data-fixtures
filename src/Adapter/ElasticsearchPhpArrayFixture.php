@@ -10,8 +10,8 @@ abstract class ElasticsearchPhpArrayFixture extends ElasticsearchFileFixture
         return 'php';
     }
 
-    protected function getLoadMode(): string
+    protected function getLoadMode(): LoadMode
     {
-        return self::LOAD_MODE_INCLUDE;
+        return LoadMode::Include;
     }
 }

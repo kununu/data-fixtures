@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Loader;
 
+use DateTime;
 use InvalidArgumentException;
 use Kununu\DataFixtures\FixtureInterface;
 use Kununu\DataFixtures\Loader\LoaderInterface;
@@ -12,7 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractLoaderTestCase extends TestCase
 {
-    protected MockObject|LoaderInterface $loader;
+    protected LoaderInterface $loader;
+
     private array $fixtureClasses = [];
     private array $fixtureFiles = [];
 
@@ -22,7 +24,7 @@ abstract class AbstractLoaderTestCase extends TestCase
 
         $fixture = $this->loader->getFixture($fixtureClass = $this->fixtureClasses[0]);
 
-        $this->assertInstanceOf($fixtureClass, $fixture);
+        self::assertInstanceOf($fixtureClass, $fixture);
     }
 
     public function testGetFixtureThrowsExceptionWhenFixtureDoesNotExists(): void
@@ -37,16 +39,18 @@ abstract class AbstractLoaderTestCase extends TestCase
         $this->loader->addFixture($this->getNamedFixtureMock('Mock1'));
         $this->loader->addFixture($this->getNamedFixtureMock('Mock2'));
 
-        $this->assertCount(2, $this->loader->getFixtures());
+        self::assertCount(2, $this->loader->getFixtures());
 
         $this->loader->loadFromClassName(NotAFixture::class);
-        $this->assertCount(2, $this->loader->getFixtures());
+
+        self::assertCount(2, $this->loader->getFixtures());
 
         $count = 2;
         foreach ($this->fixtureClasses as $fixtureClass) {
             $this->loader->loadFromClassName($fixtureClass);
-            $count++;
-            $this->assertCount($count, $this->loader->getFixtures());
+            ++$count;
+
+            self::assertCount($count, $this->loader->getFixtures());
         }
     }
 
@@ -55,13 +59,15 @@ abstract class AbstractLoaderTestCase extends TestCase
         $this->loader->addFixture($this->getNamedFixtureMock('Mock1'));
         $this->loader->addFixture($this->getNamedFixtureMock('Mock2'));
 
-        $this->assertCount(2, $this->loader->getFixtures());
+        self::assertCount(2, $this->loader->getFixtures());
 
         $this->loader->loadFromDirectory(__DIR__ . '/../TestFixtures/');
-        $this->assertCount($this->expectedNumberOfFixturesFromDirectory(), $this->loader->getFixtures());
+
+        self::assertCount($this->expectedNumberOfFixturesFromDirectory(), $this->loader->getFixtures());
 
         $this->loader->clearFixtures();
-        $this->assertEmpty($this->loader->getFixtures());
+
+        self::assertEmpty($this->loader->getFixtures());
     }
 
     public function testLoadFromDirectoryThrowsExceptionIfNotDirectory(): void
@@ -76,18 +82,20 @@ abstract class AbstractLoaderTestCase extends TestCase
         $this->loader->addFixture($this->getNamedFixtureMock('Mock1'));
         $this->loader->addFixture($this->getNamedFixtureMock('Mock2'));
 
-        $this->assertCount(2, $this->loader->getFixtures());
+        self::assertCount(2, $this->loader->getFixtures());
 
         $this->initializeLoadFromFileFixtures();
 
         $this->loader->loadFromFile(__DIR__ . '/../TestFixtures/NotAFixture.php');
-        $this->assertCount(2, $this->loader->getFixtures());
+
+        self::assertCount(2, $this->loader->getFixtures());
 
         $count = 2;
         foreach ($this->fixtureFiles as $fixtureFile) {
             $this->loader->loadFromFile(__DIR__ . '/../TestFixtures/' . $fixtureFile);
-            $count++;
-            $this->assertCount($count, $this->loader->getFixtures());
+            ++$count;
+
+            self::assertCount($count, $this->loader->getFixtures());
         }
 
         $this->performExtraLoadFromFileFixturesAssertions();
@@ -123,10 +131,16 @@ abstract class AbstractLoaderTestCase extends TestCase
     {
     }
 
-    protected function getNamedFixtureMock(string $name): MockObject|FixtureInterface
+    private function getNamedFixtureMock(string $name): MockObject|FixtureInterface
     {
-        return $this->getMockBuilder($this->getFixtureInterfaceName())
-            ->setMockClassName($name)
+        return $this
+            ->getMockBuilder($this->getFixtureInterfaceName())
+            ->setMockClassName($this->generateMockClassName($name))
             ->getMock();
+    }
+
+    private function generateMockClassName(string $prefix): string
+    {
+        return sprintf('%s%s', $prefix, md5((new DateTime())->format('Y-m-d H:i:s.uP')));
     }
 }

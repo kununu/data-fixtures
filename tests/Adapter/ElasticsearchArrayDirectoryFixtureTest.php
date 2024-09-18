@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ElasticsearchArrayDirectoryFixtureTest extends TestCase
 {
-    private MockObject|Client $client;
+    private MockObject&Client $client;
 
     public function testLoad(): void
     {
@@ -74,11 +74,11 @@ final class ElasticsearchArrayDirectoryFixtureTest extends TestCase
         ];
 
         $this->client
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('bulk')
             ->with(
-                $this->callback(
-                    fn(array $bulk): bool => ($bulk == $bulk1 || $bulk == $bulk2)
+                self::callback(
+                    static fn(array $bulk): bool => ($bulk == $bulk1 || $bulk == $bulk2)
                 )
             )
             ->willReturn(['errors' => false]);

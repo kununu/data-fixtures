@@ -11,12 +11,12 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class CachePoolPurgerTest extends AbstractPurgerTestCase
 {
-    private MockObject|CacheItemPoolInterface $cache;
+    private MockObject&CacheItemPoolInterface $cache;
 
     public function testThatCacheItemPoolIsPurged(): void
     {
         $this->cache
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('clear')
             ->willReturn(true);
 
@@ -28,7 +28,7 @@ final class CachePoolPurgerTest extends AbstractPurgerTestCase
         $this->expectException(PurgeFailedException::class);
 
         $this->cache
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('clear')
             ->willReturn(false);
 

@@ -15,7 +15,7 @@ use SplFileInfo;
 
 abstract class Loader implements LoaderInterface
 {
-    private const FILE_EXTENSION = '.php';
+    private const string FILE_EXTENSION = '.php';
 
     private array $fixtures = [];
     private array $initalizableFixtures = [];

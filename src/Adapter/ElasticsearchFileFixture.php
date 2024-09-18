@@ -31,7 +31,7 @@ abstract class ElasticsearchFileFixture extends AbstractFileLoaderFixture implem
 
         if ($throwOnFail && ($result['errors'] ?? false)) {
             $errors = array_map(
-                fn(array $item): stdClass => (object) $item,
+                static fn(array $item): stdClass => (object) $item,
                 array_filter($result['items'] ?? [])
             );
 

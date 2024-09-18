@@ -12,23 +12,23 @@ use stdClass;
 
 final class ElasticsearchPurgerTest extends AbstractPurgerTestCase
 {
-    private MockObject|Client $client;
+    private MockObject&Client $client;
 
     public function testPurge(): void
     {
         $indices = $this->createMock(IndicesNamespace::class);
         $indices
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('refresh')
             ->with(['index' => 'my_index']);
 
         $this->client
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('indices')
             ->willReturn($indices);
 
         $this->client
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('deleteByQuery')
             ->with(
                 [

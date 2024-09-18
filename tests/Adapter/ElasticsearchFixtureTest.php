@@ -10,12 +10,12 @@ use PHPUnit\Framework\TestCase;
 
 final class ElasticsearchFixtureTest extends TestCase
 {
-    private MockObject|Client $client;
+    private MockObject&Client $client;
 
     public function testLoad(): void
     {
         $this->client
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('bulk')
             ->with([
                 'type' => '_doc',

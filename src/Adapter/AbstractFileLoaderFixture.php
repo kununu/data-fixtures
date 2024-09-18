@@ -10,10 +10,6 @@ use Throwable;
 
 abstract class AbstractFileLoaderFixture
 {
-    protected const LOAD_MODE_INCLUDE = 'include';
-    protected const LOAD_MODE_LOAD = 'load';
-    protected const LOAD_MODE_LOAD_JSON = 'loadJson';
-
     protected function loadFiles(callable $contentLoader): void
     {
         $extension = $this->getFileExtension();
@@ -27,10 +23,9 @@ abstract class AbstractFileLoaderFixture
             }
 
             $content = match ($loadMode) {
-                self::LOAD_MODE_INCLUDE   => $this->includeFile($fileName),
-                self::LOAD_MODE_LOAD      => $this->loadFile($file),
-                self::LOAD_MODE_LOAD_JSON => $this->loadJson($file, $fileName),
-                default                   => throw new InvalidArgumentException(sprintf('Invalid load mode: "%s"', $loadMode)),
+                LoadMode::Include  => $this->includeFile($fileName),
+                LoadMode::Load     => $this->loadFile($file),
+                LoadMode::LoadJson => $this->loadJson($file, $fileName),
             };
 
             $contentLoader($content);
@@ -41,7 +36,7 @@ abstract class AbstractFileLoaderFixture
 
     abstract protected function getFileExtension(): string;
 
-    abstract protected function getLoadMode(): string;
+    abstract protected function getLoadMode(): LoadMode;
 
     private function loadJson(SplFileInfo $file, string $fileName): array
     {

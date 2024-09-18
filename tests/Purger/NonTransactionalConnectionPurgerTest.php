@@ -13,7 +13,7 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects($this->exactly(5))
+            ->expects(self::exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -26,11 +26,11 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
             ->willReturn(1);
 
         $connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('beginTransaction');
 
         $connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('commit');
 
         $purger = new NonTransactionalConnectionPurger($connection);
@@ -44,7 +44,7 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects($this->exactly(3))
+            ->expects(self::exactly(3))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -60,20 +60,20 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
             ->willReturnCallback(
                 fn(string $sql): int => match (true) {
                     'DELETE FROM `table_1`' === $sql => throw new Exception(),
-                    default                          => 1
+                    default                          => 1,
                 }
             );
 
         $connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('beginTransaction');
 
         $connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('commit');
 
         $connection
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('rollback');
 
         $purger = new NonTransactionalConnectionPurger($connection);

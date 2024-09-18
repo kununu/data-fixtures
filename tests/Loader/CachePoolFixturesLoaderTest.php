@@ -51,13 +51,13 @@ final class CachePoolFixturesLoaderTest extends AbstractLoaderTestCase
     {
         $loadedFixtures = $this->loader->getFixtures();
 
-        $this->assertArrayHasKey(CachePoolFixture1::class, $loadedFixtures);
+        self::assertArrayHasKey(CachePoolFixture1::class, $loadedFixtures);
 
         $cachePoolFixture1 = $loadedFixtures[CachePoolFixture1::class];
 
-        $this->assertInstanceOf(CachePoolFixture1::class, $cachePoolFixture1);
-        $this->assertEquals(2020, $cachePoolFixture1->arg1());
-        $this->assertEquals(
+        self::assertInstanceOf(CachePoolFixture1::class, $cachePoolFixture1);
+        self::assertEquals(2020, $cachePoolFixture1->arg1());
+        self::assertEquals(
             [
                 'id'    => 1,
                 'name'  => 'Test Subject',

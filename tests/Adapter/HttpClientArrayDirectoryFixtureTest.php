@@ -10,12 +10,12 @@ use PHPUnit\Framework\TestCase;
 
 final class HttpClientArrayDirectoryFixtureTest extends TestCase
 {
-    private MockObject|FixturesHttpClientInterface $httpClient;
+    private MockObject&FixturesHttpClientInterface $httpClient;
 
     public function testLoad(): void
     {
         $this->httpClient
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('addResponses')
             ->with([
                 [

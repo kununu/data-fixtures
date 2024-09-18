@@ -6,9 +6,9 @@ namespace Kununu\DataFixtures\Purger;
 use Elasticsearch\Client;
 use stdClass;
 
-final class ElasticsearchPurger implements PurgerInterface
+final readonly class ElasticsearchPurger implements PurgerInterface
 {
-    public function __construct(private readonly Client $elasticSearch, private readonly string $indexName)
+    public function __construct(private Client $elasticSearch, private string $indexName)
     {
     }
 

@@ -6,9 +6,9 @@ namespace Kununu\DataFixtures\Purger;
 use Kununu\DataFixtures\Exception\PurgeFailedException;
 use Psr\Cache\CacheItemPoolInterface;
 
-final class CachePoolPurger implements PurgerInterface
+final readonly class CachePoolPurger implements PurgerInterface
 {
-    public function __construct(private readonly CacheItemPoolInterface $cachePool)
+    public function __construct(private CacheItemPoolInterface $cachePool)
     {
     }
 

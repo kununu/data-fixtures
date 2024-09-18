@@ -22,7 +22,7 @@ final class ConnectionToolsTest extends TestCase
     #[DataProvider('mysqlDataProvider')]
     public function testGetDisableForeignKeyChecksForMySQL(Driver|string $driver): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             'SET FOREIGN_KEY_CHECKS=0',
             $this->getDisableForeignKeysChecksStatementByDriver($this->getDriver($driver)),
         );
@@ -31,7 +31,7 @@ final class ConnectionToolsTest extends TestCase
     #[DataProvider('mysqlDataProvider')]
     public function testGetEnableForeignKeyChecksForMySQL(Driver|string $driver): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             'SET FOREIGN_KEY_CHECKS=1',
             $this->getEnableForeignKeysChecksStatementByDriver($this->getDriver($driver)),
         );
@@ -40,7 +40,7 @@ final class ConnectionToolsTest extends TestCase
     #[DataProvider('sqliteDataProvider')]
     public function testGetDisableForeignKeyChecksForSqlite(Driver|string $driver): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             'PRAGMA foreign_keys = OFF',
             $this->getDisableForeignKeysChecksStatementByDriver($this->getDriver($driver))
         );
@@ -49,7 +49,7 @@ final class ConnectionToolsTest extends TestCase
     #[DataProvider('sqliteDataProvider')]
     public function testGetEnableForeignKeyChecksForSqlite(Driver|string $driver): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             'PRAGMA foreign_keys = ON',
             $this->getEnableForeignKeysChecksStatementByDriver($this->getDriver($driver))
         );
@@ -57,7 +57,7 @@ final class ConnectionToolsTest extends TestCase
 
     public function testGetEnableForeignKeyChecksForUnknownDriver(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             '',
             $this->getEnableForeignKeysChecksStatementByDriver($this->createMock(Driver::class))
         );
@@ -65,7 +65,7 @@ final class ConnectionToolsTest extends TestCase
 
     public function testGetDisableForeignKeyChecksForUnknownDriver(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             '',
             $this->getDisableForeignKeysChecksStatementByDriver($this->createMock(Driver::class))
         );
@@ -75,8 +75,8 @@ final class ConnectionToolsTest extends TestCase
     public static function mysqlDataProvider(): array
     {
         if (class_exists(AbstractMySQLPlatform::class)) {
-            $abstractMySQLDriver = new class() extends AbstractMySQLDriver {
-                public function connect(array $params)
+            $abstractMySQLDriver = new class extends AbstractMySQLDriver {
+                public function connect(array $params): null
                 {
                     return null;
                 }
@@ -99,7 +99,7 @@ final class ConnectionToolsTest extends TestCase
     public static function sqliteDataProvider(): array
     {
         if (class_exists(SqlitePlatform::class)) {
-            $abstractSQLiteDriver = new class() extends AbstractSQLiteDriver {
+            $abstractSQLiteDriver = new class extends AbstractSQLiteDriver {
                 public function connect(array $params)
                 {
                     return null;

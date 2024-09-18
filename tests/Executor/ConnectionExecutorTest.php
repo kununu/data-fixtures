@@ -17,31 +17,31 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     private const SQL_1 = 'SET FOREIGN_KEY_CHECKS=0';
     private const SQL_2 = 'SET FOREIGN_KEY_CHECKS=1';
 
-    private MockObject|Connection $connection;
+    private MockObject&Connection $connection;
 
     public function testThatExecutorIsTransactionalAndCommits(): void
     {
         $this->connection
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(
-                fn(string $sql): int => match ($sql) {
+                static fn(string $sql): int => match ($sql) {
                     self::SQL_1,
                     self::SQL_2 => 1,
-                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql)),
                 }
             );
 
         $this->connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('beginTransaction');
 
         $this->connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('commit');
 
         $this->purger
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -52,31 +52,31 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
         $this->expectException(Exception::class);
 
         $this->connection
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(
-                fn(string $sql): int => match ($sql) {
+                static fn(string $sql): int => match ($sql) {
                     self::SQL_1,
                     self::SQL_2 => 1,
-                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql))
+                    default     => throw new LogicException(sprintf('Unknown SQL "%s"', $sql)),
                 }
             );
 
         $this->connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('beginTransaction');
 
         $this->connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('commit')
             ->willThrowException(new Exception());
 
         $this->connection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('rollBack');
 
         $this->purger
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -85,12 +85,12 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('executeStatement')
             ->willReturn(1);
 
         $this->purger
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -99,12 +99,12 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('executeStatement')
             ->willReturn(1);
 
         $this->purger
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -113,19 +113,19 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatFixturesAreLoaded(): void
     {
         $this->connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('executeStatement')
             ->willReturn(1);
 
         $fixture1 = $this->createMock(ConnectionFixtureInterface::class);
         $fixture1
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->connection);
 
         $fixture2 = $this->createMock(ConnectionFixtureInterface::class);
         $fixture2
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with($this->connection);
 
@@ -136,7 +136,7 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     {
         $this->connection = $this->createMock(Connection::class);
         $this->connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getDriver')
             ->willReturn($this->createMock(AbstractMySQLDriver::class));
 
