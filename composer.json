@@ -32,7 +32,7 @@
     "phpunit/phpunit": "^11.3",
     "psr/cache": "^2.0",
     "symfony/http-client": "^6.4",
-    "symfony/http-foundation": "^6.4"
+    "symfony/http-foundation": "^6.4 || ^7.0"
   },
   "suggest": {
     "psr/cache": "Load fixtures for implementation of the PSR6 standard",
