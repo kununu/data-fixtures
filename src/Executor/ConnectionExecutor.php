@@ -31,8 +31,10 @@ final readonly class ConnectionExecutor implements ExecutorInterface
                 $this->purger->purge();
             }
 
+            $platform = $this->connection->getDatabasePlatform();
+
             $this->connection->executeStatement(
-                $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver())
+                $this->getDisableForeignKeysChecksStatementByPlatform($platform)
             );
 
             foreach ($fixtures as $fixture) {
@@ -49,7 +51,7 @@ final readonly class ConnectionExecutor implements ExecutorInterface
             throw $e;
         } finally {
             $this->connection->executeStatement(
-                $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver())
+                $this->getEnableForeignKeysChecksStatementByPlatform($platform)
             );
         }
     }
