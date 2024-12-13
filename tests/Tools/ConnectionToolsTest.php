@@ -78,7 +78,12 @@ final class ConnectionToolsTest extends TestCase
     /** @return array<string, array{AbstractPlatform}> */
     public static function sqliteDataProvider(): array
     {
-        // Using FQCNs here instead of importing them as aliases because CS Fixer wreak havoc with those.
+        // Doctrine DBAL changed the casing of SQLitePlatform from the version 3 to 4:
+        // https://github.com/doctrine/dbal/pull/5521
+
+        // Make sure we're using the correct one here, as tests will fail if attempt to load the wrong one.
+        // Note: using FQCNs here instead of importing them as aliases because CS Fixer wreak havoc with those.
+
         if (class_exists(\Doctrine\DBAL\Platforms\SQLitePlatform::class)) {
             return [
                 'sqlite_dbal_4' => [self::createStub(\Doctrine\DBAL\Platforms\SQLitePlatform::class)],
