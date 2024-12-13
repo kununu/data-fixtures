@@ -26,13 +26,16 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "doctrine/dbal": "^3.9",
+    "doctrine/dbal": "^3.9 || ^4.0",
     "elasticsearch/elasticsearch": "^7.1",
     "kununu/scripts": ">=5.1",
     "phpunit/phpunit": "^11.3",
     "psr/cache": "^2.0",
     "symfony/http-client": "^6.4",
     "symfony/http-foundation": "^6.4"
+  },
+  "conflict": {
+    "doctrine/dbal": "<3.3"
   },
   "suggest": {
     "psr/cache": "Load fixtures for implementation of the PSR6 standard",

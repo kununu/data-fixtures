@@ -5,6 +5,7 @@ namespace Kununu\DataFixtures\Tests\Executor;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Exception;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
@@ -137,8 +138,8 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
         $this->connection = $this->createMock(Connection::class);
         $this->connection
             ->expects(self::any())
-            ->method('getDriver')
-            ->willReturn($this->createMock(AbstractMySQLDriver::class));
+            ->method('getDatabasePlatform')
+            ->willReturn(self::createStub(AbstractMySQLPlatform::class));
 
         parent::setUp();
     }

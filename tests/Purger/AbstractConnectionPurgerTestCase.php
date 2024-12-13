@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Purger;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\AbstractMySQLDriver;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Kununu\DataFixtures\Purger\PurgeMode;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -38,11 +37,6 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
 
         $connection
             ->expects(self::any())
-            ->method('getDriver')
-            ->willReturn($this->createMock(AbstractMySQLDriver::class));
-
-        $connection
-            ->expects(self::any())
             ->method('quoteIdentifier')
             ->willReturnCallback(fn(string $str): string => sprintf('`%s`', $str));
 
@@ -50,7 +44,7 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
             $connection
                 ->expects(self::any())
                 ->method('getDatabasePlatform')
-                ->willReturn($this->createMock(AbstractPlatform::class));
+                ->willReturn($this->createMock(AbstractMySQLPlatform::class));
         }
 
         return $connection;

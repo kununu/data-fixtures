@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Purger;
 
-use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Exception;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
 use Kununu\DataFixtures\Purger\PurgeMode;
@@ -153,7 +153,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
     {
         $connection = $this->getConnectionMock(false);
 
-        $platform = $this->createMock(AbstractPlatform::class);
+        $platform = $this->createMock(AbstractMySQLPlatform::class);
 
         $platform
             ->expects(self::exactly(3))
