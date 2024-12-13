@@ -6,7 +6,6 @@ namespace Kununu\DataFixtures\Tests\Tools;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -79,8 +78,19 @@ final class ConnectionToolsTest extends TestCase
     /** @return array<string, array{AbstractPlatform}> */
     public static function sqliteDataProvider(): array
     {
-        return [
-            'sqlite' => [self::createStub(SqlitePlatform::class)],
-        ];
+        // Using FQCNs here instead of importing them as aliases because CS Fixer wreak havoc with those.
+        if (class_exists(\Doctrine\DBAL\Platforms\SQLitePlatform::class)) {
+            return [
+                'sqlite_dbal_4' => [self::createStub(\Doctrine\DBAL\Platforms\SQLitePlatform::class)],
+            ];
+        }
+
+        if (class_exists(\Doctrine\DBAL\Platforms\SqlitePlatform::class)) {
+            return [
+                'sqlite_dbal_3' => [self::createStub(\Doctrine\DBAL\Platforms\SqlitePlatform::class)],
+            ];
+        }
+
+        return [];
     }
 }
