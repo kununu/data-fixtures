@@ -6,9 +6,6 @@ namespace Kununu\DataFixtures\Tools;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
-/**
- * @internal
- */
 trait ConnectionToolsTrait
 {
     protected function getDisableForeignKeysChecksStatementByPlatform(AbstractPlatform $platform): string
