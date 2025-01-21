@@ -12,7 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
 {
-    private const INDEX_NAME = 'my_index';
+    private const string INDEX_NAME = 'my_index';
 
     private MockObject&Client $client;
 

@@ -8,7 +8,7 @@ use Kununu\DataFixtures\Adapter\ElasticsearchFixture;
 
 final class ElasticsearchFixture3 extends ElasticsearchFixture
 {
-    public const DOCUMENTS = [
+    public const array DOCUMENTS = [
         [
             'id'         => 1,
             'name'       => 'Document 1',
