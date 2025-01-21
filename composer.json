@@ -31,8 +31,11 @@
     "elasticsearch/elasticsearch": "^7.1",
     "kununu/scripts": ">=5.1",
     "opensearch-project/opensearch-php": "^2.0",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-phpunit": "^2.0",
     "phpunit/phpunit": "^11.5",
     "psr/cache": "^2.0",
+    "rector/rector": "^2.0",
     "symfony/http-client": "^6.4",
     "symfony/http-foundation": "^6.4"
   },
@@ -57,11 +60,15 @@
   },
   "scripts": {
     "test": "phpunit --no-coverage --no-logging --no-progress",
-    "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
+    "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html",
+    "phpstan": "phpstan",
+    "rector": "rector process --dry-run --config rector-ci.php src/ tests/"
   },
   "scripts-descriptions": {
     "test": "Run all tests",
-    "test-coverage": "Run all tests with coverage report"
+    "test-coverage": "Run all tests with coverage report",
+    "rector": "Run Rector in dry-run mode with CI rules",
+    "phpstan": "Run PHPStan"
   },
   "config": {
     "sort-packages": true,
