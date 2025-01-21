@@ -71,7 +71,7 @@ jobs:
           composer-options: "--prefer-stable"
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
+        run: vendor/bin/phpunit --colors=always --testdox --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
 
       - name: Upload coverage files
         uses: actions/upload-artifact@v4
