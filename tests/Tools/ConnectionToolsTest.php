@@ -6,6 +6,7 @@ namespace Kununu\DataFixtures\Tests\Tools;
 use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Doctrine\DBAL\Driver\AbstractSQLiteDriver;
+use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Platforms\SqlitePlatform;
@@ -20,7 +21,7 @@ final class ConnectionToolsTest extends TestCase
     use ConnectionToolsTrait;
 
     #[DataProvider('mysqlDataProvider')]
-    public function testGetDisableForeignKeyChecksForMySQL(Driver|string $driver): void
+    public function testGetDisableForeignKeyChecksForMySQL(callable|string $driver): void
     {
         self::assertEquals(
             'SET FOREIGN_KEY_CHECKS=0',
@@ -29,7 +30,7 @@ final class ConnectionToolsTest extends TestCase
     }
 
     #[DataProvider('mysqlDataProvider')]
-    public function testGetEnableForeignKeyChecksForMySQL(Driver|string $driver): void
+    public function testGetEnableForeignKeyChecksForMySQL(callable|string $driver): void
     {
         self::assertEquals(
             'SET FOREIGN_KEY_CHECKS=1',
@@ -38,7 +39,7 @@ final class ConnectionToolsTest extends TestCase
     }
 
     #[DataProvider('sqliteDataProvider')]
-    public function testGetDisableForeignKeyChecksForSqlite(Driver|string $driver): void
+    public function testGetDisableForeignKeyChecksForSqlite(callable|string $driver): void
     {
         self::assertEquals(
             'PRAGMA foreign_keys = OFF',
@@ -47,7 +48,7 @@ final class ConnectionToolsTest extends TestCase
     }
 
     #[DataProvider('sqliteDataProvider')]
-    public function testGetEnableForeignKeyChecksForSqlite(Driver|string $driver): void
+    public function testGetEnableForeignKeyChecksForSqlite(callable|string $driver): void
     {
         self::assertEquals(
             'PRAGMA foreign_keys = ON',
@@ -71,56 +72,99 @@ final class ConnectionToolsTest extends TestCase
         );
     }
 
-    /** @return array<string, array{Driver|string}> */
+    /** @return array<string, array{callable|string}> */
     public static function mysqlDataProvider(): array
     {
-        if (class_exists(AbstractMySQLPlatform::class)) {
-            $abstractMySQLDriver = new class extends AbstractMySQLDriver {
-                public function connect(array $params): null
-                {
-                    return null;
-                }
-            };
+        $result = [];
 
-            return [
-                'abstract_mysql_driver'                               => [$abstractMySQLDriver],
-                'abstract_mysql_driver_wrapped_in_logging_middleware' => [
-                    (new Middleware(new NullLogger()))->wrap($abstractMySQLDriver),
-                ],
+        if (class_exists(AbstractMySQLPlatform::class)) {
+            $driverBuilder = self::getMySqlDriverBuilder();
+            $wrappedDriverBuilder = self::getWrappedDriverBuilder($driverBuilder);
+
+            $result = [
+                'abstract_mysql_driver_instance'                      => [$driverBuilder],
+                'abstract_mysql_driver_wrapped_in_logging_middleware' => [$wrappedDriverBuilder],
             ];
         }
 
-        return [
-            'abstract_mysql_driver' => [AbstractMySQLDriver::class],
-        ];
+        return array_merge(
+            [
+                'abstract_mysql_driver_class_name' => [AbstractMySQLDriver::class],
+            ],
+            $result
+        );
     }
 
-    /** @return array<string, array{Driver|string}> */
+    /** @return array<string, array{callable|string}> */
     public static function sqliteDataProvider(): array
     {
-        if (class_exists(SqlitePlatform::class)) {
-            $abstractSQLiteDriver = new class extends AbstractSQLiteDriver {
-                public function connect(array $params)
-                {
-                    return null;
-                }
-            };
+        $result = [];
 
-            return [
-                'abstract_sqlite_driver'                               => [$abstractSQLiteDriver],
-                'abstract_sqlite_driver wrapped_in_logging_middleware' => [
-                    (new Middleware(new NullLogger()))->wrap($abstractSQLiteDriver),
-                ],
+        if (class_exists(SqlitePlatform::class)) {
+            $driverBuilder = self::getSQLiteDriverBuilder();
+            $wrappedDriverBuilder = self::getWrappedDriverBuilder($driverBuilder);
+
+            $result = [
+                'abstract_sqlite_driver_instance'                      => [$driverBuilder],
+                'abstract_sqlite_driver_wrapped_in_logging_middleware' => [$wrappedDriverBuilder],
             ];
         }
 
-        return [
-            'abstract sqlite driver' => [AbstractSQLiteDriver::class],
-        ];
+        return array_merge(
+            [
+                'abstract_sqlite_driver_class_name' => [AbstractSQLiteDriver::class],
+            ],
+            $result
+        );
     }
 
-    private function getDriver(Driver|string $driver): MockObject|Driver
+    public function getDriverConnectionMock(): MockObject&Connection
     {
-        return is_string($driver) ? $this->createMock($driver) : $driver;
+        return $this->createMock(Connection::class);
+    }
+
+    private static function getMySqlDriverBuilder(): callable
+    {
+        return fn(ConnectionToolsTest $testCase): Driver => new class($testCase) extends AbstractMySQLDriver {
+            public function __construct(private readonly ConnectionToolsTest $testCase)
+            {
+            }
+
+            public function connect(array $params): Connection
+            {
+                return $this->testCase->getDriverConnectionMock();
+            }
+        };
+    }
+
+    private static function getSQLiteDriverBuilder(): callable
+    {
+        return fn(ConnectionToolsTest $testCase): Driver => new class($testCase) extends AbstractSQLiteDriver {
+            public function __construct(private readonly ConnectionToolsTest $testCase)
+            {
+            }
+
+            public function connect(array $params): Connection
+            {
+                return $this->testCase->getDriverConnectionMock();
+            }
+        };
+    }
+
+    private static function getWrappedDriverBuilder(callable $driverBuilder): callable
+    {
+        return function(ConnectionToolsTest $testCase) use ($driverBuilder): Driver {
+            $driver = $driverBuilder($testCase);
+
+            return (new Middleware(new NullLogger()))->wrap($driver);
+        };
+    }
+
+    private function getDriver(callable|string $driver): MockObject|Driver
+    {
+        return match (true) {
+            is_callable($driver) => $driver($this),
+            default              => $this->createMock($driver),
+        };
     }
 }
