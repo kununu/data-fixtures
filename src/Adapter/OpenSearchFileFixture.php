@@ -22,8 +22,6 @@ abstract class OpenSearchFileFixture extends AbstractFileLoaderFixture implement
             return;
         }
 
-        $cenas = $this->prepareBodyForBulkIndexation($indexName, $documents);
-
         $result = $client->bulk([
             'body' => $this->prepareBodyForBulkIndexation($indexName, $documents),
         ]);

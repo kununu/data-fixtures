@@ -76,16 +76,9 @@ abstract class AbstractFileLoaderFixture
     private function getFileContent(SplFileInfo $fileInfo): string
     {
         set_error_handler(
-            function(int $type, string $msg, string $file, int $line) use (
-                &$errorNumber,
-                &$error,
-                &$fileName,
-                &$errorLine
-            ): bool {
+            function(int $type, string $msg, string $file, int $line) use (&$errorNumber, &$error): bool {
                 $errorNumber = $type;
                 $error = $msg;
-                $fileName = $file;
-                $errorLine = $line;
 
                 return true;
             }
