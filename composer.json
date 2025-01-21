@@ -41,7 +41,7 @@
     "doctrine/dbal": "Load fixtures using Doctrine DBAL",
     "elasticsearch/elasticsearch": "Load fixtures with Elasticsearch",
     "opensearch-project/opensearch-php": "Load fixtures with Openseach",
-    "kununu/testing-bundle",: "Use this package in a Symfony application",
+    "kununu/testing-bundle": "Use this package in a Symfony application",
     "symfony/http-client": "Load fixtures with mocked data for Symfony Http client",
     "symfony/http-foundation": "Load fixtures with mocked data for Symfony Http client"
   },
