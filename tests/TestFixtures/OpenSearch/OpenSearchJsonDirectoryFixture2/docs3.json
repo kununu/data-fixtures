@@ -1,0 +1,11 @@
+[
+  {
+    "uuid": "d1cd10a0-7023-434c-8cd3-0196e1d34c2f",
+    "name": "Document 3",
+    "attributes": {
+      "attrib_1": 3,
+      "attrib_2": "inactive",
+      "attrib_3": false
+    }
+  }
+]

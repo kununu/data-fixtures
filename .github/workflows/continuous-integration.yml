@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     name: PHPUnit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         php-version:
@@ -37,6 +37,12 @@ jobs:
         with:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: "--prefer-stable"
+
+      - name: Run Rector
+        run: vendor/bin/rector process --ansi --dry-run --config rector-ci.php src/ tests/
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --ansi
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
