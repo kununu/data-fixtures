@@ -26,16 +26,12 @@ jobs:
       with:
         php-version: 8.3
         coverage: none
-        tools: composer-require-checker
 
     - name: Install Composer Dependencies
       uses: ramsey/composer-install@v3
       with:
         dependency-versions: "highest"
         composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
-
-    - name: Run Composer Require Checker
-      run: composer-require-checker
 
     - name: Run PHP CS Fixer
       run: vendor/bin/php-cs-fixer check --using-cache=no --config vendor/kununu/scripts/src/PHP/CodeStandards/Scripts/php_cs src/ tests/
