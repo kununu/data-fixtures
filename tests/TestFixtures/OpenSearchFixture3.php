@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\TestFixtures;
 
-use Elasticsearch\Client;
-use Kununu\DataFixtures\Adapter\ElasticsearchFixture;
+use Kununu\DataFixtures\Adapter\OpenSearchFixture;
+use OpenSearch\Client;
 
-final class ElasticsearchFixture3 extends ElasticsearchFixture
+final class OpenSearchFixture3 extends OpenSearchFixture
 {
     public const array DOCUMENTS = [
         [
@@ -29,10 +29,9 @@ final class ElasticsearchFixture3 extends ElasticsearchFixture
         ],
     ];
 
-    public function load(Client $elasticSearch, string $indexName, bool $throwOnFail = true): void
+    public function load(Client $client, string $indexName, bool $throwOnFail = true): void
     {
-        $elasticSearch->bulk([
-            'type' => '_doc',
+        $client->bulk([
             'body' => $this->prepareBodyForBulkIndexation($indexName, self::DOCUMENTS),
         ]);
     }

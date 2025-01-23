@@ -11,9 +11,41 @@ env:
   fail-fast: true
 
 jobs:
+  checks:
+    name: Code Checks
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.3
+        coverage: none
+
+    - name: Install Composer Dependencies
+      uses: ramsey/composer-install@v3
+      with:
+        dependency-versions: "highest"
+        composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
+
+    - name: Run PHP CS Fixer
+      run: vendor/bin/php-cs-fixer check --using-cache=no --config vendor/kununu/scripts/src/PHP/CodeStandards/Scripts/php_cs src/ tests/
+
+    - name: Run Rector
+      run: vendor/bin/rector process --ansi --dry-run --config rector-ci.php src/ tests/
+
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyse --ansi
+
   build:
+    needs: checks
     name: PHPUnit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         php-version:
@@ -39,7 +71,7 @@ jobs:
           composer-options: "--prefer-stable"
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
+        run: vendor/bin/phpunit --colors=always --testdox --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
 
       - name: Upload coverage files
         uses: actions/upload-artifact@v4
@@ -50,6 +82,7 @@ jobs:
 
   sonarcloud:
     needs: build
+    name: SonarCloud Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -69,7 +102,7 @@ jobs:
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
 
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@v3.0.0
+        uses: SonarSource/sonarqube-scan-action@v4.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

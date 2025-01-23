@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://docs.phpunit.de/en/11.3/ -->
+<!-- https://docs.phpunit.de/en/11.5/ -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.3/phpunit.xsd" bootstrap="vendor/autoload.php"
-         colors="true" beStrictAboutChangesToGlobalState="true" cacheDirectory=".phpunit.cache" testdox="true">
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd" bootstrap="vendor/autoload.php"
+         colors="true" beStrictAboutChangesToGlobalState="true" testdoxSummary="true" testdox="true"
+         cacheDirectory=".phpunit.cache">
+  <coverage>
+    <report>
+      <clover outputFile="tests/.results/tests-clover.xml"/>
+      <html outputDirectory="tests/.results/html/"/>
+    </report>
+  </coverage>
   <testsuites>
-    <testsuite name="Tests">
+    <testsuite name="Full">
       <directory>tests</directory>
     </testsuite>
   </testsuites>
+  <logging>
+    <junit outputFile="tests/.results/tests-junit.xml"/>
+  </logging>
   <source>
     <include>
       <directory>src</directory>

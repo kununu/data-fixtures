@@ -75,16 +75,23 @@ abstract class AbstractFileLoaderFixture
 
     private function getFileContent(SplFileInfo $fileInfo): string
     {
-        set_error_handler(function(int $type, string $msg) use (&$errorNumber, &$error): void {
-            $errorNumber = $type;
-            $error = $msg;
-        });
+        set_error_handler(
+            function(int $type, string $msg, string $file, int $line) use (&$errorNumber, &$error): bool {
+                $errorNumber = $type;
+                $error = $msg;
 
-        $content = file_get_contents($fileInfo->getPathname());
-        restore_error_handler();
+                return true;
+            }
+        );
 
-        if (false === $content) {
-            throw new InvalidFileException($error, $errorNumber);
+        try {
+            $content = file_get_contents($fileInfo->getPathname());
+
+            if (false === $content) {
+                throw new InvalidFileException($error, $errorNumber);
+            }
+        } finally {
+            restore_error_handler();
         }
 
         return $content;
