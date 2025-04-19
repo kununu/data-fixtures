@@ -28,7 +28,7 @@
   },
   "require-dev": {
     "doctrine/dbal": "^3.9",
-    "elasticsearch/elasticsearch": "^7.1",
+    "elasticsearch/elasticsearch": "^7.1 || ^9.0",
     "kununu/scripts": ">=5.1",
     "opensearch-project/opensearch-php": "^2.0",
     "phpstan/phpstan": "^2.1",
