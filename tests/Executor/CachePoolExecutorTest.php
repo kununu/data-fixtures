@@ -16,7 +16,7 @@ final class CachePoolExecutorTest extends AbstractExecutorTestCase
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->purger
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -25,7 +25,7 @@ final class CachePoolExecutorTest extends AbstractExecutorTestCase
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->purger
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -35,13 +35,13 @@ final class CachePoolExecutorTest extends AbstractExecutorTestCase
     {
         $fixture1 = $this->createMock(CachePoolFixtureInterface::class);
         $fixture1
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('load')
             ->with($this->cache);
 
         $fixture2 = $this->createMock(CachePoolFixtureInterface::class);
         $fixture2
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('load')
             ->with($this->cache);
 

@@ -22,7 +22,7 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
     public function testThatExecutorIsNotTransactionalAndLoadsFixture(): void
     {
         $this->connection
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(
                 static fn(string $sql): int => match ($sql) {
@@ -33,20 +33,20 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
             );
 
         $this->connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('beginTransaction');
 
         $this->connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('commit');
 
         $this->purger
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('purge');
 
         $fixture = $this->createMock(ConnectionFixtureInterface::class);
         $fixture
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('load')
             ->with($this->connection);
 
@@ -58,7 +58,7 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
         $this->expectException(Exception::class);
 
         $this->connection
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(
                 static fn(string $sql): int => match ($sql) {
@@ -69,24 +69,24 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
             );
 
         $this->connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('beginTransaction');
 
         $this->connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('commit');
 
         $this->connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('rollBack');
 
         $this->purger
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('purge');
 
         $fixture = $this->createMock(ConnectionFixtureInterface::class);
         $fixture
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('load')
             ->with($this->connection)
             ->willThrowException(new Exception());
@@ -98,7 +98,7 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
     {
         $this->connection = $this->createMock(Connection::class);
         $this->connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getDriver')
             ->willReturn($this->createMock(AbstractMySQLDriver::class));
 

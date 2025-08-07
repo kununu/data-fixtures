@@ -15,7 +15,7 @@ final class ElasticsearchFixtureTest extends TestCase
     public function testLoad(): void
     {
         $this->client
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('bulk')
             ->with([
                 'type' => '_doc',

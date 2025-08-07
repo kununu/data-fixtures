@@ -19,7 +19,7 @@ final class OpenSearchExecutorTest extends AbstractExecutorTestCase
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->purger
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -28,7 +28,7 @@ final class OpenSearchExecutorTest extends AbstractExecutorTestCase
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->purger
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -38,24 +38,24 @@ final class OpenSearchExecutorTest extends AbstractExecutorTestCase
     {
         $fixture1 = $this->createMock(OpenSearchFixtureInterface::class);
         $fixture1
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('load')
             ->with($this->client, self::INDEX_NAME);
 
         $fixture2 = $this->createMock(OpenSearchFixtureInterface::class);
         $fixture2
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('load')
             ->with($this->client, self::INDEX_NAME);
 
         $indices = $this->createMock(IndicesNamespace::class);
         $indices
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('refresh')
             ->with(['index' => self::INDEX_NAME]);
 
         $this->client
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('indices')
             ->willReturn($indices);
 

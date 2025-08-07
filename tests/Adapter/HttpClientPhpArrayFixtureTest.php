@@ -19,7 +19,7 @@ final class HttpClientPhpArrayFixtureTest extends TestCase
     public function testLoad(): void
     {
         $this->httpClient
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('addResponses')
             ->with([
                 [
@@ -50,7 +50,7 @@ JSON
     public function testFileNotFound(): void
     {
         $this->httpClient
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('addResponses');
 
         $this->expectException(InvalidFileException::class);
@@ -61,7 +61,7 @@ JSON
     public function testInvalidFile(): void
     {
         $this->httpClient
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('addResponses');
 
         $this->expectException(InvalidFileException::class);
@@ -74,7 +74,7 @@ JSON
         $httpClient = $this->createMock(FakeHttpClientInterface::class);
 
         $this->httpClient
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('addResponses');
 
         $fixture = new HttpClientFixture2();

@@ -18,17 +18,17 @@ final class ElasticsearchPurgerTest extends AbstractPurgerTestCase
     {
         $indices = $this->createMock(IndicesNamespace::class);
         $indices
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('refresh')
             ->with(['index' => 'my_index']);
 
         $this->client
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('indices')
             ->willReturn($indices);
 
         $this->client
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('deleteByQuery')
             ->with(
                 [

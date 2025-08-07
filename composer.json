@@ -1,9 +1,8 @@
 {
   "name": "kununu/data-fixtures",
   "description": "Load data fixtures in your application for any storage",
-  "type": "library",
   "license": "MIT",
-  "minimum-stability": "stable",
+  "type": "library",
   "keywords": [
     "database",
     "data fixtures",
@@ -29,25 +28,28 @@
   "require-dev": {
     "doctrine/dbal": "^3.9",
     "elasticsearch/elasticsearch": "^7.1",
-    "kununu/scripts": ">=5.1",
+    "kununu/scripts": ">=6.1",
+    "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.0",
     "phpstan/phpstan": "^2.1",
     "phpstan/phpstan-phpunit": "^2.0",
-    "phpunit/phpunit": "^11.5",
+    "phpunit/phpunit": "^12.3",
     "psr/cache": "^2.0",
     "rector/rector": "^2.0",
+    "shipmonk/composer-dependency-analyser": "^1.8",
     "symfony/http-client": "^6.4",
     "symfony/http-foundation": "^6.4"
   },
   "suggest": {
-    "psr/cache": "Load fixtures for implementation of the PSR6 standard",
     "doctrine/dbal": "Load fixtures using Doctrine DBAL",
     "elasticsearch/elasticsearch": "Load fixtures with Elasticsearch",
-    "opensearch-project/opensearch-php": "Load fixtures with Openseach",
     "kununu/testing-bundle": "Use this package in a Symfony application",
+    "opensearch-project/opensearch-php": "Load fixtures with Openseach",
+    "psr/cache": "Load fixtures for implementation of the PSR6 standard",
     "symfony/http-client": "Load fixtures with mocked data for Symfony Http client",
     "symfony/http-foundation": "Load fixtures with mocked data for Symfony Http client"
   },
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
       "Kununu\\DataFixtures\\": "src/"
@@ -58,22 +60,25 @@
       "Kununu\\DataFixtures\\Tests\\": "tests/"
     }
   },
+  "config": {
+    "allow-plugins": {
+      "kununu/scripts": true,
+      "php-http/discovery": true
+    },
+    "sort-packages": true
+  },
   "scripts": {
-    "test": "phpunit --no-coverage --no-logging --no-progress",
-    "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html",
+    "cs": "composer kununu:cs-fixer-code src/ tests/",
     "phpstan": "phpstan",
-    "rector": "rector process --dry-run --config rector-ci.php src/ tests/"
+    "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
+    "test": "phpunit --no-coverage --no-logging --no-progress",
+    "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
   },
   "scripts-descriptions": {
-    "test": "Run all tests",
-    "test-coverage": "Run all tests with coverage report",
+    "cs": "Run PHP CS Fixer with kununu code standards",
+    "phpstan": "Run PHPStan",
     "rector": "Run Rector in dry-run mode with CI rules",
-    "phpstan": "Run PHPStan"
-  },
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "kununu/scripts": true
-    }
+    "test": "Run all tests",
+    "test-coverage": "Run all tests with coverage report"
   }
 }
