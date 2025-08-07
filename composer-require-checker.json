@@ -1,0 +1,20 @@
+{
+  "symbol-whitelist": [
+    "Doctrine\\DBAL\\Connection",
+    "Doctrine\\DBAL\\Driver",
+    "Doctrine\\DBAL\\Driver\\AbstractMySQLDriver",
+    "Doctrine\\DBAL\\Driver\\AbstractSQLiteDriver",
+    "Doctrine\\DBAL\\Platforms\\AbstractMySQLPlatform",
+    "Doctrine\\DBAL\\Platforms\\AbstractPlatform",
+    "Doctrine\\DBAL\\Platforms\\SqlitePlatform",
+    "Elasticsearch\\Client",
+    "OpenSearch\\Client",
+    "Psr\\Cache\\CacheItemPoolInterface",
+    "Symfony\\Component\\HttpClient\\MockHttpClient",
+    "Symfony\\Component\\HttpClient\\Response\\MockResponse",
+    "Symfony\\Component\\HttpFoundation\\Request",
+    "Symfony\\Component\\HttpFoundation\\Response",
+    "Symfony\\Contracts\\HttpClient\\HttpClientInterface",
+    "Symfony\\Contracts\\HttpClient\\ResponseInterface"
+  ]
+}

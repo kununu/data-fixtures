@@ -74,7 +74,7 @@ final class ElasticsearchArrayDirectoryFixtureTest extends TestCase
         ];
 
         $this->client
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('bulk')
             ->with(
                 self::callback(

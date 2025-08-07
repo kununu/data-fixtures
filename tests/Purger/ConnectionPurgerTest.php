@@ -15,7 +15,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects(self::exactly(5))
+            ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -29,14 +29,14 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 
         $transactionStarted = false;
         $connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('beginTransaction')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
         $connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('commit')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 self::assertTrue($transactionStarted);
@@ -53,7 +53,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects(self::exactly(5))
+            ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -67,14 +67,14 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 
         $transactionStarted = false;
         $connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('beginTransaction')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
         $connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('commit')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 self::assertTrue($transactionStarted);
@@ -83,7 +83,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
             });
 
         $connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('rollback');
 
         $purger = new ConnectionPurger($connection);
@@ -95,7 +95,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock(true, []);
 
         $connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('executeStatement');
 
         $purger = new ConnectionPurger($connection);
@@ -107,7 +107,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects(self::exactly(4))
+            ->expects($this->exactly(4))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -132,7 +132,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects(self::exactly(5))
+            ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -156,7 +156,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $platform = $this->createMock(AbstractPlatform::class);
 
         $platform
-            ->expects(self::exactly(3))
+            ->expects($this->exactly(3))
             ->method('getTruncateTableSQL')
             ->with(
                 $this->callback(
@@ -164,16 +164,17 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
                 )
             )
             ->willReturnOnConsecutiveCalls(
+                // @phpstan-ignore argument.named
                 ...array_map(fn($element) => $element[0], $this->getTruncateModeConsecutiveArguments())
             );
 
         $connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getDatabasePlatform')
             ->willReturn($platform);
 
         $connection
-            ->expects(self::exactly(5))
+            ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(

@@ -27,28 +27,28 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
 
         $schemaManager = $this->createMock(AbstractSchemaManager::class);
         $schemaManager
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('listTableNames')
             ->willReturn($tables);
 
         $connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('createSchemaManager')
             ->willReturn($schemaManager);
 
         $connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getDriver')
             ->willReturn($this->createMock(AbstractMySQLDriver::class));
 
         $connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('quoteIdentifier')
             ->willReturnCallback(fn(string $str): string => sprintf('`%s`', $str));
 
         if ($withPlatform) {
             $connection
-                ->expects(self::any())
+                ->expects($this->any())
                 ->method('getDatabasePlatform')
                 ->willReturn($this->createMock(AbstractPlatform::class));
         }

@@ -16,7 +16,7 @@ final class HttpClientPurgerTest extends AbstractPurgerTestCase
     public function testPurge(): void
     {
         $this->httpClient
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('clearResponses');
 
         $this->purger->purge();
@@ -26,7 +26,7 @@ final class HttpClientPurgerTest extends AbstractPurgerTestCase
     {
         $this->httpClient = $this->createMock(FakeHttpClientInterface::class);
         $this->httpClient
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('clearResponses');
 
         $this->purger->purge();

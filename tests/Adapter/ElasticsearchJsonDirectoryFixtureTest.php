@@ -72,7 +72,7 @@ final class ElasticsearchJsonDirectoryFixtureTest extends TestCase
         ];
 
         $this->client
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('bulk')
             ->with(
                 self::callback(
@@ -122,7 +122,7 @@ final class ElasticsearchJsonDirectoryFixtureTest extends TestCase
         ];
 
         $this->client
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('bulk')
             ->with(
                 self::callback(
@@ -166,7 +166,7 @@ TEXT
     public function testLoadWithInvalidJson(): void
     {
         $this->client
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('bulk')
             ->with([
                 'body' => [

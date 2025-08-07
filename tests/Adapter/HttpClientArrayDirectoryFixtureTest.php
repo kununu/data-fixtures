@@ -15,7 +15,7 @@ final class HttpClientArrayDirectoryFixtureTest extends TestCase
     public function testLoad(): void
     {
         $this->httpClient
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('addResponses')
             ->with([
                 [

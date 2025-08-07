@@ -13,7 +13,7 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects(self::exactly(5))
+            ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -26,11 +26,11 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
             ->willReturn(1);
 
         $connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('beginTransaction');
 
         $connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('commit');
 
         $purger = new NonTransactionalConnectionPurger($connection);
@@ -44,7 +44,7 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
         $connection = $this->getConnectionMock();
 
         $connection
-            ->expects(self::exactly(3))
+            ->expects($this->exactly(3))
             ->method('executeStatement')
             ->with(
                 $this->callback(
@@ -65,15 +65,15 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
             );
 
         $connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('beginTransaction');
 
         $connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('commit');
 
         $connection
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('rollback');
 
         $purger = new NonTransactionalConnectionPurger($connection);

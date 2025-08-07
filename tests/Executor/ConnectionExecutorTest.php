@@ -22,7 +22,7 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatExecutorIsTransactionalAndCommits(): void
     {
         $this->connection
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(
                 static fn(string $sql): int => match ($sql) {
@@ -33,15 +33,15 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
             );
 
         $this->connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('beginTransaction');
 
         $this->connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('commit');
 
         $this->purger
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -52,7 +52,7 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
         $this->expectException(Exception::class);
 
         $this->connection
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(
                 static fn(string $sql): int => match ($sql) {
@@ -63,20 +63,20 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
             );
 
         $this->connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('beginTransaction');
 
         $this->connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('commit')
             ->willThrowException(new Exception());
 
         $this->connection
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('rollBack');
 
         $this->purger
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -85,12 +85,12 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('executeStatement')
             ->willReturn(1);
 
         $this->purger
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('purge');
 
         $this->executor->execute([], true);
@@ -99,12 +99,12 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('executeStatement')
             ->willReturn(1);
 
         $this->purger
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('purge');
 
         $this->executor->execute([]);
@@ -113,19 +113,19 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatFixturesAreLoaded(): void
     {
         $this->connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('executeStatement')
             ->willReturn(1);
 
         $fixture1 = $this->createMock(ConnectionFixtureInterface::class);
         $fixture1
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('load')
             ->with($this->connection);
 
         $fixture2 = $this->createMock(ConnectionFixtureInterface::class);
         $fixture2
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('load')
             ->with($this->connection);
 
@@ -136,7 +136,7 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     {
         $this->connection = $this->createMock(Connection::class);
         $this->connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getDriver')
             ->willReturn($this->createMock(AbstractMySQLDriver::class));
 

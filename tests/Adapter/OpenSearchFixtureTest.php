@@ -15,7 +15,7 @@ final class OpenSearchFixtureTest extends TestCase
     public function testLoad(): void
     {
         $this->client
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('bulk')
             ->with([
                 'body' => [

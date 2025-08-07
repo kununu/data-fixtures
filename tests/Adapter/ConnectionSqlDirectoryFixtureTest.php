@@ -26,7 +26,7 @@ INSERT INTO `database`.`table` (`id`, `name`, `description`) VALUES ('4', 'name4
 SQL;
 
         $this->connection
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(fn(string $fixtureContent) => match ($fixtureContent) {
                 $fixture1Content,

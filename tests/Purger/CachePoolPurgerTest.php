@@ -16,7 +16,7 @@ final class CachePoolPurgerTest extends AbstractPurgerTestCase
     public function testThatCacheItemPoolIsPurged(): void
     {
         $this->cache
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('clear')
             ->willReturn(true);
 
@@ -28,7 +28,7 @@ final class CachePoolPurgerTest extends AbstractPurgerTestCase
         $this->expectException(PurgeFailedException::class);
 
         $this->cache
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('clear')
             ->willReturn(false);
 
