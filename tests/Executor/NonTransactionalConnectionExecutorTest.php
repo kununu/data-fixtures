@@ -14,8 +14,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestCase
 {
-    private const SQL_1 = 'SET FOREIGN_KEY_CHECKS=0';
-    private const SQL_2 = 'SET FOREIGN_KEY_CHECKS=1';
+    private const string SQL_1 = 'SET FOREIGN_KEY_CHECKS=0';
+    private const string SQL_2 = 'SET FOREIGN_KEY_CHECKS=1';
 
     private MockObject&Connection $connection;
 

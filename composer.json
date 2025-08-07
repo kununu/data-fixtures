@@ -9,6 +9,7 @@
     "data fixtures",
     "Doctrine",
     "Elasticsearch",
+    "Opensearch",
     "PSR-6 Cache"
   ],
   "authors": [
@@ -29,8 +30,12 @@
     "doctrine/dbal": "^3.9 || ^4.0",
     "elasticsearch/elasticsearch": "^7.1",
     "kununu/scripts": ">=5.1",
-    "phpunit/phpunit": "^11.3",
+    "opensearch-project/opensearch-php": "^2.0",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-phpunit": "^2.0",
+    "phpunit/phpunit": "^11.5",
     "psr/cache": "^2.0",
+    "rector/rector": "^2.0",
     "symfony/http-client": "^6.4",
     "symfony/http-foundation": "^6.4"
   },
@@ -41,6 +46,7 @@
     "psr/cache": "Load fixtures for implementation of the PSR6 standard",
     "doctrine/dbal": "Load fixtures using Doctrine DBAL",
     "elasticsearch/elasticsearch": "Load fixtures with Elasticsearch",
+    "opensearch-project/opensearch-php": "Load fixtures with Openseach",
     "kununu/testing-bundle": "Use this package in a Symfony application",
     "symfony/http-client": "Load fixtures with mocked data for Symfony Http client",
     "symfony/http-foundation": "Load fixtures with mocked data for Symfony Http client"
@@ -57,11 +63,15 @@
   },
   "scripts": {
     "test": "phpunit --no-coverage --no-logging --no-progress",
-    "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
+    "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html",
+    "phpstan": "phpstan",
+    "rector": "rector process --dry-run --config rector-ci.php src/ tests/"
   },
   "scripts-descriptions": {
     "test": "Run all tests",
-    "test-coverage": "Run all tests with coverage report"
+    "test-coverage": "Run all tests with coverage report",
+    "rector": "Run Rector in dry-run mode with CI rules",
+    "phpstan": "Run PHPStan"
   },
   "config": {
     "sort-packages": true,
