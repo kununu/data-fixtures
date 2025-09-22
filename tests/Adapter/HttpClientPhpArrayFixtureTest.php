@@ -38,8 +38,7 @@ final class HttpClientPhpArrayFixtureTest extends TestCase
     "age": 39,
     "newsletter": true
 }
-JSON
-                    ,
+JSON,
                 ],
             ]);
 

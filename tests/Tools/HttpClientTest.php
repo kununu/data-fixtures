@@ -44,8 +44,7 @@ final class HttpClientTest extends TestCase
     "age": 39,
     "newsletter": true
 }
-JSON
-            ,
+JSON,
             $response->getContent()
         );
 
