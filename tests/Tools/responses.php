@@ -22,8 +22,7 @@ return [
   "age": 39,
   "newsletter": true
 }
-JSON
-        ,
+JSON,
         'bodyValidator' => function(MockResponse $response, array $options = []): MockResponse {
             $id = $options['json']['id'] ?? null;
 

@@ -34,8 +34,7 @@ final class HttpClientArrayDirectoryFixtureTest extends TestCase
     "age": 39,
     "newsletter": true
 }
-JSON
-                    ,
+JSON,
                 ],
             ]);
 
