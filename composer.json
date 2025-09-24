@@ -43,9 +43,9 @@
     "symfony/http-foundation": "^6.4"
   },
   "suggest": {
+    "aws/aws-sdk-php": "Load fixtures with DynamoDB",
     "doctrine/dbal": "Load fixtures using Doctrine DBAL",
     "elasticsearch/elasticsearch": "Load fixtures with Elasticsearch",
-    "aws/aws-sdk-php": "Load fixtures with DynamoDB",
     "kununu/testing-bundle": "Use this package in a Symfony application",
     "opensearch-project/opensearch-php": "Load fixtures with Openseach",
     "psr/cache": "Load fixtures for implementation of the PSR6 standard",
