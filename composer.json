@@ -27,9 +27,9 @@
     "ext-json": "*"
   },
   "require-dev": {
+    "aws/aws-sdk-php": "^3.173",
     "doctrine/dbal": "^3.9",
     "elasticsearch/elasticsearch": "^7.1",
-    "aws/aws-sdk-php": "^3.173",
     "kununu/scripts": ">=6.1",
     "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.0",
@@ -72,7 +72,7 @@
   },
   "scripts": {
     "cs": "composer kununu:cs-fixer-code src/ tests/",
-    "phpstan": "phpstan --memory-limit=1G",
+    "phpstan": "phpstan",
     "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
     "test": "phpunit --no-coverage --no-logging --no-progress",
     "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
