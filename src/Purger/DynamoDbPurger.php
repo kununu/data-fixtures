@@ -63,33 +63,12 @@ final readonly class DynamoDbPurger implements PurgerInterface
         }
     }
 
-    /**
-     * @param array<int, array<string, mixed>> $items
-     * @param array<string>                    $keyAttributes
-     */
     private function deleteItems(string $tableName, array $items, array $keyAttributes): void
     {
-        // DynamoDB batch write supports up to 25 items per request
         $chunks = array_chunk($items, 25);
 
         foreach ($chunks as $chunk) {
-            $requestItems = [];
-            foreach ($chunk as $item) {
-                $key = [];
-                foreach ($keyAttributes as $keyAttribute) {
-                    if (isset($item[$keyAttribute])) {
-                        $key[$keyAttribute] = $item[$keyAttribute];
-                    }
-                }
-
-                if (!empty($key)) {
-                    $requestItems[] = [
-                        'DeleteRequest' => [
-                            'Key' => $key,
-                        ],
-                    ];
-                }
-            }
+            $requestItems = $this->buildDeleteRequests($chunk, $keyAttributes);
 
             if (!empty($requestItems)) {
                 $result = $this->dynamoDb->batchWriteItem([
@@ -98,12 +77,39 @@ final readonly class DynamoDbPurger implements PurgerInterface
                     ],
                 ]);
 
-                // Handle unprocessed items
                 if (!empty($result['UnprocessedItems'])) {
                     $this->handleUnprocessedDeletes($result['UnprocessedItems']);
                 }
             }
         }
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $items
+     * @param array<string>                    $keyAttributes
+     *
+     * @return array<int, array<string, array<string, array>>>
+     */
+    private function buildDeleteRequests(array $items, array $keyAttributes): array
+    {
+        $requestItems = [];
+        foreach ($items as $item) {
+            $key = [];
+            foreach ($keyAttributes as $keyAttribute) {
+                if (isset($item[$keyAttribute])) {
+                    $key[$keyAttribute] = $item[$keyAttribute];
+                }
+            }
+            if (!empty($key)) {
+                $requestItems[] = [
+                    'DeleteRequest' => [
+                        'Key' => $key,
+                    ],
+                ];
+            }
+        }
+
+        return $requestItems;
     }
 
     private function handleUnprocessedDeletes(array $unprocessedItems): void
