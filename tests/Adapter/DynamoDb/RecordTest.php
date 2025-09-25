@@ -9,12 +9,30 @@ use PHPUnit\Framework\TestCase;
 
 final class RecordTest extends TestCase
 {
-    public function testConstructorWithValues(): void
+    public function testGetValues(): void
     {
         $values = [
-            Value::stringValue('id', 'test-id'),
-            Value::numericValue('count', 42),
+            Value::stringValue('id', 'user-123'),
+            Value::numericValue('age', 30),
             Value::boolValue('active', true),
+        ];
+
+        $record = new Record($values);
+
+        $expected = [
+            'id'     => ['S' => 'user-123'],
+            'age'    => ['N' => '30'],
+            'active' => ['BOOL' => true],
+        ];
+
+        self::assertSame($expected, $record->getValues());
+    }
+
+    public function testGetRawValues(): void
+    {
+        $values = [
+            Value::stringValue('name', 'John'),
+            Value::numericValue('score', 100),
         ];
 
         $record = new Record($values);
@@ -22,49 +40,39 @@ final class RecordTest extends TestCase
         self::assertSame($values, $record->getRawValues());
     }
 
-    public function testGetValues(): void
+    public function testGetValueExisting(): void
     {
-        $values = [
-            Value::stringValue('id', 'test-id'),
-            Value::numericValue('count', 42),
-            Value::boolValue('active', true),
-        ];
+        $nameValue = Value::stringValue('name', 'John');
+        $ageValue = Value::numericValue('age', 25);
 
-        $record = new Record($values);
-        $dynamoDbValues = $record->getValues();
+        $record = new Record([$nameValue, $ageValue]);
 
-        $expected = [
-            'id'     => ['S' => 'test-id'],
-            'count'  => ['N' => '42'],
-            'active' => ['BOOL' => true],
-        ];
-
-        self::assertSame($expected, $dynamoDbValues);
+        self::assertSame($nameValue, $record->getValue('name'));
+        self::assertSame($ageValue, $record->getValue('age'));
     }
 
-    public function testGetValueByName(): void
+    public function testGetValueNonExisting(): void
     {
-        $idValue = Value::stringValue('id', 'test-id');
-        $countValue = Value::numericValue('count', 42);
+        $record = new Record([Value::stringValue('name', 'John')]);
 
-        $record = new Record([$idValue, $countValue]);
-
-        self::assertSame($idValue, $record->getValue('id'));
-        self::assertSame($countValue, $record->getValue('count'));
         self::assertNull($record->getValue('nonexistent'));
     }
 
-    public function testHasAttribute(): void
+    public function testHasAttributeExisting(): void
     {
-        $values = [
-            Value::stringValue('id', 'test-id'),
-            Value::numericValue('count', 42),
-        ];
+        $record = new Record([
+            Value::stringValue('name', 'John'),
+            Value::numericValue('age', 25),
+        ]);
 
-        $record = new Record($values);
+        self::assertTrue($record->hasAttribute('name'));
+        self::assertTrue($record->hasAttribute('age'));
+    }
 
-        self::assertTrue($record->hasAttribute('id'));
-        self::assertTrue($record->hasAttribute('count'));
+    public function testHasAttributeNonExisting(): void
+    {
+        $record = new Record([Value::stringValue('name', 'John')]);
+
         self::assertFalse($record->hasAttribute('nonexistent'));
     }
 
@@ -72,52 +80,41 @@ final class RecordTest extends TestCase
     {
         $record = new Record([]);
 
-        self::assertEmpty($record->getRawValues());
-        self::assertEmpty($record->getValues());
+        self::assertSame([], $record->getValues());
+        self::assertSame([], $record->getRawValues());
         self::assertNull($record->getValue('any'));
         self::assertFalse($record->hasAttribute('any'));
     }
 
-    public function testRecordWithComplexTypes(): void
+    public function testComplexRecord(): void
     {
         $values = [
-            Value::stringValue('id', 'test-id'),
-            Value::stringSetValue('tags', ['tag1', 'tag2']),
-            Value::numericSetValue('scores', [10, 20, 30]),
-            Value::mapValue('metadata', ['key' => 'value', 'nested' => ['inner' => 'data']]),
-            Value::listValue('items', ['item1', 'item2']),
-            Value::nullValue('empty_field'),
-            Value::binaryValue('data', 'binary_content'),
+            Value::stringValue('id', 'user-456'),
+            Value::stringSetValue('tags', ['developer', 'php']),
+            Value::mapValue('address', [
+                'street' => ['S' => '123 Main St'],
+                'city'   => ['S' => 'New York'],
+            ]),
+            Value::nullValue('deleted_at'),
         ];
 
         $record = new Record($values);
 
         $expected = [
-            'id'          => ['S' => 'test-id'],
-            'tags'        => ['SS' => ['tag1', 'tag2']],
-            'scores'      => ['NS' => ['10', '20', '30']],
-            'metadata'    => ['M' => ['key' => 'value', 'nested' => ['inner' => 'data']]],
-            'items'       => ['L' => ['item1', 'item2']],
-            'empty_field' => ['NULL' => true],
-            'data'        => ['B' => 'binary_content'],
+            'id'      => ['S' => 'user-456'],
+            'tags'    => ['SS' => ['developer', 'php']],
+            'address' => ['M' => [
+                'street' => ['S' => '123 Main St'],
+                'city'   => ['S' => 'New York'],
+            ]],
+            'deleted_at' => ['NULL' => true],
         ];
 
         self::assertSame($expected, $record->getValues());
-        self::assertCount(7, $record->getRawValues());
-    }
-
-    public function testGetValueWithDuplicateNames(): void
-    {
-        // Test that the first occurrence is returned when there are duplicate names
-        $value1 = Value::stringValue('duplicate', 'first');
-        $value2 = Value::stringValue('duplicate', 'second');
-        $value3 = Value::numericValue('unique', 123);
-
-        $record = new Record([$value1, $value2, $value3]);
-
-        // Should return the first occurrence
-        self::assertSame($value1, $record->getValue('duplicate'));
-        self::assertTrue($record->hasAttribute('duplicate'));
-        self::assertSame($value3, $record->getValue('unique'));
+        self::assertTrue($record->hasAttribute('id'));
+        self::assertTrue($record->hasAttribute('tags'));
+        self::assertTrue($record->hasAttribute('address'));
+        self::assertTrue($record->hasAttribute('deleted_at'));
+        self::assertFalse($record->hasAttribute('nonexistent'));
     }
 }

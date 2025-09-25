@@ -18,7 +18,7 @@ trait DynamoDbFixtureTrait
      */
     private array $records = [];
 
-    protected function setTableName(string $tableName): self
+    protected function setTableName(string $tableName): static
     {
         $this->tableName = $tableName;
 
@@ -32,7 +32,7 @@ trait DynamoDbFixtureTrait
         return $this->tableName;
     }
 
-    protected function addRecord(Record $record): self
+    protected function addRecord(Record $record): static
     {
         $this->records[] = $record;
 
@@ -42,7 +42,7 @@ trait DynamoDbFixtureTrait
     /**
      * @param array<int, Record> $records
      */
-    protected function addRecords(array $records): self
+    protected function addRecords(array $records): static
     {
         foreach ($records as $record) {
             $this->addRecord($record);
