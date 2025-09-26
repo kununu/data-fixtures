@@ -6,9 +6,9 @@ namespace Kununu\DataFixtures\Adapter\DynamoDb;
 final readonly class Value
 {
     public function __construct(
-        private string $name,
-        private AttributeType $type,
-        private mixed $value,
+        public string $name,
+        public AttributeType $type,
+        public mixed $value,
     ) {
     }
 
@@ -62,24 +62,7 @@ final readonly class Value
         return new self($name, AttributeType::Null, true);
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getType(): AttributeType
-    {
-        return $this->type;
-    }
-
-    public function getValue(): mixed
-    {
-        return $this->value;
-    }
-
-    /**
-     * Convert to DynamoDB attribute format
-     */
+    /** @return array<string, mixed> */
     public function toDynamoDbAttribute(): array
     {
         return [

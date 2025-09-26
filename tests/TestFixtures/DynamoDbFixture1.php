@@ -11,10 +11,13 @@ final class DynamoDbFixture1 extends DynamoDbFixture
 {
     protected function configure(): void
     {
-        $this->setTableName('users')
-             ->addRecord(new Record([
-                 Value::stringValue('id', 'user-1'),
-                 Value::stringValue('name', 'John Doe'),
-             ]));
+        $this
+            ->setTableName('users')
+            ->addRecord(
+                new Record([
+                    Value::stringValue('id', 'user-1'),
+                    Value::stringValue('name', 'John Doe'),
+                ])
+            );
     }
 }

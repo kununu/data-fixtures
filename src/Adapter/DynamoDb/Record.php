@@ -5,12 +5,9 @@ namespace Kununu\DataFixtures\Adapter\DynamoDb;
 
 final readonly class Record
 {
-    /**
-     * @param array<int, Value> $values
-     */
-    public function __construct(
-        private array $values,
-    ) {
+    /** @param array<int, Value> $values */
+    public function __construct(public array $values)
+    {
     }
 
     /**
@@ -22,29 +19,16 @@ final readonly class Record
     {
         $values = [];
         foreach ($this->values as $value) {
-            $values[$value->getName()] = $value->toDynamoDbAttribute();
+            $values[$value->name] = $value->toDynamoDbAttribute();
         }
 
         return $values;
     }
 
-    /**
-     * Get raw Value objects
-     *
-     * @return array<int, Value>
-     */
-    public function getRawValues(): array
-    {
-        return $this->values;
-    }
-
-    /**
-     * Get value by attribute name
-     */
-    public function getValue(string $name): ?Value
+    public function getValueByAttribute(string $name): ?Value
     {
         foreach ($this->values as $value) {
-            if ($value->getName() === $name) {
+            if ($value->name === $name) {
                 return $value;
             }
         }
@@ -52,11 +36,8 @@ final readonly class Record
         return null;
     }
 
-    /**
-     * Check if record has attribute
-     */
     public function hasAttribute(string $name): bool
     {
-        return $this->getValue($name) !== null;
+        return $this->getValueByAttribute($name) !== null;
     }
 }

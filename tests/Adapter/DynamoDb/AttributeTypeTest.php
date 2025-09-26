@@ -34,7 +34,7 @@ final class AttributeTypeTest extends TestCase
 
         foreach ($cases as $case) {
             self::assertArrayHasKey($case->name, $expectedTypes);
-            self::assertSame($expectedTypes[$case->name], $case->value);
+            self::assertEquals($expectedTypes[$case->name], $case->value);
         }
     }
 

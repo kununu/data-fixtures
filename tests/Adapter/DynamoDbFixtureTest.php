@@ -3,28 +3,20 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Adapter;
 
-use ArrayIterator;
-use Aws\CommandInterface;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
-use Aws\HandlerList;
 use Aws\Result;
 use Kununu\DataFixtures\Adapter\DynamoDb\Record;
 use Kununu\DataFixtures\Adapter\DynamoDb\Value;
 use Kununu\DataFixtures\Adapter\DynamoDbFixture;
 use Kununu\DataFixtures\Exception\LoadFailedException;
 use Kununu\DataFixtures\Tests\Utils\FakeDynamoDbClient;
+use LogicException;
 use PHPUnit\Framework\TestCase;
-use Traversable;
 
 final class DynamoDbFixtureTest extends TestCase
 {
     private FakeDynamoDbClient $dynamoDbClient;
-
-    protected function setUp(): void
-    {
-        $this->dynamoDbClient = new FakeDynamoDbClient();
-    }
 
     public function testLoadWithEmptyRecords(): void
     {
@@ -37,8 +29,8 @@ final class DynamoDbFixtureTest extends TestCase
 
         $fixture->load($this->dynamoDbClient);
 
-        self::assertCount(0, $this->dynamoDbClient->getPutItemCalls());
-        self::assertCount(0, $this->dynamoDbClient->getBatchWriteItemCalls());
+        self::assertEmpty($this->dynamoDbClient->getPutItemCalls());
+        self::assertEmpty($this->dynamoDbClient->getBatchWriteItemCalls());
     }
 
     public function testLoadWithSingleRecord(): void
@@ -54,13 +46,13 @@ final class DynamoDbFixtureTest extends TestCase
         $fixture->load($this->dynamoDbClient);
 
         $putItemCalls = $this->dynamoDbClient->getPutItemCalls();
+
         self::assertCount(1, $putItemCalls);
-        self::assertSame([
+        self::assertEquals([
             'TableName' => 'users',
             'Item'      => ['id' => ['S' => 'user-1']],
         ], $putItemCalls[0]);
-
-        self::assertCount(0, $this->dynamoDbClient->getBatchWriteItemCalls());
+        self::assertEmpty($this->dynamoDbClient->getBatchWriteItemCalls());
     }
 
     public function testLoadWithMultipleRecords(): void
@@ -78,11 +70,11 @@ final class DynamoDbFixtureTest extends TestCase
 
         $fixture->load($this->dynamoDbClient);
 
-        self::assertCount(0, $this->dynamoDbClient->getPutItemCalls());
+        self::assertEmpty($this->dynamoDbClient->getPutItemCalls());
 
         $batchWriteCalls = $this->dynamoDbClient->getBatchWriteItemCalls();
         self::assertCount(1, $batchWriteCalls);
-        self::assertSame([
+        self::assertEquals([
             'RequestItems' => [
                 'users' => [
                     ['PutRequest' => ['Item' => ['id' => ['S' => 'user-1']]]],
@@ -117,7 +109,7 @@ final class DynamoDbFixtureTest extends TestCase
             }
         };
 
-        self::assertSame('test-table', $fixture->getTableName());
+        self::assertEquals('test-table', $fixture->getTableName());
     }
 
     public function testComplexFixture(): void
@@ -181,13 +173,13 @@ final class DynamoDbFixtureTest extends TestCase
             ],
         ];
 
-        self::assertSame([
+        self::assertEquals([
             'RequestItems' => [
                 'user_profiles' => $expectedRequestItems,
             ],
         ], $batchWriteCalls[0]);
 
-        self::assertSame('user_profiles', $fixture->getTableName());
+        self::assertEquals('user_profiles', $fixture->getTableName());
     }
 
     public function testSingleRecordFailureWithThrowOnFail(): void
@@ -400,18 +392,18 @@ final class DynamoDbFixtureTest extends TestCase
 
         $record1 = new Record([Value::stringValue('id', 'record-1')]);
         $result = $fixture->publicAddRecord($record1);
-        self::assertSame($fixture, $result);
+        self::assertEquals($fixture, $result);
 
         $record2 = new Record([Value::stringValue('id', 'record-2')]);
         $record3 = new Record([Value::stringValue('id', 'record-3')]);
         $result = $fixture->publicAddRecords([$record2, $record3]);
-        self::assertSame($fixture, $result);
+        self::assertEquals($fixture, $result);
 
         $records = $fixture->publicGetRecords();
         self::assertCount(3, $records);
-        self::assertSame($record1, $records[0]);
-        self::assertSame($record2, $records[1]);
-        self::assertSame($record3, $records[2]);
+        self::assertEquals($record1, $records[0]);
+        self::assertEquals($record2, $records[1]);
+        self::assertEquals($record3, $records[2]);
     }
 
     public function testConfigurationIsOnlyCalledOnce(): void
@@ -445,7 +437,7 @@ final class DynamoDbFixtureTest extends TestCase
         $fixture->publicGetTableName();
         $fixture->publicGetRecords();
 
-        self::assertSame(1, $configureCallCount);
+        self::assertEquals(1, $configureCallCount);
     }
 
     public function testSetTableNameFluentInterface(): void
@@ -467,7 +459,7 @@ final class DynamoDbFixtureTest extends TestCase
 
         $fixture->getTableName();
         self::assertTrue($fixture->wasFluentTestPassed());
-        self::assertSame('fluent-test', $fixture->getTableName());
+        self::assertEquals('fluent-test', $fixture->getTableName());
     }
 
     public function testLoadBatchRecordsWithEmptyArray(): void
@@ -486,8 +478,7 @@ final class DynamoDbFixtureTest extends TestCase
 
         $fixture->testLoadBatchRecordsEmpty($this->dynamoDbClient);
 
-        $batchWriteCalls = $this->dynamoDbClient->getBatchWriteItemCalls();
-        self::assertCount(0, $batchWriteCalls);
+        self::assertEmpty($this->dynamoDbClient->getBatchWriteItemCalls());
     }
 
     public function testHandleUnprocessedItemsRetryExceptionBreaksLoop(): void
@@ -495,99 +486,54 @@ final class DynamoDbFixtureTest extends TestCase
         $fixture = new class extends DynamoDbFixture {
             protected function configure(): void
             {
-                $this->setTableName('users')
-                     ->addRecords([
-                         new Record([Value::stringValue('id', 'user-1')]),
-                         new Record([Value::stringValue('id', 'user-2')]),
-                     ]);
+                $this
+                    ->setTableName('users')
+                    ->addRecords([
+                        new Record([Value::stringValue('id', 'user-1')]),
+                        new Record([Value::stringValue('id', 'user-2')]),
+                    ]);
             }
         };
 
-        $this->dynamoDbClient = new class extends FakeDynamoDbClient {
-            private int $callCount = 0;
+        $callCount = 0;
+        $client = $this->dynamoDbClient;
+        $client->setNextBatchWriteItem(function() use (&$callCount, $client) {
+            ++$callCount;
+            if ($callCount === 1) {
+                $client->setNextBatchWriteItem(function() use ($client): void {
+                    throw new DynamoDbException(
+                        'Retry failed',
+                        $client->createMockAwsCommand(),
+                        ['message' => 'Retry failed', 'code' => 'ValidationException']
+                    );
+                });
 
-            public function batchWriteItem(array $args): Result
-            {
-                ++$this->callCount;
-
-                if ($this->callCount === 1) {
-                    return new Result(['UnprocessedItems' => [
-                        'users' => [
-                            ['PutRequest' => ['Item' => ['id' => ['S' => 'user-1']]]],
+                return new Result(
+                    [
+                        'UnprocessedItems' => [
+                            'users' => [
+                                [
+                                    'PutRequest' => [
+                                        'Item' => [
+                                            'id' => [
+                                                'S' => 'user-1',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
-                    ]]);
-                }
-
-                throw new DynamoDbException(
-                    'Retry failed',
-                    $this->createMockAwsCommand(),
-                    ['message' => 'Retry failed', 'code' => 'ValidationException']
+                    ]
                 );
             }
 
-            private function createMockAwsCommand(): object
-            {
-                return new class implements CommandInterface {
-                    public function getName(): string
-                    {
-                        return 'MockCommand';
-                    }
-
-                    public function toArray(): array
-                    {
-                        return [];
-                    }
-
-                    public function hasParam($name): bool
-                    {
-                        return false;
-                    }
-
-                    public function getParam($name)
-                    {
-                        return null;
-                    }
-
-                    public function offsetExists($offset): bool
-                    {
-                        return false;
-                    }
-
-                    public function offsetGet($offset): mixed
-                    {
-                        return null;
-                    }
-
-                    public function offsetSet($offset, $value): void
-                    {
-                    }
-
-                    public function offsetUnset($offset): void
-                    {
-                    }
-
-                    public function count(): int
-                    {
-                        return 0;
-                    }
-
-                    public function getIterator(): Traversable
-                    {
-                        return new ArrayIterator([]);
-                    }
-
-                    public function getHandlerList(): HandlerList
-                    {
-                        return new HandlerList();
-                    }
-                };
-            }
-        };
+            throw new LogicException('Should not reach here');
+        });
 
         $this->expectException(LoadFailedException::class);
         $this->expectExceptionMessage('Failed to process unprocessed items for table "users": Retry failed');
 
-        $fixture->load($this->dynamoDbClient);
+        $fixture->load($client);
     }
 
     public function testHandleUnprocessedItemsRetryExceptionWithoutThrowOnFail(): void
@@ -595,96 +541,57 @@ final class DynamoDbFixtureTest extends TestCase
         $fixture = new class extends DynamoDbFixture {
             protected function configure(): void
             {
-                $this->setTableName('users')
-                     ->addRecords([
-                         new Record([Value::stringValue('id', 'user-1')]),
-                         new Record([Value::stringValue('id', 'user-2')]),
-                     ]);
+                $this
+                    ->setTableName('users')
+                    ->addRecords([
+                        new Record([Value::stringValue('id', 'user-1')]),
+                        new Record([Value::stringValue('id', 'user-2')]),
+                    ]);
             }
         };
 
-        $this->dynamoDbClient = new class extends FakeDynamoDbClient {
-            private int $callCount = 0;
+        $callCount = 0;
+        $client = $this->dynamoDbClient;
+        $client->setNextBatchWriteItem(function() use (&$callCount, $client) {
+            ++$callCount;
+            if ($callCount === 1) {
+                $client->setNextBatchWriteItem(function() use ($client): void {
+                    throw new DynamoDbException(
+                        'Retry failed',
+                        $client->createMockAwsCommand(),
+                        ['message' => 'Retry failed', 'code' => 'ValidationException']
+                    );
+                });
 
-            public function batchWriteItem(array $args): Result
-            {
-                ++$this->callCount;
-
-                if ($this->callCount === 1) {
-                    return new Result(['UnprocessedItems' => [
-                        'users' => [
-                            ['PutRequest' => ['Item' => ['id' => ['S' => 'user-1']]]],
+                return new Result(
+                    [
+                        'UnprocessedItems' => [
+                            'users' => [
+                                [
+                                    'PutRequest' => [
+                                        'Item' => [
+                                            'id' => [
+                                                'S' => 'user-1',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
-                    ]]);
-                }
-                throw new DynamoDbException(
-                    'Retry failed',
-                    $this->createMockAwsCommand(),
-                    ['message' => 'Retry failed', 'code' => 'ValidationException']
+                    ]
                 );
             }
 
-            private function createMockAwsCommand(): object
-            {
-                return new class implements CommandInterface {
-                    public function getName(): string
-                    {
-                        return 'MockCommand';
-                    }
+            throw new LogicException('Should not reach here');
+        });
 
-                    public function toArray(): array
-                    {
-                        return [];
-                    }
-
-                    public function hasParam($name): bool
-                    {
-                        return false;
-                    }
-
-                    public function getParam($name)
-                    {
-                        return null;
-                    }
-
-                    public function offsetExists($offset): bool
-                    {
-                        return false;
-                    }
-
-                    public function offsetGet($offset): mixed
-                    {
-                        return null;
-                    }
-
-                    public function offsetSet($offset, $value): void
-                    {
-                    }
-
-                    public function offsetUnset($offset): void
-                    {
-                    }
-
-                    public function count(): int
-                    {
-                        return 0;
-                    }
-
-                    public function getIterator(): Traversable
-                    {
-                        return new ArrayIterator([]);
-                    }
-
-                    public function getHandlerList(): HandlerList
-                    {
-                        return new HandlerList();
-                    }
-                };
-            }
-        };
-
-        $fixture->load($this->dynamoDbClient, false);
+        $fixture->load($client, false);
 
         $this->addToAssertionCount(1);
+    }
+
+    protected function setUp(): void
+    {
+        $this->dynamoDbClient = new FakeDynamoDbClient();
     }
 }

@@ -14,33 +14,45 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
 
     public function testPurgeEmptyTable(): void
     {
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        [
+                            'AttributeName' => 'id',
+                            'KeyType'       => 'HASH',
+                        ],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => [], 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                [
+                    'Items'            => [],
+                    'LastEvaluatedKey' => null,
+                ],
+            ]
+        );
 
         $this->purger->purge();
 
         $describeTableCalls = $this->dynamoDbClient->getDescribeTableCalls();
         self::assertCount(1, $describeTableCalls);
-        self::assertSame(['TableName' => 'users'], $describeTableCalls[0]);
+        self::assertEquals(['TableName' => 'users'], $describeTableCalls[0]);
 
         $scanCalls = $this->dynamoDbClient->getScanCalls();
         self::assertCount(1, $scanCalls);
-        self::assertSame([
-            'TableName'            => 'users',
-            'ProjectionExpression' => 'id',
-        ], $scanCalls[0]);
+        self::assertEquals(
+            [
+                'TableName'            => 'users',
+                'ProjectionExpression' => 'id',
+            ], $scanCalls[0]
+        );
 
-        $batchWriteCalls = $this->dynamoDbClient->getBatchWriteItemCalls();
-        self::assertCount(0, $batchWriteCalls);
+        self::assertEmpty($this->dynamoDbClient->getBatchWriteItemCalls());
     }
 
     public function testPurgeSingleTable(): void
@@ -50,63 +62,91 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
             ['id' => ['S' => 'user-2']],
         ];
 
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        [
+                            'AttributeName' => 'id',
+                            'KeyType'       => 'HASH',
+                        ],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => $items, 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                [
+                    'Items'            => $items,
+                    'LastEvaluatedKey' => null,
+                ],
+            ]
+        );
 
         $this->purger->purge();
 
         $batchWriteCalls = $this->dynamoDbClient->getBatchWriteItemCalls();
         self::assertCount(1, $batchWriteCalls);
-        self::assertSame([
-            'RequestItems' => [
-                'users' => [
-                    ['DeleteRequest' => ['Key' => ['id' => ['S' => 'user-1']]]],
-                    ['DeleteRequest' => ['Key' => ['id' => ['S' => 'user-2']]]],
+        self::assertEquals(
+            [
+                'RequestItems' => [
+                    'users' => [
+                        ['DeleteRequest' => ['Key' => ['id' => ['S' => 'user-1']]]],
+                        ['DeleteRequest' => ['Key' => ['id' => ['S' => 'user-2']]]],
+                    ],
                 ],
             ],
-        ], $batchWriteCalls[0]);
+            $batchWriteCalls[0]
+        );
     }
 
     public function testPurgeMultipleTables(): void
     {
         $purger = new DynamoDbPurger($this->dynamoDbClient, ['users', 'products']);
 
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        [
+                            'AttributeName' => 'id',
+                            'KeyType'       => 'HASH',
+                        ],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setTableDescription('products', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'product_id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'products',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        [
+                            'AttributeName' => 'product_id',
+                            'KeyType'       => 'HASH',
+                        ],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => [], 'LastEvaluatedKey' => null],
-            ['Items' => [], 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                ['Items' => [], 'LastEvaluatedKey' => null],
+                ['Items' => [], 'LastEvaluatedKey' => null],
+            ]
+        );
 
         $purger->purge();
 
         $describeTableCalls = $this->dynamoDbClient->getDescribeTableCalls();
         self::assertCount(2, $describeTableCalls);
-        self::assertSame(['TableName' => 'users'], $describeTableCalls[0]);
-        self::assertSame(['TableName' => 'products'], $describeTableCalls[1]);
+        self::assertEquals(['TableName' => 'users'], $describeTableCalls[0]);
+        self::assertEquals(['TableName' => 'products'], $describeTableCalls[1]);
     }
 
     public function testPurgeWithCompositeKey(): void
@@ -118,60 +158,97 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
             ['user_id' => ['S' => 'user-2'], 'order_id' => ['S' => 'order-2']],
         ];
 
-        $this->dynamoDbClient->setTableDescription('orders', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'user_id', 'KeyType' => 'HASH'],
-                    ['AttributeName' => 'order_id', 'KeyType' => 'RANGE'],
+        $this->dynamoDbClient->setTableDescription(
+            'orders',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'user_id', 'KeyType' => 'HASH'],
+                        ['AttributeName' => 'order_id', 'KeyType' => 'RANGE'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => $items, 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                ['Items' => $items, 'LastEvaluatedKey' => null],
+            ]
+        );
 
         $purger->purge();
 
         $scanCalls = $this->dynamoDbClient->getScanCalls();
         self::assertCount(1, $scanCalls);
-        self::assertSame([
-            'TableName'            => 'orders',
-            'ProjectionExpression' => 'user_id, order_id',
-        ], $scanCalls[0]);
+        self::assertEquals(
+            [
+                'TableName'            => 'orders',
+                'ProjectionExpression' => 'user_id, order_id',
+            ],
+            $scanCalls[0]
+        );
 
         $batchWriteCalls = $this->dynamoDbClient->getBatchWriteItemCalls();
         self::assertCount(1, $batchWriteCalls);
-        self::assertSame([
-            'RequestItems' => [
-                'orders' => [
-                    ['DeleteRequest' => ['Key' => ['user_id' => ['S' => 'user-1'], 'order_id' => ['S' => 'order-1']]]],
-                    ['DeleteRequest' => ['Key' => ['user_id' => ['S' => 'user-2'], 'order_id' => ['S' => 'order-2']]]],
+        self::assertEquals(
+            [
+                'RequestItems' => [
+                    'orders' => [
+                        [
+                            'DeleteRequest' => [
+                                'Key' => [
+                                    'user_id' => [
+                                        'S' => 'user-1',
+                                    ],
+                                    'order_id' => [
+                                        'S' => 'order-1'],
+                                ],
+                            ],
+                        ],
+                        [
+                            'DeleteRequest' => [
+                                'Key' => [
+                                    'user_id' => [
+                                        'S' => 'user-2',
+                                    ],
+                                    'order_id' => [
+                                        'S' => 'order-2',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
-        ], $batchWriteCalls[0]);
+            $batchWriteCalls[0]
+        );
     }
 
     public function testPurgeWithPagination(): void
     {
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
+        $this->dynamoDbClient->setScanResults(
             [
-                'Items'            => [['id' => ['S' => 'user-1']]],
-                'LastEvaluatedKey' => ['id' => ['S' => 'user-1']],
-            ],
-            [
-                'Items'            => [['id' => ['S' => 'user-2']]],
-                'LastEvaluatedKey' => null,
-            ],
-        ]);
+                [
+                    'Items'            => [['id' => ['S' => 'user-1']]],
+                    'LastEvaluatedKey' => ['id' => ['S' => 'user-1']],
+                ],
+                [
+                    'Items'            => [['id' => ['S' => 'user-2']]],
+                    'LastEvaluatedKey' => null,
+                ],
+            ]
+        );
 
         $this->purger->purge();
 
@@ -189,17 +266,22 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
             $items[] = ['id' => ['S' => sprintf('user-%d', $i)]];
         }
 
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => $items, 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                ['Items' => $items, 'LastEvaluatedKey' => null],
+            ]
+        );
 
         $this->purger->purge();
 
@@ -211,17 +293,22 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
     {
         $items = [['id' => ['S' => 'user-1']]];
 
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => $items, 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                ['Items' => $items, 'LastEvaluatedKey' => null],
+            ]
+        );
 
         $this->dynamoDbClient->setUnprocessedItems([]);
 
@@ -243,13 +330,16 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
 
     public function testPurgeThrowsExceptionOnScanFailure(): void
     {
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
         $this->dynamoDbClient->setScanThrowsException(true);
 
@@ -263,17 +353,22 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
     {
         $items = [['id' => ['S' => 'user-1']]];
 
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => $items, 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                ['Items' => $items, 'LastEvaluatedKey' => null],
+            ]
+        );
 
         $unprocessedItems = [
             'users' => [
@@ -297,17 +392,22 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
             ],
         ];
 
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => $items, 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                ['Items' => $items, 'LastEvaluatedKey' => null],
+            ]
+        );
 
         $this->dynamoDbClient->setUnprocessedItems($unprocessedItems);
         $this->dynamoDbClient->setPersistentUnprocessedItems(true);
@@ -326,17 +426,22 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
             ['id'   => ['S' => 'user-2']],
         ];
 
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => $items, 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                ['Items' => $items, 'LastEvaluatedKey' => null],
+            ]
+        );
 
         $this->purger->purge();
 
@@ -345,8 +450,8 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
 
         $deleteRequests = $batchWriteCalls[0]['RequestItems']['users'];
         self::assertCount(2, $deleteRequests);
-        self::assertSame(['DeleteRequest' => ['Key' => ['id' => ['S' => 'user-1']]]], $deleteRequests[0]);
-        self::assertSame(['DeleteRequest' => ['Key' => ['id' => ['S' => 'user-2']]]], $deleteRequests[1]);
+        self::assertEquals(['DeleteRequest' => ['Key' => ['id' => ['S' => 'user-1']]]], $deleteRequests[0]);
+        self::assertEquals(['DeleteRequest' => ['Key' => ['id' => ['S' => 'user-2']]]], $deleteRequests[1]);
     }
 
     public function testPurgeWithAllItemsMissingKeyAttributes(): void
@@ -356,22 +461,26 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
             ['email' => ['S' => 'john@example.com']],
         ];
 
-        $this->dynamoDbClient->setTableDescription('users', [
-            'Table' => [
-                'KeySchema' => [
-                    ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+        $this->dynamoDbClient->setTableDescription(
+            'users',
+            [
+                'Table' => [
+                    'KeySchema' => [
+                        ['AttributeName' => 'id', 'KeyType' => 'HASH'],
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $this->dynamoDbClient->setScanResults([
-            ['Items' => $items, 'LastEvaluatedKey' => null],
-        ]);
+        $this->dynamoDbClient->setScanResults(
+            [
+                ['Items' => $items, 'LastEvaluatedKey' => null],
+            ]
+        );
 
         $this->purger->purge();
 
-        $batchWriteCalls = $this->dynamoDbClient->getBatchWriteItemCalls();
-        self::assertCount(0, $batchWriteCalls);
+        self::assertEmpty($this->dynamoDbClient->getBatchWriteItemCalls());
     }
 
     public function testPurgeWithEmptyTableNames(): void
@@ -380,9 +489,9 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
 
         $purger->purge();
 
-        self::assertCount(0, $this->dynamoDbClient->getDescribeTableCalls());
-        self::assertCount(0, $this->dynamoDbClient->getScanCalls());
-        self::assertCount(0, $this->dynamoDbClient->getBatchWriteItemCalls());
+        self::assertEmpty($this->dynamoDbClient->getDescribeTableCalls());
+        self::assertEmpty($this->dynamoDbClient->getScanCalls());
+        self::assertEmpty($this->dynamoDbClient->getBatchWriteItemCalls());
     }
 
     protected function setUp(): void

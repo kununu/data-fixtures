@@ -13,9 +13,7 @@ trait DynamoDbFixtureTrait
     private string $tableName = '';
     private bool $isConfigured = false;
 
-    /**
-     * @var array<int, Record>
-     */
+    /** @var array<int, Record> */
     private array $records = [];
 
     protected function setTableName(string $tableName): static
@@ -39,9 +37,7 @@ trait DynamoDbFixtureTrait
         return $this;
     }
 
-    /**
-     * @param array<int, Record> $records
-     */
+    /** @param array<int, Record> $records */
     protected function addRecords(array $records): static
     {
         foreach ($records as $record) {
@@ -78,9 +74,7 @@ trait DynamoDbFixtureTrait
         }
     }
 
-    /**
-     * @param array<int, Record> $records
-     */
+    /** @param array<int, Record> $records */
     protected function loadBatchRecords(DynamoDbClient $dynamoDb, array $records, bool $throwOnFail = true): void
     {
         if (empty($records)) {
@@ -114,7 +108,11 @@ trait DynamoDbFixtureTrait
             } catch (DynamoDbException $e) {
                 if ($throwOnFail) {
                     throw new LoadFailedException(
-                        sprintf('Failed to load batch records to table "%s": %s', $this->getTableName(), $e->getMessage()),
+                        sprintf(
+                            'Failed to load batch records to table "%s": %s',
+                            $this->getTableName(),
+                            $e->getMessage()
+                        ),
                         [$e->toArray()],
                     );
                 }
@@ -130,8 +128,8 @@ trait DynamoDbFixtureTrait
         while (!empty($unprocessedItems) && $retryCount < $maxRetries) {
             ++$retryCount;
 
-            // Exponential backoff
-            usleep(100000 * $retryCount); // 100ms, 200ms, 300ms
+            // Exponential backoff: 100ms, 200ms, 300ms
+            usleep(100000 * $retryCount);
 
             try {
                 $result = $dynamoDb->batchWriteItem([
@@ -142,7 +140,11 @@ trait DynamoDbFixtureTrait
             } catch (DynamoDbException $e) {
                 if ($throwOnFail) {
                     throw new LoadFailedException(
-                        sprintf('Failed to process unprocessed items for table "%s": %s', $this->getTableName(), $e->getMessage()),
+                        sprintf(
+                            'Failed to process unprocessed items for table "%s": %s',
+                            $this->getTableName(),
+                            $e->getMessage()
+                        ),
                         [$e->toArray()],
                     );
                 }
@@ -152,7 +154,11 @@ trait DynamoDbFixtureTrait
 
         if (!empty($unprocessedItems) && $throwOnFail) {
             throw new LoadFailedException(
-                sprintf('Failed to process all items for table "%s" after %d retries', $this->getTableName(), $maxRetries),
+                sprintf(
+                    'Failed to process all items for table "%s" after %d retries',
+                    $this->getTableName(),
+                    $maxRetries
+                ),
                 [$unprocessedItems],
             );
         }

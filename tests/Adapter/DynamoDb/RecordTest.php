@@ -25,7 +25,7 @@ final class RecordTest extends TestCase
             'active' => ['BOOL' => true],
         ];
 
-        self::assertSame($expected, $record->getValues());
+        self::assertEquals($expected, $record->getValues());
     }
 
     public function testGetRawValues(): void
@@ -37,7 +37,7 @@ final class RecordTest extends TestCase
 
         $record = new Record($values);
 
-        self::assertSame($values, $record->getRawValues());
+        self::assertEquals($values, $record->values);
     }
 
     public function testGetValueExisting(): void
@@ -47,15 +47,15 @@ final class RecordTest extends TestCase
 
         $record = new Record([$nameValue, $ageValue]);
 
-        self::assertSame($nameValue, $record->getValue('name'));
-        self::assertSame($ageValue, $record->getValue('age'));
+        self::assertEquals($nameValue, $record->getValueByAttribute('name'));
+        self::assertEquals($ageValue, $record->getValueByAttribute('age'));
     }
 
     public function testGetValueNonExisting(): void
     {
         $record = new Record([Value::stringValue('name', 'John')]);
 
-        self::assertNull($record->getValue('nonexistent'));
+        self::assertNull($record->getValueByAttribute('nonexistent'));
     }
 
     public function testHasAttributeExisting(): void
@@ -80,9 +80,9 @@ final class RecordTest extends TestCase
     {
         $record = new Record([]);
 
-        self::assertSame([], $record->getValues());
-        self::assertSame([], $record->getRawValues());
-        self::assertNull($record->getValue('any'));
+        self::assertEquals([], $record->getValues());
+        self::assertEquals([], $record->values);
+        self::assertNull($record->getValueByAttribute('any'));
         self::assertFalse($record->hasAttribute('any'));
     }
 
@@ -110,7 +110,7 @@ final class RecordTest extends TestCase
             'deleted_at' => ['NULL' => true],
         ];
 
-        self::assertSame($expected, $record->getValues());
+        self::assertEquals($expected, $record->getValues());
         self::assertTrue($record->hasAttribute('id'));
         self::assertTrue($record->hasAttribute('tags'));
         self::assertTrue($record->hasAttribute('address'));

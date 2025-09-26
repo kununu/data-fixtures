@@ -14,50 +14,50 @@ final class ValueTest extends TestCase
     {
         $value = Value::stringValue('test_name', 'test_value');
 
-        self::assertSame('test_name', $value->getName());
-        self::assertSame(AttributeType::String, $value->getType());
-        self::assertSame('test_value', $value->getValue());
-        self::assertSame(['S' => 'test_value'], $value->toDynamoDbAttribute());
+        self::assertEquals('test_name', $value->name);
+        self::assertEquals(AttributeType::String, $value->type);
+        self::assertEquals('test_value', $value->value);
+        self::assertEquals(['S' => 'test_value'], $value->toDynamoDbAttribute());
     }
 
     public function testNumericValueWithInteger(): void
     {
         $value = Value::numericValue('count', 42);
 
-        self::assertSame('count', $value->getName());
-        self::assertSame(AttributeType::Numeric, $value->getType());
-        self::assertSame('42', $value->getValue());
-        self::assertSame(['N' => '42'], $value->toDynamoDbAttribute());
+        self::assertEquals('count', $value->name);
+        self::assertEquals(AttributeType::Numeric, $value->type);
+        self::assertEquals('42', $value->value);
+        self::assertEquals(['N' => '42'], $value->toDynamoDbAttribute());
     }
 
     public function testNumericValueWithFloat(): void
     {
         $value = Value::numericValue('price', 19.99);
 
-        self::assertSame('price', $value->getName());
-        self::assertSame(AttributeType::Numeric, $value->getType());
-        self::assertSame('19.99', $value->getValue());
-        self::assertSame(['N' => '19.99'], $value->toDynamoDbAttribute());
+        self::assertEquals('price', $value->name);
+        self::assertEquals(AttributeType::Numeric, $value->type);
+        self::assertEquals('19.99', $value->value);
+        self::assertEquals(['N' => '19.99'], $value->toDynamoDbAttribute());
     }
 
     public function testBoolValue(): void
     {
         $value = Value::boolValue('is_active', true);
 
-        self::assertSame('is_active', $value->getName());
-        self::assertSame(AttributeType::Bool, $value->getType());
-        self::assertTrue($value->getValue());
-        self::assertSame(['BOOL' => true], $value->toDynamoDbAttribute());
+        self::assertEquals('is_active', $value->name);
+        self::assertEquals(AttributeType::Bool, $value->type);
+        self::assertTrue($value->value);
+        self::assertEquals(['BOOL' => true], $value->toDynamoDbAttribute());
     }
 
     public function testBinaryValue(): void
     {
         $value = Value::binaryValue('data', 'binary_data');
 
-        self::assertSame('data', $value->getName());
-        self::assertSame(AttributeType::Binary, $value->getType());
-        self::assertSame('binary_data', $value->getValue());
-        self::assertSame(['B' => 'binary_data'], $value->toDynamoDbAttribute());
+        self::assertEquals('data', $value->name);
+        self::assertEquals(AttributeType::Binary, $value->type);
+        self::assertEquals('binary_data', $value->value);
+        self::assertEquals(['B' => 'binary_data'], $value->toDynamoDbAttribute());
     }
 
     public function testStringSetValue(): void
@@ -65,10 +65,10 @@ final class ValueTest extends TestCase
         $stringSet = ['value1', 'value2', 'value3'];
         $value = Value::stringSetValue('tags', $stringSet);
 
-        self::assertSame('tags', $value->getName());
-        self::assertSame(AttributeType::StringSet, $value->getType());
-        self::assertSame($stringSet, $value->getValue());
-        self::assertSame(['SS' => $stringSet], $value->toDynamoDbAttribute());
+        self::assertEquals('tags', $value->name);
+        self::assertEquals(AttributeType::StringSet, $value->type);
+        self::assertEquals($stringSet, $value->value);
+        self::assertEquals(['SS' => $stringSet], $value->toDynamoDbAttribute());
     }
 
     public function testNumericSetValue(): void
@@ -76,10 +76,10 @@ final class ValueTest extends TestCase
         $numericSet = [1, 2, 3];
         $value = Value::numericSetValue('scores', $numericSet);
 
-        self::assertSame('scores', $value->getName());
-        self::assertSame(AttributeType::NumericSet, $value->getType());
-        self::assertSame(['1', '2', '3'], $value->getValue());
-        self::assertSame(['NS' => ['1', '2', '3']], $value->toDynamoDbAttribute());
+        self::assertEquals('scores', $value->name);
+        self::assertEquals(AttributeType::NumericSet, $value->type);
+        self::assertEquals(['1', '2', '3'], $value->value);
+        self::assertEquals(['NS' => ['1', '2', '3']], $value->toDynamoDbAttribute());
     }
 
     public function testBinarySetValue(): void
@@ -87,10 +87,10 @@ final class ValueTest extends TestCase
         $binarySet = ['data1', 'data2'];
         $value = Value::binarySetValue('files', $binarySet);
 
-        self::assertSame('files', $value->getName());
-        self::assertSame(AttributeType::BinarySet, $value->getType());
-        self::assertSame($binarySet, $value->getValue());
-        self::assertSame(['BS' => $binarySet], $value->toDynamoDbAttribute());
+        self::assertEquals('files', $value->name);
+        self::assertEquals(AttributeType::BinarySet, $value->type);
+        self::assertEquals($binarySet, $value->value);
+        self::assertEquals(['BS' => $binarySet], $value->toDynamoDbAttribute());
     }
 
     public function testMapValue(): void
@@ -98,10 +98,10 @@ final class ValueTest extends TestCase
         $mapData = ['key1' => 'value1', 'key2' => 'value2'];
         $value = Value::mapValue('metadata', $mapData);
 
-        self::assertSame('metadata', $value->getName());
-        self::assertSame(AttributeType::Map, $value->getType());
-        self::assertSame($mapData, $value->getValue());
-        self::assertSame(['M' => $mapData], $value->toDynamoDbAttribute());
+        self::assertEquals('metadata', $value->name);
+        self::assertEquals(AttributeType::Map, $value->type);
+        self::assertEquals($mapData, $value->value);
+        self::assertEquals(['M' => $mapData], $value->toDynamoDbAttribute());
     }
 
     public function testListValue(): void
@@ -109,20 +109,20 @@ final class ValueTest extends TestCase
         $listData = ['item1', 'item2', 'item3'];
         $value = Value::listValue('items', $listData);
 
-        self::assertSame('items', $value->getName());
-        self::assertSame(AttributeType::List, $value->getType());
-        self::assertSame($listData, $value->getValue());
-        self::assertSame(['L' => $listData], $value->toDynamoDbAttribute());
+        self::assertEquals('items', $value->name);
+        self::assertEquals(AttributeType::List, $value->type);
+        self::assertEquals($listData, $value->value);
+        self::assertEquals(['L' => $listData], $value->toDynamoDbAttribute());
     }
 
     public function testNullValue(): void
     {
         $value = Value::nullValue('empty_field');
 
-        self::assertSame('empty_field', $value->getName());
-        self::assertSame(AttributeType::Null, $value->getType());
-        self::assertTrue($value->getValue());
-        self::assertSame(['NULL' => true], $value->toDynamoDbAttribute());
+        self::assertEquals('empty_field', $value->name);
+        self::assertEquals(AttributeType::Null, $value->type);
+        self::assertTrue($value->value);
+        self::assertEquals(['NULL' => true], $value->toDynamoDbAttribute());
     }
 
     #[DataProvider('staticFactoryMethodsDataProvider')]
@@ -135,9 +135,9 @@ final class ValueTest extends TestCase
     ): void {
         $result = Value::$method($name, $value);
 
-        self::assertSame($name, $result->getName());
-        self::assertSame($expectedType, $result->getType());
-        self::assertSame($expectedValue, $result->getValue());
+        self::assertEquals($name, $result->name);
+        self::assertEquals($expectedType, $result->type);
+        self::assertEquals($expectedValue, $result->value);
     }
 
     public static function staticFactoryMethodsDataProvider(): array

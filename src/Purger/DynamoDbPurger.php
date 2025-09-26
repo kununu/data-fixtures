@@ -9,9 +9,7 @@ use Kununu\DataFixtures\Exception\PurgeFailedException;
 
 final readonly class DynamoDbPurger implements PurgerInterface
 {
-    /**
-     * @param array<string> $tableNames
-     */
+    /** @param array<string> $tableNames */
     public function __construct(
         private DynamoDbClient $dynamoDb,
         private array $tableNames,
@@ -120,8 +118,8 @@ final readonly class DynamoDbPurger implements PurgerInterface
         while (!empty($unprocessedItems) && $retryCount < $maxRetries) {
             ++$retryCount;
 
-            // Exponential backoff
-            usleep(100000 * $retryCount); // 100ms, 200ms, 300ms
+            // Exponential backoff: 100ms, 200ms, 300ms
+            usleep(100000 * $retryCount);
 
             $result = $this->dynamoDb->batchWriteItem([
                 'RequestItems' => $unprocessedItems,

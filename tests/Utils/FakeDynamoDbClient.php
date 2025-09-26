@@ -9,9 +9,10 @@ use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
 use Aws\HandlerList;
 use Aws\Result;
+use Closure;
 use Traversable;
 
-class FakeDynamoDbClient extends DynamoDbClient
+final class FakeDynamoDbClient extends DynamoDbClient
 {
     private array $putItemCalls = [];
     private array $batchWriteItemCalls = [];
@@ -26,6 +27,7 @@ class FakeDynamoDbClient extends DynamoDbClient
     private array $scanResults = [];
     private array $tableDescriptions = [];
     private int $scanCallIndex = 0;
+    private ?Closure $nextBatchWriteItem = null;
 
     public function __construct()
     {
@@ -48,6 +50,13 @@ class FakeDynamoDbClient extends DynamoDbClient
 
     public function batchWriteItem(array $args): Result
     {
+        if ($this->nextBatchWriteItem !== null) {
+            $callback = $this->nextBatchWriteItem;
+            $this->nextBatchWriteItem = null;
+
+            return $callback($args);
+        }
+
         $this->batchWriteItemCalls[] = $args;
 
         if ($this->shouldThrowOnBatchWriteItem) {
@@ -57,10 +66,7 @@ class FakeDynamoDbClient extends DynamoDbClient
             );
         }
 
-        // Return unprocessed items based on configuration
         $unprocessedItems = $this->unprocessedItems;
-
-        // If not persistent, clear unprocessed items after first call
         if (!$this->persistentUnprocessedItems && count($this->batchWriteItemCalls) > 1) {
             $unprocessedItems = [];
         }
@@ -173,7 +179,12 @@ class FakeDynamoDbClient extends DynamoDbClient
         $this->tableDescriptions[$tableName] = $description;
     }
 
-    private function createMockAwsCommand(): object
+    public function setNextBatchWriteItem(Closure $callback): void
+    {
+        $this->nextBatchWriteItem = $callback;
+    }
+
+    public function createMockAwsCommand(): object
     {
         return new class implements CommandInterface {
             public function getName(): string
