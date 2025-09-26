@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\DataFixtures\Adapter;
+namespace Kununu\DataFixtures\Tools;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
@@ -47,9 +47,7 @@ trait DynamoDbFixtureTrait
         return $this;
     }
 
-    /**
-     * @return array<int, Record>
-     */
+    /** @return array<int, Record> */
     protected function getRecords(): array
     {
         $this->initialize();

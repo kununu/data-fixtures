@@ -48,10 +48,13 @@ final class DynamoDbFixtureTest extends TestCase
         $putItemCalls = $this->dynamoDbClient->getPutItemCalls();
 
         self::assertCount(1, $putItemCalls);
-        self::assertEquals([
-            'TableName' => 'users',
-            'Item'      => ['id' => ['S' => 'user-1']],
-        ], $putItemCalls[0]);
+        self::assertEquals(
+            [
+                'TableName' => 'users',
+                'Item'      => ['id' => ['S' => 'user-1']],
+            ],
+            $putItemCalls[0]
+        );
         self::assertEmpty($this->dynamoDbClient->getBatchWriteItemCalls());
     }
 
@@ -74,14 +77,17 @@ final class DynamoDbFixtureTest extends TestCase
 
         $batchWriteCalls = $this->dynamoDbClient->getBatchWriteItemCalls();
         self::assertCount(1, $batchWriteCalls);
-        self::assertEquals([
-            'RequestItems' => [
-                'users' => [
-                    ['PutRequest' => ['Item' => ['id' => ['S' => 'user-1']]]],
-                    ['PutRequest' => ['Item' => ['id' => ['S' => 'user-2']]]],
+        self::assertEquals(
+            [
+                'RequestItems' => [
+                    'users' => [
+                        ['PutRequest' => ['Item' => ['id' => ['S' => 'user-1']]]],
+                        ['PutRequest' => ['Item' => ['id' => ['S' => 'user-2']]]],
+                    ],
                 ],
             ],
-        ], $batchWriteCalls[0]);
+            $batchWriteCalls[0]
+        );
     }
 
     public function testLoadWithThrowOnFailFalse(): void
@@ -173,11 +179,14 @@ final class DynamoDbFixtureTest extends TestCase
             ],
         ];
 
-        self::assertEquals([
-            'RequestItems' => [
-                'user_profiles' => $expectedRequestItems,
+        self::assertEquals(
+            [
+                'RequestItems' => [
+                    'user_profiles' => $expectedRequestItems,
+                ],
             ],
-        ], $batchWriteCalls[0]);
+            $batchWriteCalls[0]
+        );
 
         self::assertEquals('user_profiles', $fixture->getTableName());
     }

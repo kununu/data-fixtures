@@ -12,7 +12,7 @@ final class AttributeTypeTest extends TestCase
     #[DataProvider('attributeTypeDataProvider')]
     public function testAttributeTypeValues(AttributeType $type, string $expectedValue): void
     {
-        self::assertSame($expectedValue, $type->value);
+        self::assertEquals($expectedValue, $type->value);
     }
 
     public function testAllAttributeTypesAreCovered(): void

@@ -49,7 +49,8 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
             [
                 'TableName'            => 'users',
                 'ProjectionExpression' => 'id',
-            ], $scanCalls[0]
+            ],
+            $scanCalls[0]
         );
 
         self::assertEmpty($this->dynamoDbClient->getBatchWriteItemCalls());

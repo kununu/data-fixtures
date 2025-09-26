@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Adapter;
 
 use Aws\DynamoDb\DynamoDbClient;
+use Kununu\DataFixtures\Tools\DynamoDbFixtureTrait;
 
 abstract class DynamoDbFixture implements DynamoDbFixtureInterface
 {
