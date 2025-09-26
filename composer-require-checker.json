@@ -1,5 +1,7 @@
 {
   "symbol-whitelist": [
+    "Aws\\DynamoDb\\DynamoDbClient",
+    "Aws\\DynamoDb\\Exception\\DynamoDbException",
     "Doctrine\\DBAL\\Connection",
     "Doctrine\\DBAL\\Driver",
     "Doctrine\\DBAL\\Driver\\AbstractMySQLDriver",
