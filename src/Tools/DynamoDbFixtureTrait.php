@@ -118,6 +118,8 @@ trait DynamoDbFixtureTrait
         }
     }
 
+    abstract protected function configure(): void;
+
     private function handleUnprocessedItems(DynamoDbClient $dynamoDb, array $unprocessedItems, bool $throwOnFail): void
     {
         $maxRetries = 3;
@@ -169,6 +171,4 @@ trait DynamoDbFixtureTrait
             $this->isConfigured = true;
         }
     }
-
-    abstract protected function configure(): void;
 }
