@@ -28,7 +28,8 @@ final class MyFixture extends DynamoDbFixture
 {
     protected function configure(): void
     {
-        $this->setTableName('user_profiles')
+        $this
+            ->setTableName('user_profiles')
             ->addRecords($this->buildRecords());
     }
 
