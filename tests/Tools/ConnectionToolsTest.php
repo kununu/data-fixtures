@@ -3,168 +3,101 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Tools;
 
-use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Driver\AbstractMySQLDriver;
-use Doctrine\DBAL\Driver\AbstractSQLiteDriver;
-use Doctrine\DBAL\Driver\Connection;
-use Doctrine\DBAL\Logging\Middleware;
-use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Kununu\DataFixtures\Tools\ConnectionToolsTrait;
+use Kununu\DataFixtures\Tools\DoctrineDbal\Version;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 
 final class ConnectionToolsTest extends TestCase
 {
     use ConnectionToolsTrait;
 
-    #[DataProvider('mysqlDataProvider')]
-    public function testGetDisableForeignKeyChecksForMySQL(callable|string $driver): void
+    private const string MY_SQL_FK_DISABLE = 'SET FOREIGN_KEY_CHECKS = 0';
+    private const string MY_SQL_FK_ENABLE = 'SET FOREIGN_KEY_CHECKS = 1';
+    private const string SQLITE_FK_DISABLE = 'PRAGMA foreign_keys = OFF';
+    private const string SQLITE_FK_ENABLE = 'PRAGMA foreign_keys = ON';
+
+    private MockObject&Connection $connection;
+
+    #[DataProvider('disableForeignKeysChecksDataProvider')]
+    public function testDisableForeignKeysChecks(AbstractPlatform|string $platform, string $expectedQuery): void
     {
-        self::assertEquals(
-            'SET FOREIGN_KEY_CHECKS=0',
-            $this->getDisableForeignKeysChecksStatementByDriver($this->getDriver($driver)),
-        );
+        $this->configureExpectations($platform, $expectedQuery);
+
+        $this->disableForeignKeysChecks($this->connection);
     }
 
-    #[DataProvider('mysqlDataProvider')]
-    public function testGetEnableForeignKeyChecksForMySQL(callable|string $driver): void
+    public static function disableForeignKeysChecksDataProvider(): array
     {
-        self::assertEquals(
-            'SET FOREIGN_KEY_CHECKS=1',
-            $this->getEnableForeignKeysChecksStatementByDriver($this->getDriver($driver)),
-        );
-    }
-
-    #[DataProvider('sqliteDataProvider')]
-    public function testGetDisableForeignKeyChecksForSqlite(callable|string $driver): void
-    {
-        self::assertEquals(
-            'PRAGMA foreign_keys = OFF',
-            $this->getDisableForeignKeysChecksStatementByDriver($this->getDriver($driver))
-        );
-    }
-
-    #[DataProvider('sqliteDataProvider')]
-    public function testGetEnableForeignKeyChecksForSqlite(callable|string $driver): void
-    {
-        self::assertEquals(
-            'PRAGMA foreign_keys = ON',
-            $this->getEnableForeignKeysChecksStatementByDriver($this->getDriver($driver))
-        );
-    }
-
-    public function testGetEnableForeignKeyChecksForUnknownDriver(): void
-    {
-        self::assertEquals(
-            '',
-            $this->getEnableForeignKeysChecksStatementByDriver($this->createMock(Driver::class))
-        );
-    }
-
-    public function testGetDisableForeignKeyChecksForUnknownDriver(): void
-    {
-        self::assertEquals(
-            '',
-            $this->getDisableForeignKeysChecksStatementByDriver($this->createMock(Driver::class))
-        );
-    }
-
-    /** @return array<string, array{callable|string}> */
-    public static function mysqlDataProvider(): array
-    {
-        $result = [];
-
-        if (class_exists(AbstractMySQLPlatform::class)) {
-            $driverBuilder = self::getMySqlDriverBuilder();
-            $wrappedDriverBuilder = self::getWrappedDriverBuilder($driverBuilder);
-
-            $result = [
-                'abstract_mysql_driver_instance'                      => [$driverBuilder],
-                'abstract_mysql_driver_wrapped_in_logging_middleware' => [$wrappedDriverBuilder],
-            ];
-        }
-
-        return array_merge(
-            [
-                'abstract_mysql_driver_class_name' => [AbstractMySQLDriver::class],
+        return [
+            'mysql'   => [
+                new MySQLPlatform(),
+                self::MY_SQL_FK_DISABLE,
             ],
-            $result
-        );
-    }
-
-    /** @return array<string, array{callable|string}> */
-    public static function sqliteDataProvider(): array
-    {
-        $result = [];
-
-        if (class_exists(SqlitePlatform::class)) {
-            $driverBuilder = self::getSQLiteDriverBuilder();
-            $wrappedDriverBuilder = self::getWrappedDriverBuilder($driverBuilder);
-
-            $result = [
-                'abstract_sqlite_driver_instance'                      => [$driverBuilder],
-                'abstract_sqlite_driver_wrapped_in_logging_middleware' => [$wrappedDriverBuilder],
-            ];
-        }
-
-        return array_merge(
-            [
-                'abstract_sqlite_driver_class_name' => [AbstractSQLiteDriver::class],
+            'sqlite'  => [
+                Version::getSQLitePlatformClass(),
+                self::SQLITE_FK_DISABLE,
             ],
-            $result
-        );
+            'unknown' => [
+                AbstractPlatform::class,
+                '',
+            ],
+        ];
     }
 
-    public function getDriverConnectionMock(): MockObject&Connection
+    #[DataProvider('enableForeignKeysChecksDataProvider')]
+    public function testEnableForeignKeysChecks(AbstractPlatform|string $platform, string $expectedQuery): void
     {
-        return $this->createMock(Connection::class);
+        $this->configureExpectations($platform, $expectedQuery);
+
+        $this->enableForeignKeysChecks($this->connection);
     }
 
-    private static function getMySqlDriverBuilder(): callable
+    public static function enableForeignKeysChecksDataProvider(): array
     {
-        return fn(ConnectionToolsTest $testCase): Driver => new class($testCase) extends AbstractMySQLDriver {
-            public function __construct(private readonly ConnectionToolsTest $testCase)
-            {
-            }
-
-            public function connect(array $params): Connection
-            {
-                return $this->testCase->getDriverConnectionMock();
-            }
-        };
+        return [
+            'mysql'   => [
+                new MySQLPlatform(),
+                self::MY_SQL_FK_ENABLE,
+            ],
+            'sqlite'  => [
+                Version::getSQLitePlatformClass(),
+                self::SQLITE_FK_ENABLE,
+            ],
+            'unknown' => [
+                AbstractPlatform::class,
+                '',
+            ],
+        ];
     }
 
-    private static function getSQLiteDriverBuilder(): callable
+    protected function setUp(): void
     {
-        return fn(ConnectionToolsTest $testCase): Driver => new class($testCase) extends AbstractSQLiteDriver {
-            public function __construct(private readonly ConnectionToolsTest $testCase)
-            {
-            }
-
-            public function connect(array $params): Connection
-            {
-                return $this->testCase->getDriverConnectionMock();
-            }
-        };
+        $this->connection = $this->createMock(Connection::class);
     }
 
-    private static function getWrappedDriverBuilder(callable $driverBuilder): callable
+    private function configureExpectations(AbstractPlatform|string $platform, string $expectedQuery): void
     {
-        return function(ConnectionToolsTest $testCase) use ($driverBuilder): Driver {
-            $driver = $driverBuilder($testCase);
+        $this->connection
+            ->expects($this->any())
+            ->method('getDatabasePlatform')
+            ->willReturn($this->getPlatform($platform));
 
-            return (new Middleware(new NullLogger()))->wrap($driver);
-        };
+        $this->connection
+            ->expects($this->once())
+            ->method('executeStatement')
+            ->with($expectedQuery);
     }
 
-    private function getDriver(callable|string $driver): MockObject|Driver
+    private function getPlatform(AbstractPlatform|string $platform): MockObject|AbstractPlatform
     {
         return match (true) {
-            is_callable($driver) => $driver($this),
-            default              => $this->createMock($driver),
+            $platform instanceof AbstractPlatform => $platform,
+            default                               => $this->createMock($platform),
         };
     }
 }

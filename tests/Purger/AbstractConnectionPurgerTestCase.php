@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Purger;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\AbstractMySQLDriver;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Kununu\DataFixtures\Purger\PurgeMode;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -21,39 +20,16 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
     protected const array TABLES = [self::TABLE_1, self::TABLE_2, self::TABLE_3];
     protected const array EXCLUDED_TABLES = [self::TABLE_4, self::TABLE_2, self::TABLE_5];
 
-    protected function getConnectionMock(bool $withPlatform = true, array $tables = self::TABLES): MockObject&Connection
-    {
-        $connection = $this->createMock(Connection::class);
+    protected MockObject&AbstractSchemaManager $schemaManager;
+    protected MockObject&MySQLPlatform $platform;
+    protected MockObject&Connection $connection;
 
-        $schemaManager = $this->createMock(AbstractSchemaManager::class);
-        $schemaManager
+    protected function configureTables(array $tables = self::TABLES): void
+    {
+        $this->schemaManager
             ->expects($this->any())
             ->method('listTableNames')
             ->willReturn($tables);
-
-        $connection
-            ->expects($this->any())
-            ->method('createSchemaManager')
-            ->willReturn($schemaManager);
-
-        $connection
-            ->expects($this->any())
-            ->method('getDriver')
-            ->willReturn($this->createMock(AbstractMySQLDriver::class));
-
-        $connection
-            ->expects($this->any())
-            ->method('quoteIdentifier')
-            ->willReturnCallback(fn(string $str): string => sprintf('`%s`', $str));
-
-        if ($withPlatform) {
-            $connection
-                ->expects($this->any())
-                ->method('getDatabasePlatform')
-                ->willReturn($this->createMock(AbstractPlatform::class));
-        }
-
-        return $connection;
     }
 
     protected function getConsecutiveArgumentsForConnectionExecStatement(
@@ -67,8 +43,8 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
             PurgeMode::Truncate => $this->getTruncateModeConsecutiveArguments($tables, $excludedTables, $itemsAsArray),
         };
 
-        $disableForeignKeyChecks = 'SET FOREIGN_KEY_CHECKS=0';
-        $enableForeignKeyChecks = 'SET FOREIGN_KEY_CHECKS=1';
+        $disableForeignKeyChecks = 'SET FOREIGN_KEY_CHECKS = 0';
+        $enableForeignKeyChecks = 'SET FOREIGN_KEY_CHECKS = 1';
 
         return array_merge(
             [$itemsAsArray ? [$disableForeignKeyChecks] : $disableForeignKeyChecks],
@@ -109,5 +85,36 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
         }
 
         return $return;
+    }
+
+    protected function setUp(): void
+    {
+        $this->schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $this->platform = $this->createMock(MySQLPlatform::class);
+        $this->connection = $this->createConnection($this->schemaManager, $this->platform);
+    }
+
+    private function createConnection(
+        AbstractSchemaManager $schemaManager,
+        MySQLPlatform $platform,
+    ): MockObject&Connection {
+        $connection = $this->createMock(Connection::class);
+
+        $connection
+            ->expects($this->any())
+            ->method('createSchemaManager')
+            ->willReturn($schemaManager);
+
+        $connection
+            ->expects($this->any())
+            ->method('quoteIdentifier')
+            ->willReturnCallback(fn(string $str): string => sprintf('`%s`', $str));
+
+        $connection
+            ->expects($this->any())
+            ->method('getDatabasePlatform')
+            ->willReturn($platform);
+
+        return $connection;
     }
 }

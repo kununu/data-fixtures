@@ -10,9 +10,10 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
 {
     public function testThatPurgerIsNotTransactionalAndCommits(): void
     {
-        $connection = $this->getConnectionMock();
+        $this->configureTables();
+        $this->configureConnectionToNonTransactional();
 
-        $connection
+        $this->connection
             ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
@@ -25,25 +26,16 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
             )
             ->willReturn(1);
 
-        $connection
-            ->expects($this->never())
-            ->method('beginTransaction');
-
-        $connection
-            ->expects($this->never())
-            ->method('commit');
-
-        $purger = new NonTransactionalConnectionPurger($connection);
-        $purger->purge();
+        $this->purge();
     }
 
     public function testThatPurgerIsTransactionalAndRollbacks(): void
     {
         $this->expectException(Exception::class);
+        $this->configureTables();
+        $this->configureConnectionToNonTransactional();
 
-        $connection = $this->getConnectionMock();
-
-        $connection
+        $this->connection
             ->expects($this->exactly(3))
             ->method('executeStatement')
             ->with(
@@ -64,19 +56,26 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
                 }
             );
 
-        $connection
+        $this->purge();
+    }
+
+    protected function configureConnectionToNonTransactional(): void
+    {
+        $this->connection
             ->expects($this->never())
             ->method('beginTransaction');
 
-        $connection
+        $this->connection
             ->expects($this->never())
             ->method('commit');
 
-        $connection
+        $this->connection
             ->expects($this->never())
             ->method('rollback');
+    }
 
-        $purger = new NonTransactionalConnectionPurger($connection);
-        $purger->purge();
+    private function purge(): void
+    {
+        (new NonTransactionalConnectionPurger($this->connection))->purge();
     }
 }

@@ -362,3 +362,7 @@ $executor->execute($loader->getFixtures(), true);
 
 - The Elasticsearch Purger runs a *deleteByQuery* query that matches all documents.
 - Elasticsearch Executor and Elasticsearch Purger calls the refresh API after purging the index and load the fixtures.
+
+---
+
+[Back to Index](../../README.md)

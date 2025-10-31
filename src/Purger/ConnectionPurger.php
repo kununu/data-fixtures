@@ -38,9 +38,7 @@ final readonly class ConnectionPurger implements PurgerInterface
         }
 
         try {
-            $this->connection->executeStatement(
-                $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver())
-            );
+            $this->disableForeignKeysChecks($this->connection);
 
             foreach ($tablesToPurge as $tableName) {
                 $this->purgeTable($platform, $tableName);
@@ -55,9 +53,7 @@ final readonly class ConnectionPurger implements PurgerInterface
             }
             throw $e;
         } finally {
-            $this->connection->executeStatement(
-                $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver())
-            );
+            $this->enableForeignKeysChecks($this->connection);
         }
     }
 

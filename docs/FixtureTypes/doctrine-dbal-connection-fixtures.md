@@ -162,3 +162,7 @@ $purger = new ConnectionPurger($conn, $excludedTables, purgeMode: PurgeMode::Tru
 - `Kununu\DataFixtures\Executor\ConnectionExecutor` and `Kununu\DataFixtures\Purger\ConnectionPurger` are **transactional**.
   - If you need to run **non-transactional** fixtures then use `Kununu\DataFixtures\Executor\NonTransactionalConnectionExecutor` and `Kununu\DataFixtures\Purger\NonTransactionalConnectionPurger`  
 - Both kinds of executor/purger disable foreign keys checks before running and enable them after they run.
+
+---
+
+[Back to Index](../../README.md)

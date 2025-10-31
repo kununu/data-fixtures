@@ -3,18 +3,17 @@ declare(strict_types=1);
 
 namespace Kununu\DataFixtures\Tests\Purger;
 
-use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Exception;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
 use Kununu\DataFixtures\Purger\PurgeMode;
 
 final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 {
-    public function testThatPurgerIsTransactionalAndCommits(): void
+    public function testPurgerIsTransactionalAndCommits(): void
     {
-        $connection = $this->getConnectionMock();
+        $this->configureTables();
 
-        $connection
+        $this->connection
             ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
@@ -28,31 +27,31 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
             ->willReturn(1);
 
         $transactionStarted = false;
-        $connection
+
+        $this->connection
             ->expects($this->once())
             ->method('beginTransaction')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
-        $connection
+        $this->connection
             ->expects($this->once())
             ->method('commit')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 self::assertTrue($transactionStarted);
             });
 
-        $purger = new ConnectionPurger($connection);
-        $purger->purge();
+        $this->purge();
     }
 
-    public function testThatPurgerIsTransactionalAndRollbacks(): void
+    public function testPurgerIsTransactionalAndRollbacks(): void
     {
         $this->expectException(Exception::class);
 
-        $connection = $this->getConnectionMock();
+        $this->configureTables();
 
-        $connection
+        $this->connection
             ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
@@ -66,14 +65,14 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
             ->willReturn(1);
 
         $transactionStarted = false;
-        $connection
+        $this->connection
             ->expects($this->once())
             ->method('beginTransaction')
             ->willReturnCallback(function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
-        $connection
+        $this->connection
             ->expects($this->once())
             ->method('commit')
             ->willReturnCallback(function() use (&$transactionStarted): void {
@@ -82,31 +81,29 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
                 throw new Exception('Failed to commit!');
             });
 
-        $connection
+        $this->connection
             ->expects($this->once())
             ->method('rollback');
 
-        $purger = new ConnectionPurger($connection);
-        $purger->purge();
+        $this->purge();
     }
 
-    public function testThatWhenNoTablesAreProvidedNothingIsPurged(): void
+    public function testWhenNoTablesAreProvidedNothingIsPurged(): void
     {
-        $connection = $this->getConnectionMock(true, []);
+        $this->configureTables([]);
 
-        $connection
+        $this->connection
             ->expects($this->never())
             ->method('executeStatement');
 
-        $purger = new ConnectionPurger($connection);
-        $purger->purge();
+        $this->purge();
     }
 
-    public function testThatExcludedTablesAreNotPurged(): void
+    public function testExcludedTablesAreNotPurged(): void
     {
-        $connection = $this->getConnectionMock();
+        $this->configureTables();
 
-        $connection
+        $this->connection
             ->expects($this->exactly(4))
             ->method('executeStatement')
             ->with(
@@ -122,16 +119,14 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
             )
             ->willReturn(1);
 
-        $purger = new ConnectionPurger($connection, self::EXCLUDED_TABLES);
-
-        $purger->purge();
+        $this->purge(self::EXCLUDED_TABLES);
     }
 
-    public function testThatPurgesWithDeleteMode(): void
+    public function testPurgesWithDeleteMode(): void
     {
-        $connection = $this->getConnectionMock();
+        $this->configureTables();
 
-        $connection
+        $this->connection
             ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
@@ -144,18 +139,14 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
             )
             ->willReturn(1);
 
-        $purger = new ConnectionPurger($connection);
-
-        $purger->purge();
+        $this->purge();
     }
 
-    public function testThatPurgesWithTruncateMode(): void
+    public function testPurgesWithTruncateMode(): void
     {
-        $connection = $this->getConnectionMock(false);
+        $this->configureTables();
 
-        $platform = $this->createMock(AbstractPlatform::class);
-
-        $platform
+        $this->platform
             ->expects($this->exactly(3))
             ->method('getTruncateTableSQL')
             ->with(
@@ -168,12 +159,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
                 ...array_map(fn($element) => $element[0], $this->getTruncateModeConsecutiveArguments())
             );
 
-        $connection
-            ->expects($this->any())
-            ->method('getDatabasePlatform')
-            ->willReturn($platform);
-
-        $connection
+        $this->connection
             ->expects($this->exactly(5))
             ->method('executeStatement')
             ->with(
@@ -189,7 +175,11 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
             )
             ->willReturn(1);
 
-        $purger = new ConnectionPurger($connection, purgeMode: PurgeMode::Truncate);
-        $purger->purge();
+        $this->purge(purgeMode: PurgeMode::Truncate);
+    }
+
+    private function purge(array $excludedTables = [], PurgeMode $purgeMode = PurgeMode::Delete): void
+    {
+        (new ConnectionPurger($this->connection, $excludedTables, purgeMode: $purgeMode))->purge();
     }
 }

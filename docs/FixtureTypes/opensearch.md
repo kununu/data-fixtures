@@ -333,3 +333,7 @@ $executor->execute($loader->getFixtures(), true);
 
 - The OpenSearch Purger runs a *deleteByQuery* query that matches all documents.
 - OpenSearch Executor and OpenSearch Purger calls the refresh API after purging the index and load the fixtures.
+
+---
+
+[Back to Index](../../README.md)

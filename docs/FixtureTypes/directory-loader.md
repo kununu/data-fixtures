@@ -77,3 +77,7 @@ Your fixtures should be at directory level like this:
   | |   * my-response-array1.php
   | |   * my-response-array2.php
 ```
+
+---
+
+[Back to Index](../../README.md)

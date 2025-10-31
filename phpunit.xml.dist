@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://docs.phpunit.de/en/12.3/ -->
+<!-- https://docs.phpunit.de/en/12.4/ -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.3/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.4/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
          beStrictAboutChangesToGlobalState="true"
@@ -29,6 +29,8 @@
         <exclude>
             <file>composer-dependency-analyser.php</file>
             <file>rector-ci.php</file>
+            <file>src/Exception/UnsupportedDoctrineDbalVersionException.php</file>
+            <file>src/Tools/DoctrineDbal/Version.php</file>
         </exclude>
     </source>
 </phpunit>

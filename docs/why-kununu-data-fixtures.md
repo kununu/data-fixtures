@@ -17,3 +17,7 @@ We looked into community packages and there are definitely great options however
   - This is definitely a valid approach, still by actually hit the database we are sure we cover the whole integration even if it means a small performance penalty.
 - **We would like to have the same approach for all storages**
   - No matter the storage that we load fixtures into, we want to have the same behavior making it easier to reason about.
+
+---
+
+[Back to Index](../README.md)
