@@ -2,6 +2,7 @@
   "symbol-whitelist": [
     "Aws\\DynamoDb\\DynamoDbClient",
     "Aws\\DynamoDb\\Exception\\DynamoDbException",
+    "Composer\\InstalledVersions",
     "Doctrine\\DBAL\\Connection",
     "Doctrine\\DBAL\\Driver",
     "Doctrine\\DBAL\\Driver\\AbstractMySQLDriver",
