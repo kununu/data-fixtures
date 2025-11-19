@@ -39,7 +39,7 @@ final readonly class Value
 
     public static function numericSetValue(string $name, array $value): self
     {
-        return new self($name, AttributeType::NumericSet, array_map('strval', $value));
+        return new self($name, AttributeType::NumericSet, array_map(strval(...), $value));
     }
 
     public static function binarySetValue(string $name, array $value): self
