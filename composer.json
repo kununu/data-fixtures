@@ -30,7 +30,7 @@
     "aws/aws-sdk-php": "^3.173",
     "doctrine/dbal": "^3.9",
     "elasticsearch/elasticsearch": "^7.1",
-    "kununu/scripts": ">=6.1",
+    "kununu/code-tools": "^3.1",
     "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.0",
     "phpstan/phpstan": "^2.1",
@@ -65,13 +65,13 @@
   },
   "config": {
     "allow-plugins": {
-      "kununu/scripts": true,
-      "php-http/discovery": true
+      "php-http/discovery": true,
+      "kununu/code-tools": true
     },
     "sort-packages": true
   },
   "scripts": {
-    "cs": "composer kununu:cs-fixer-code src/ tests/",
+    "cs": "composer kununu:cs-fixer src/ tests/",
     "phpstan": "phpstan",
     "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
     "test": "phpunit --no-coverage --no-logging --no-progress",
