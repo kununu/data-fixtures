@@ -65,8 +65,8 @@
   },
   "config": {
     "allow-plugins": {
-      "php-http/discovery": true,
-      "kununu/code-tools": true
+      "kununu/code-tools": true,
+      "php-http/discovery": true
     },
     "sort-packages": true
   },
