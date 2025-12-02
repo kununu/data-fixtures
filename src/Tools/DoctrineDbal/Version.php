@@ -13,26 +13,20 @@ final class Version
 
     private static ?DbalVersion $dbalVersion = null;
 
-    public static function __constructStatic(): void
+    public static function version(): DbalVersion
     {
-        self::$dbalVersion = match (true) {
+        return self::$dbalVersion ?? self::$dbalVersion = match (true) {
             InstalledVersions::satisfies(new VersionParser(), self::PACKAGE, '^3.0') => DbalVersion::Version3,
             InstalledVersions::satisfies(new VersionParser(), self::PACKAGE, '^4.0') => DbalVersion::Version4,
             default                                                                  => self::unsupported(),
         };
     }
 
-    public static function version(): DbalVersion
-    {
-        return self::$dbalVersion;
-    }
-
     public static function getSQLitePlatformClass(): string
     {
-        return match (self::$dbalVersion) {
+        return match (self::version()) {
             DbalVersion::Version3 => 'Doctrine\DBAL\Platforms\SqlitePlatform',
             DbalVersion::Version4 => 'Doctrine\DBAL\Platforms\SQLitePlatform',
-            default               => self::unsupported(),
         };
     }
 
