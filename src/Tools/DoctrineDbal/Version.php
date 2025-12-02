@@ -35,5 +35,3 @@ final class Version
         throw new UnsupportedDoctrineDbalVersionException(InstalledVersions::getPrettyVersion(self::PACKAGE));
     }
 }
-
-Version::__constructStatic();
