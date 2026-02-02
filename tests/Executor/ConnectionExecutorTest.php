@@ -85,7 +85,7 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
         $this->connection
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('executeStatement')
             ->willReturn(1);
 
@@ -99,7 +99,7 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
         $this->connection
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('executeStatement')
             ->willReturn(1);
 
@@ -112,8 +112,12 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
 
     public function testThatFixturesAreLoaded(): void
     {
+        $this->purger
+            ->expects($this->once())
+            ->method('purge');
+
         $this->connection
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('executeStatement')
             ->willReturn(1);
 
@@ -136,9 +140,9 @@ final class ConnectionExecutorTest extends AbstractExecutorTestCase
     {
         $this->connection = $this->createMock(Connection::class);
         $this->connection
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('getDatabasePlatform')
-            ->willReturn($this->createMock(MySQLPlatform::class));
+            ->willReturn($this->createStub(MySQLPlatform::class));
 
         parent::setUp();
     }

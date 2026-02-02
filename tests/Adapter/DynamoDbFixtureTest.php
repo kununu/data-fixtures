@@ -506,10 +506,10 @@ final class DynamoDbFixtureTest extends TestCase
 
         $callCount = 0;
         $client = $this->dynamoDbClient;
-        $client->setNextBatchWriteItem(function() use (&$callCount, $client) {
+        $client->setNextBatchWriteItem(static function() use (&$callCount, $client) {
             ++$callCount;
             if ($callCount === 1) {
-                $client->setNextBatchWriteItem(function() use ($client): void {
+                $client->setNextBatchWriteItem(static function() use ($client): void {
                     throw new DynamoDbException(
                         'Retry failed',
                         $client->createMockAwsCommand(),
@@ -561,10 +561,10 @@ final class DynamoDbFixtureTest extends TestCase
 
         $callCount = 0;
         $client = $this->dynamoDbClient;
-        $client->setNextBatchWriteItem(function() use (&$callCount, $client) {
+        $client->setNextBatchWriteItem(static function() use (&$callCount, $client) {
             ++$callCount;
             if ($callCount === 1) {
-                $client->setNextBatchWriteItem(function() use ($client): void {
+                $client->setNextBatchWriteItem(static function() use ($client): void {
                     throw new DynamoDbException(
                         'Retry failed',
                         $client->createMockAwsCommand(),

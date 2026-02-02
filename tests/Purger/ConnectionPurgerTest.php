@@ -6,7 +6,9 @@ namespace Kununu\DataFixtures\Tests\Purger;
 use Exception;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
 use Kununu\DataFixtures\Purger\PurgeMode;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 {
     public function testPurgerIsTransactionalAndCommits(): void
@@ -31,14 +33,14 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $this->connection
             ->expects($this->once())
             ->method('beginTransaction')
-            ->willReturnCallback(function() use (&$transactionStarted): void {
+            ->willReturnCallback(static function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
         $this->connection
             ->expects($this->once())
             ->method('commit')
-            ->willReturnCallback(function() use (&$transactionStarted): void {
+            ->willReturnCallback(static function() use (&$transactionStarted): void {
                 self::assertTrue($transactionStarted);
             });
 
@@ -68,14 +70,14 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
         $this->connection
             ->expects($this->once())
             ->method('beginTransaction')
-            ->willReturnCallback(function() use (&$transactionStarted): void {
+            ->willReturnCallback(static function() use (&$transactionStarted): void {
                 $transactionStarted = true;
             });
 
         $this->connection
             ->expects($this->once())
             ->method('commit')
-            ->willReturnCallback(function() use (&$transactionStarted): void {
+            ->willReturnCallback(static function() use (&$transactionStarted): void {
                 self::assertTrue($transactionStarted);
 
                 throw new Exception('Failed to commit!');
@@ -156,7 +158,7 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
             )
             ->willReturnOnConsecutiveCalls(
                 // @phpstan-ignore argument.named
-                ...array_map(fn($element) => $element[0], $this->getTruncateModeConsecutiveArguments())
+                ...array_map(static fn($element) => $element[0], $this->getTruncateModeConsecutiveArguments())
             );
 
         $this->connection

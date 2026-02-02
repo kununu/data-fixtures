@@ -8,7 +8,9 @@ use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\DataFixtures\Loader\OpenSearchFixturesLoader;
 use Kununu\DataFixtures\Tests\TestFixtures\OpenSearchFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\OpenSearchFixture2;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class OpenSearchFixturesLoaderTest extends AbstractLoaderTestCase
 {
     protected function getLoader(): LoaderInterface

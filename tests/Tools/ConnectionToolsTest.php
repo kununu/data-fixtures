@@ -83,7 +83,7 @@ final class ConnectionToolsTest extends TestCase
     private function configureExpectations(AbstractPlatform|string $platform, string $expectedQuery): void
     {
         $this->connection
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('getDatabasePlatform')
             ->willReturn($this->getPlatform($platform));
 
@@ -97,7 +97,7 @@ final class ConnectionToolsTest extends TestCase
     {
         return match (true) {
             $platform instanceof AbstractPlatform => $platform,
-            default                               => $this->createMock($platform),
+            default                               => $this->createStub($platform),
         };
     }
 }

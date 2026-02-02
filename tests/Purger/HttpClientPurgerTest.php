@@ -7,8 +7,10 @@ use Kununu\DataFixtures\Purger\HttpClientPurger;
 use Kununu\DataFixtures\Purger\PurgerInterface;
 use Kununu\DataFixtures\Tests\Utils\FakeHttpClientInterface;
 use Kununu\DataFixtures\Tools\FixturesHttpClientInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 
+#[AllowMockObjectsWithoutExpectations]
 final class HttpClientPurgerTest extends AbstractPurgerTestCase
 {
     private (MockObject&FakeHttpClientInterface)|(MockObject&FixturesHttpClientInterface) $httpClient;

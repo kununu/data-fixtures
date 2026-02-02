@@ -27,7 +27,7 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
     protected function configureTables(array $tables = self::TABLES): void
     {
         $this->schemaManager
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('listTableNames')
             ->willReturn($tables);
     }
@@ -101,17 +101,17 @@ abstract class AbstractConnectionPurgerTestCase extends TestCase
         $connection = $this->createMock(Connection::class);
 
         $connection
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('createSchemaManager')
             ->willReturn($schemaManager);
 
         $connection
-            ->expects($this->any())
+            ->expects($this->atMost(3))
             ->method('quoteIdentifier')
-            ->willReturnCallback(fn(string $str): string => sprintf('`%s`', $str));
+            ->willReturnCallback(static fn(string $str): string => sprintf('`%s`', $str));
 
         $connection
-            ->expects($this->any())
+            ->expects($this->atMost(3))
             ->method('getDatabasePlatform')
             ->willReturn($platform);
 

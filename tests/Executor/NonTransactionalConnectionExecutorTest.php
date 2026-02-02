@@ -98,9 +98,9 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
     {
         $this->connection = $this->createMock(Connection::class);
         $this->connection
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('getDatabasePlatform')
-            ->willReturn($this->createMock(MySQLPlatform::class));
+            ->willReturn($this->createStub(MySQLPlatform::class));
 
         parent::setUp();
     }

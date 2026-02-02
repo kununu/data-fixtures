@@ -5,7 +5,9 @@ namespace Kununu\DataFixtures\Tests\Purger;
 
 use Exception;
 use Kununu\DataFixtures\Purger\NonTransactionalConnectionPurger;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 {
     public function testThatPurgerIsNotTransactionalAndCommits(): void
@@ -50,7 +52,7 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
                 )
             )
             ->willReturnCallback(
-                fn(string $sql): int => match (true) {
+                static fn(string $sql): int => match (true) {
                     'DELETE FROM `table_1`' === $sql => throw new Exception(),
                     default                          => 1,
                 }

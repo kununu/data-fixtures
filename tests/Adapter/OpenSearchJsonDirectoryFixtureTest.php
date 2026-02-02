@@ -126,7 +126,7 @@ final class OpenSearchJsonDirectoryFixtureTest extends TestCase
             ->method('bulk')
             ->with(
                 self::callback(
-                    fn(array $bulk): bool => $bulk === $bulk1
+                    static fn(array $bulk): bool => $bulk === $bulk1
                 )
             )
             ->willReturn([

@@ -8,7 +8,9 @@ use Kununu\DataFixtures\Loader\CachePoolFixturesLoader;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\DataFixtures\Tests\TestFixtures\CachePoolFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\CachePoolFixture2;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class CachePoolFixturesLoaderTest extends AbstractLoaderTestCase
 {
     protected function getLoader(): LoaderInterface
