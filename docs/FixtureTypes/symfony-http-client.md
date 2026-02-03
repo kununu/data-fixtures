@@ -142,3 +142,7 @@ By default, when loading fixtures the Http Client responses internal storage is 
 ```php
 $executor->execute($loader->getFixtures(), true);
 ```
+
+---
+
+[Back to Index](../../README.md)

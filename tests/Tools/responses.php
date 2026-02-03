@@ -23,7 +23,7 @@ return [
   "newsletter": true
 }
 JSON,
-        'bodyValidator' => function(MockResponse $response, array $options = []): MockResponse {
+        'bodyValidator' => static function(MockResponse $response, array $options = []): MockResponse {
             $id = $options['json']['id'] ?? null;
 
             if ($id === 5000) {

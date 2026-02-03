@@ -120,3 +120,7 @@ use Kununu\DataFixtures\Purger\DynamoDbPurger;
 $excludedTables = ['audit_logs', 'migrations'];
 $purger = new DynamoDbPurger($client, $excludedTables);
 ```
+
+---
+
+[Back to Index](../../README.md)

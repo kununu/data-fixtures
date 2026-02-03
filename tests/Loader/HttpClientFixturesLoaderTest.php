@@ -8,7 +8,9 @@ use Kununu\DataFixtures\Loader\HttpClientFixturesLoader;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\DataFixtures\Tests\TestFixtures\HttpClientFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\HttpClientFixture2;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class HttpClientFixturesLoaderTest extends AbstractLoaderTestCase
 {
     protected function getLoader(): LoaderInterface

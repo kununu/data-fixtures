@@ -32,6 +32,10 @@ final class DynamoDbExecutorTest extends AbstractExecutorTestCase
 
     public function testThatFixturesAreLoaded(): void
     {
+        $this->purger
+            ->expects($this->once())
+            ->method('purge');
+
         $fixture1 = $this->createMock(DynamoDbFixtureInterface::class);
         $fixture1
             ->expects($this->once())
@@ -77,14 +81,14 @@ final class DynamoDbExecutorTest extends AbstractExecutorTestCase
         $this->purger
             ->expects($this->once())
             ->method('purge')
-            ->willReturnCallback(function() use (&$callOrder): void {
+            ->willReturnCallback(static function() use (&$callOrder): void {
                 $callOrder[] = 'purge';
             });
 
         $fixture
             ->expects($this->once())
             ->method('load')
-            ->willReturnCallback(function() use (&$callOrder): void {
+            ->willReturnCallback(static function() use (&$callOrder): void {
                 $callOrder[] = 'load';
             });
 

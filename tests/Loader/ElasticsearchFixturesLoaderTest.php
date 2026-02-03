@@ -8,7 +8,9 @@ use Kununu\DataFixtures\Loader\ElasticsearchFixturesLoader;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\DataFixtures\Tests\TestFixtures\ElasticsearchFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\ElasticsearchFixture2;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class ElasticsearchFixturesLoaderTest extends AbstractLoaderTestCase
 {
     protected function getLoader(): LoaderInterface

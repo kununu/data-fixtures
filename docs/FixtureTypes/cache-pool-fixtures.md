@@ -82,3 +82,7 @@ $executor = new CachePoolExecutor($cache, $purger);
 // If you want you can `append` the fixtures instead of purging the cache storage
 $executor->execute($loader->getFixtures(), true);
 ```
+
+---
+
+[Back to Index](../../README.md)

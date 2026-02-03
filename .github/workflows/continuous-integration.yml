@@ -26,7 +26,7 @@ jobs:
         with:
           php-version: 8.3
           coverage: none
-          tools: composer-dependency-analyser, composer-normalize, composer-require-checker
+          tools: composer-dependency-analyser, composer-normalize, composer-require-checker, cs2pr
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v3
@@ -45,6 +45,14 @@ jobs:
 
       - name: Run PHP CS Fixer
         run: vendor/bin/php-cs-fixer check --using-cache=no --config vendor/kununu/code-tools/php-cs-fixer.php src/ tests/
+
+      - name: Run PHP_CodeSniffer
+        id: php-code-sniffer
+        run: vendor/bin/phpcs --report-full --report-checkstyle=./phpcs-report.xml --colors src/ tests/
+
+      - name: Show PHP_CodeSniffer results in PR
+        if: ${{ always() && steps.php-code-sniffer.outcome == 'failure' }}
+        run: cs2pr ./phpcs-report.xml
 
       - name: Run Rector
         run: vendor/bin/rector process --ansi --dry-run --config rector-ci.php src/ tests/

@@ -31,9 +31,7 @@ final readonly class ConnectionExecutor implements ExecutorInterface
                 $this->purger->purge();
             }
 
-            $this->connection->executeStatement(
-                $this->getDisableForeignKeysChecksStatementByDriver($this->connection->getDriver())
-            );
+            $this->disableForeignKeysChecks($this->connection);
 
             foreach ($fixtures as $fixture) {
                 $this->load($fixture);
@@ -48,9 +46,7 @@ final readonly class ConnectionExecutor implements ExecutorInterface
             }
             throw $e;
         } finally {
-            $this->connection->executeStatement(
-                $this->getEnableForeignKeysChecksStatementByDriver($this->connection->getDriver())
-            );
+            $this->enableForeignKeysChecks($this->connection);
         }
     }
 

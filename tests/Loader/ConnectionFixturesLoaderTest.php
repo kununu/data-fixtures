@@ -9,7 +9,9 @@ use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\DataFixtures\Tests\TestFixtures\ConnectionFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\ConnectionFixture2;
 use Kununu\DataFixtures\Tests\TestFixtures\ConnectionFixture3;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class ConnectionFixturesLoaderTest extends AbstractLoaderTestCase
 {
     protected function getLoader(): LoaderInterface

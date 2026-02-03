@@ -233,3 +233,7 @@ $executor->execute($loader->getFixtures());
 // If you want you can `append` the fixtures instead of purging the directory
 $executor->execute($loader->getFixtures(), true);
 ```
+
+---
+
+[Back to Index](../README.md)

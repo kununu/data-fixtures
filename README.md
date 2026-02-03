@@ -7,7 +7,11 @@ A good definition of what fixtures are is the one from the documentation of [Doc
 
 ### What is kununu/data-fixtures?
 
-This package provides a simple way to manage and execute the loading of data fixtures for any storage mechanism. It's design and implementation was heavily based on the [Doctrine data-fixtures](https://github.com/doctrine/data-fixtures) package. If you are interested in why we created this package check out [Why kununu/data-fixtures?](docs/why-kununu-data-fixtures.md).
+This package provides a simple way to manage and execute the loading of data fixtures for any storage mechanism. 
+
+Its design and implementation was heavily based on the [Doctrine data-fixtures](https://github.com/doctrine/data-fixtures) package.
+
+If you are interested in why we created this package check out [Why kununu/data-fixtures?](docs/why-kununu-data-fixtures.md).
 
 ### Fixtures types
 

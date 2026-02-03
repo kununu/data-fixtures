@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Kununu\DataFixtures\Tests\Executor;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\AbstractMySQLDriver;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Exception;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\Executor\ExecutorInterface;
@@ -14,8 +14,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestCase
 {
-    private const string SQL_1 = 'SET FOREIGN_KEY_CHECKS=0';
-    private const string SQL_2 = 'SET FOREIGN_KEY_CHECKS=1';
+    private const string SQL_1 = 'SET FOREIGN_KEY_CHECKS = 0';
+    private const string SQL_2 = 'SET FOREIGN_KEY_CHECKS = 1';
 
     private MockObject&Connection $connection;
 
@@ -98,9 +98,9 @@ final class NonTransactionalConnectionExecutorTest extends AbstractExecutorTestC
     {
         $this->connection = $this->createMock(Connection::class);
         $this->connection
-            ->expects($this->any())
-            ->method('getDriver')
-            ->willReturn($this->createMock(AbstractMySQLDriver::class));
+            ->expects($this->atLeastOnce())
+            ->method('getDatabasePlatform')
+            ->willReturn($this->createStub(MySQLPlatform::class));
 
         parent::setUp();
     }

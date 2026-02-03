@@ -9,7 +9,7 @@
     "Doctrine",
     "DynamoDB",
     "Elasticsearch",
-    "Opensearch",
+    "OpenSearch",
     "PSR-6 Cache"
   ],
   "authors": [
@@ -24,30 +24,32 @@
   ],
   "require": {
     "php": ">=8.3",
-    "ext-json": "*"
+    "ext-json": "*",
+    "composer/semver": "^3.4"
   },
   "require-dev": {
     "aws/aws-sdk-php": "^3.173",
-    "doctrine/dbal": "^3.9",
+    "doctrine/dbal": "^3.10 || ^4.3",
     "elasticsearch/elasticsearch": "^7.1",
+    "jetbrains/phpstorm-attributes": "^1.2",
     "kununu/code-tools": "^3.1",
     "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.0",
     "phpstan/phpstan": "^2.1",
     "phpstan/phpstan-phpunit": "^2.0",
-    "phpunit/phpunit": "^12.3",
+    "phpunit/phpunit": "^12.5",
     "psr/cache": "^2.0",
-    "rector/rector": "^2.0",
+    "rector/rector": "^2.2",
     "shipmonk/composer-dependency-analyser": "^1.8",
-    "symfony/http-client": "^6.4",
-    "symfony/http-foundation": "^6.4"
+    "symfony/http-client": "^6.4 || ^7.4",
+    "symfony/http-foundation": "^6.4 || ^7.4"
   },
   "suggest": {
     "aws/aws-sdk-php": "Load fixtures with DynamoDB",
     "doctrine/dbal": "Load fixtures using Doctrine DBAL",
     "elasticsearch/elasticsearch": "Load fixtures with Elasticsearch",
     "kununu/testing-bundle": "Use this package in a Symfony application",
-    "opensearch-project/opensearch-php": "Load fixtures with Openseach",
+    "opensearch-project/opensearch-php": "Load fixtures with OpenSearch",
     "psr/cache": "Load fixtures for implementation of the PSR6 standard",
     "symfony/http-client": "Load fixtures with mocked data for Symfony Http client",
     "symfony/http-foundation": "Load fixtures with mocked data for Symfony Http client"
@@ -74,6 +76,8 @@
     "cs": "composer kununu:cs-fixer src/ tests/",
     "phpstan": "phpstan",
     "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
+    "rector-fix": "rector process --config rector-ci.php src/ tests/",
+    "sniffer": "phpcs",
     "test": "phpunit --no-coverage --no-logging --no-progress",
     "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
   },
@@ -81,6 +85,8 @@
     "cs": "Run PHP CS Fixer with kununu code standards",
     "phpstan": "Run PHPStan",
     "rector": "Run Rector in dry-run mode with CI rules",
+    "rector-fix": "Run Rector in fix mode with CI rules",
+    "sniffer": "Run PHP_CodeSniffer",
     "test": "Run all tests",
     "test-coverage": "Run all tests with coverage report"
   }

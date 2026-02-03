@@ -70,7 +70,7 @@ JSON,
 
     public function testNotAFixtureHttpClient(): void
     {
-        $httpClient = $this->createMock(FakeHttpClientInterface::class);
+        $httpClient = $this->createStub(FakeHttpClientInterface::class);
 
         $this->httpClient
             ->expects($this->never())

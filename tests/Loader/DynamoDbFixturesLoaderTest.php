@@ -8,7 +8,9 @@ use Kununu\DataFixtures\Loader\DynamoDbFixturesLoader;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\DataFixtures\Tests\TestFixtures\DynamoDbFixture1;
 use Kununu\DataFixtures\Tests\TestFixtures\DynamoDbFixture2;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class DynamoDbFixturesLoaderTest extends AbstractLoaderTestCase
 {
     protected function getLoader(): LoaderInterface

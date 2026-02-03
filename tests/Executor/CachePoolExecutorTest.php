@@ -6,12 +6,12 @@ namespace Kununu\DataFixtures\Tests\Executor;
 use Kununu\DataFixtures\Adapter\CachePoolFixtureInterface;
 use Kununu\DataFixtures\Executor\CachePoolExecutor;
 use Kununu\DataFixtures\Executor\ExecutorInterface;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachePoolExecutorTest extends AbstractExecutorTestCase
 {
-    private MockObject&CacheItemPoolInterface $cache;
+    private Stub&CacheItemPoolInterface $cache;
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
@@ -33,6 +33,10 @@ final class CachePoolExecutorTest extends AbstractExecutorTestCase
 
     public function testThatFixturesAreLoaded(): void
     {
+        $this->purger
+            ->expects($this->once())
+            ->method('purge');
+
         $fixture1 = $this->createMock(CachePoolFixtureInterface::class);
         $fixture1
             ->expects($this->once())
@@ -55,7 +59,7 @@ final class CachePoolExecutorTest extends AbstractExecutorTestCase
 
     protected function setUp(): void
     {
-        $this->cache = $this->createMock(CacheItemPoolInterface::class);
+        $this->cache = $this->createStub(CacheItemPoolInterface::class);
 
         parent::setUp();
     }

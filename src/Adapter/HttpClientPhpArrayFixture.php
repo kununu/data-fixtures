@@ -14,7 +14,7 @@ abstract class HttpClientPhpArrayFixture extends AbstractFileLoaderFixture imple
             return;
         }
 
-        parent::loadFiles(fn(array $responses) => $httpClient->addResponses($responses));
+        parent::loadFiles(static fn(array $responses) => $httpClient->addResponses($responses));
     }
 
     protected function getFileExtension(): string

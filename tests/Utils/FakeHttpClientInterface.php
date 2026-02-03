@@ -7,7 +7,5 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 interface FakeHttpClientInterface extends HttpClientInterface
 {
-    public function addResponses(array $responses): void;
-
     public function clearResponses(): void;
 }

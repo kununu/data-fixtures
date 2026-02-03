@@ -18,6 +18,8 @@ final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
 
     public function testThatDoesNotPurgesWhenAppendIsEnabled(): void
     {
+        $this->configureClient();
+
         $this->purger
             ->expects($this->never())
             ->method('purge');
@@ -27,6 +29,8 @@ final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
 
     public function testThatPurgesWhenAppendIsDisabled(): void
     {
+        $this->configureClient();
+
         $this->purger
             ->expects($this->once())
             ->method('purge');
@@ -36,6 +40,12 @@ final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
 
     public function testThatFixturesAreLoaded(): void
     {
+        $this->configureClient();
+
+        $this->purger
+            ->expects($this->once())
+            ->method('purge');
+
         $fixture1 = $this->createMock(ElasticsearchFixtureInterface::class);
         $fixture1
             ->expects($this->once())
@@ -47,17 +57,6 @@ final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
             ->expects($this->once())
             ->method('load')
             ->with($this->client, self::INDEX_NAME);
-
-        $indices = $this->createMock(IndicesNamespace::class);
-        $indices
-            ->expects($this->once())
-            ->method('refresh')
-            ->with(['index' => self::INDEX_NAME]);
-
-        $this->client
-            ->expects($this->any())
-            ->method('indices')
-            ->willReturn($indices);
 
         $this->executor->execute([$fixture1, $fixture2]);
     }
@@ -72,5 +71,19 @@ final class ElasticsearchExecutorTest extends AbstractExecutorTestCase
     protected function getExecutor(): ExecutorInterface
     {
         return new ElasticsearchExecutor($this->client, self::INDEX_NAME, $this->purger);
+    }
+
+    private function configureClient(): void
+    {
+        $indices = $this->createMock(IndicesNamespace::class);
+        $indices
+            ->expects($this->once())
+            ->method('refresh')
+            ->with(['index' => self::INDEX_NAME]);
+
+        $this->client
+            ->expects($this->atLeastOnce())
+            ->method('indices')
+            ->willReturn($indices);
     }
 }
