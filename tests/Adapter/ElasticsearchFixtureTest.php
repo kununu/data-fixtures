@@ -53,7 +53,7 @@ final class ElasticsearchFixtureTest extends TestCase
                 ],
             ]);
 
-        (new ElasticsearchFixture3())->load($this->client, 'my_index');
+        new ElasticsearchFixture3()->load($this->client, 'my_index');
     }
 
     protected function setUp(): void

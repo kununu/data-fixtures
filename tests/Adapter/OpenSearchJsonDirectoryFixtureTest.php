@@ -81,7 +81,7 @@ final class OpenSearchJsonDirectoryFixtureTest extends TestCase
             )
             ->willReturn(['errors' => false]);
 
-        (new OpenSearchJsonDirectoryFixture1())->load($this->client, 'my_index');
+        new OpenSearchJsonDirectoryFixture1()->load($this->client, 'my_index');
     }
 
     public function testLoadWithErrors(): void
@@ -160,7 +160,7 @@ Errors:
 TEXT
         );
 
-        (new OpenSearchJsonDirectoryFixture1())->load($this->client, 'my_index');
+        new OpenSearchJsonDirectoryFixture1()->load($this->client, 'my_index');
     }
 
     public function testLoadWithInvalidJson(): void
@@ -212,7 +212,7 @@ TEXT
             )
         );
 
-        (new OpenSearchJsonDirectoryFixture2())->load($this->client, 'my_index');
+        new OpenSearchJsonDirectoryFixture2()->load($this->client, 'my_index');
     }
 
     protected function setUp(): void

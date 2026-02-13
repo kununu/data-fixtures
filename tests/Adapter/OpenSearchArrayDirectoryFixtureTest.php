@@ -78,7 +78,7 @@ final class OpenSearchArrayDirectoryFixtureTest extends TestCase
             )
             ->willReturn(['errors' => false]);
 
-        (new OpenSearchArrayDirectoryFixture1())->load($this->client, 'my_index');
+        new OpenSearchArrayDirectoryFixture1()->load($this->client, 'my_index');
     }
 
     protected function setUp(): void

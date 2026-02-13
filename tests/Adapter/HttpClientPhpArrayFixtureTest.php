@@ -54,7 +54,7 @@ JSON,
 
         $this->expectException(InvalidFileException::class);
 
-        (new InvalidHttpClientFixture())->load($this->httpClient);
+        new InvalidHttpClientFixture()->load($this->httpClient);
     }
 
     public function testInvalidFile(): void
@@ -65,7 +65,7 @@ JSON,
 
         $this->expectException(InvalidFileException::class);
 
-        (new HttpClientFixture2())->load($this->httpClient);
+        new HttpClientFixture2()->load($this->httpClient);
     }
 
     public function testNotAFixtureHttpClient(): void
