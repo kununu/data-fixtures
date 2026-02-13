@@ -141,6 +141,6 @@ abstract class AbstractLoaderTestCase extends TestCase
 
     private function generateMockClassName(string $prefix): string
     {
-        return sprintf('%s%s', $prefix, md5((new DateTime())->format('Y-m-d H:i:s.uP')));
+        return sprintf('%s%s', $prefix, md5(new DateTime()->format('Y-m-d H:i:s.uP')));
     }
 }

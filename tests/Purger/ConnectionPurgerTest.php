@@ -182,6 +182,6 @@ final class ConnectionPurgerTest extends AbstractConnectionPurgerTestCase
 
     private function purge(array $excludedTables = [], PurgeMode $purgeMode = PurgeMode::Delete): void
     {
-        (new ConnectionPurger($this->connection, $excludedTables, purgeMode: $purgeMode))->purge();
+        new ConnectionPurger($this->connection, $excludedTables, purgeMode: $purgeMode)->purge();
     }
 }

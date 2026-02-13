@@ -83,7 +83,7 @@ final class ElasticsearchArrayDirectoryFixtureTest extends TestCase
             )
             ->willReturn(['errors' => false]);
 
-        (new ElasticsearchArrayDirectoryFixture1())->load($this->client, 'my_index');
+        new ElasticsearchArrayDirectoryFixture1()->load($this->client, 'my_index');
     }
 
     protected function setUp(): void

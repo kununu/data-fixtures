@@ -78,6 +78,6 @@ final class NonTransactionalConnectionPurgerTest extends AbstractConnectionPurge
 
     private function purge(): void
     {
-        (new NonTransactionalConnectionPurger($this->connection))->purge();
+        new NonTransactionalConnectionPurger($this->connection)->purge();
     }
 }

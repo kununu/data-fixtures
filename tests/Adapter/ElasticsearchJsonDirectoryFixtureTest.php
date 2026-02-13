@@ -81,7 +81,7 @@ final class ElasticsearchJsonDirectoryFixtureTest extends TestCase
             )
             ->willReturn(['errors' => false]);
 
-        (new ElasticsearchJsonDirectoryFixture1())->load($this->client, 'my_index');
+        new ElasticsearchJsonDirectoryFixture1()->load($this->client, 'my_index');
     }
 
     public function testLoadWithErrors(): void
@@ -160,7 +160,7 @@ Errors:
 TEXT
         );
 
-        (new ElasticsearchJsonDirectoryFixture1())->load($this->client, 'my_index');
+        new ElasticsearchJsonDirectoryFixture1()->load($this->client, 'my_index');
     }
 
     public function testLoadWithInvalidJson(): void
@@ -212,7 +212,7 @@ TEXT
             )
         );
 
-        (new ElasticsearchJsonDirectoryFixture2())->load($this->client, 'my_index');
+        new ElasticsearchJsonDirectoryFixture2()->load($this->client, 'my_index');
     }
 
     protected function setUp(): void

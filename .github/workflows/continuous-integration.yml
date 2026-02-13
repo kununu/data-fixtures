@@ -24,7 +24,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.4
           coverage: none
           tools: composer-dependency-analyser, composer-normalize, composer-require-checker, cs2pr
 
@@ -60,14 +60,13 @@ jobs:
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse --ansi
 
-  build:
+  tests:
     needs: checks
-    name: PHPUnit
+    name: Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php-version:
-          - 8.3
           - 8.4
         dependencies:
           - lowest
@@ -102,19 +101,18 @@ jobs:
           include-hidden-files: true
           path: tests/.results/
 
-  sonarcloud:
-    needs: build
-    name: SonarCloud Checks
+  code_analysis:
+    needs: tests
+    name: Code Analysis
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
 
       - uses: actions/download-artifact@v4
         with:
-          name: build-8.3-highest-coverage
+          name: tests-8.4-highest-coverage
           path: tests/.results/
 
       - name: Fix Code Coverage Paths

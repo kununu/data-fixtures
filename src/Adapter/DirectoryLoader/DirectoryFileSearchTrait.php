@@ -40,6 +40,6 @@ trait DirectoryFileSearchTrait
     {
         [, , $feature] = array_slice(explode('\\', static::class), -3);
 
-        return sprintf('%s/%s/%s', dirname((new ReflectionClass($this))->getFilename()), $subDirectory, $feature);
+        return sprintf('%s/%s/%s', dirname(new ReflectionClass($this)->getFilename()), $subDirectory, $feature);
     }
 }
