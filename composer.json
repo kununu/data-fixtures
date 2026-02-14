@@ -42,7 +42,7 @@
     "rector/rector": "^2.3",
     "shipmonk/composer-dependency-analyser": "^1.8",
     "symfony/http-client": "^6.4 || ^7.4",
-    "symfony/http-foundation": "^6.4 || ^7.4"
+    "symfony/http-foundation": "^6.4 || ^7.4 || ^8.0"
   },
   "suggest": {
     "aws/aws-sdk-php": "Load fixtures with DynamoDB",
