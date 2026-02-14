@@ -41,7 +41,7 @@
     "psr/cache": "^2.0",
     "rector/rector": "^2.3",
     "shipmonk/composer-dependency-analyser": "^1.8",
-    "symfony/http-client": "^6.4 || ^7.4",
+    "symfony/http-client": "^6.4 || ^7.4 || ^8.0",
     "symfony/http-foundation": "^6.4 || ^7.4"
   },
   "suggest": {
