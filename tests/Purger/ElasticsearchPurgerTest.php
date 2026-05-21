@@ -23,7 +23,7 @@ final class ElasticsearchPurgerTest extends AbstractPurgerTestCase
             ->with(['index' => 'my_index']);
 
         $this->client
-            ->expects($this->any())
+            ->expects($this->exactly(2))
             ->method('indices')
             ->willReturn($indices);
 

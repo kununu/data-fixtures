@@ -37,7 +37,7 @@
     "opensearch-project/opensearch-php": "^2.0",
     "phpstan/phpstan": "^2.1",
     "phpstan/phpstan-phpunit": "^2.0",
-    "phpunit/phpunit": "^12.5",
+    "phpunit/phpunit": "^13.1",
     "psr/cache": "^2.0",
     "rector/rector": "^2.3",
     "shipmonk/composer-dependency-analyser": "^1.8",
@@ -78,8 +78,9 @@
     "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
     "rector-fix": "rector process --config rector-ci.php src/ tests/",
     "sniffer": "phpcs",
-    "test": "phpunit --no-coverage --no-logging --no-progress",
-    "test-coverage": "XDEBUG_MODE=coverage phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
+    "sniffer-fix": "phpcbf",
+    "test": "phpunit --testsuite Full --testdox --testdox-summary --no-coverage --no-logging",
+    "test-coverage": "XDEBUG_MODE=coverage phpunit --testsuite Full --testdox --testdox-summary --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html/"
   },
   "scripts-descriptions": {
     "cs": "Run PHP CS Fixer with kununu code standards",
@@ -87,6 +88,7 @@
     "rector": "Run Rector in dry-run mode with CI rules",
     "rector-fix": "Run Rector in fix mode with CI rules",
     "sniffer": "Run PHP_CodeSniffer",
+    "sniffer-fix": "Run PHP_CodeSniffer in fix mode",
     "test": "Run all tests",
     "test-coverage": "Run all tests with coverage report"
   }
