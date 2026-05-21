@@ -4,10 +4,7 @@ on:
     types: [ opened ]
 jobs:
   auto-assign-owner:
-    if: startsWith(github.event.ref, 'dependabot/') == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Auto assign owner
-        uses: danielswensson/auto-assign-owner-action@v1.0.6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        uses: toshimaru/auto-author-assign@v3.0.2
