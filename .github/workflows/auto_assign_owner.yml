@@ -1,0 +1,13 @@
+name: Auto assign owner when opening PRs
+on:
+  pull_request:
+    types: [ opened ]
+jobs:
+  auto-assign-owner:
+    if: startsWith(github.event.ref, 'dependabot/') == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto assign owner
+        uses: danielswensson/auto-assign-owner-action@v1.0.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
