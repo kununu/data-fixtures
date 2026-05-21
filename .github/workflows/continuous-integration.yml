@@ -93,7 +93,7 @@ jobs:
           vendor/bin/phpunit \
             --colors=always \
             --testdox \
-            --testdoxSummary \
+            --testdox-summary \
             --coverage-clover tests/.results/tests-clover.xml \
             --log-junit tests/.results/tests-junit.xml
 
