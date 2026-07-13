@@ -130,37 +130,10 @@ $loader->addFixture(new YourFixtureClass());
 
 ------------------------------
 
-## Contribute
+## Contributing
 
 If you are interested in contributing read our [contributing guidelines](CONTRIBUTING.md).
-
-------------------------------
-
-## Tests
-
-If not yet, first install composer dependencies:
-
-```shell
-composer install
-```
-
-Run the tests by doing: 
-
-```shell
-vendor/bin/phpunit
-```
-
-To run tests without coverage report:
-```shell
-composer install
-composer test
-```
-
-To run tests with coverage report:
-```shell
-composer install
-composer test-coverage
-```
+This includes how to set up the project locally, run the tests and run the quality gates.
 
 ------------------------------
 

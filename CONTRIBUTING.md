@@ -4,24 +4,47 @@ Contributions are more than **welcome**.
 
 We accept contributions via Pull Requests on [GitHub](https://github.com/kununu/data-fixtures).
 
-## Pull Requests
+## Development setup
+
+Install the Composer dependencies:
+
+```shell
+composer install
+```
+
+This installs the development tooling, including [kununu/code-tools](https://github.com/kununu/code-tools),
+which exposes the commands used to meet our coding standards.
+
+## Quality gates
+
+Quality gates are defined as Composer scripts in `composer.json` (`scripts`).
+Run them before opening a pull request:
+
+- `composer test` — run the test suite
+- `composer test-coverage` — run the test suite with a coverage report
+- `composer phpstan` — static analysis
+- `composer cs` — coding-standards check (PHP CS Fixer, kununu standards)
+- `composer sniffer` — PHP_CodeSniffer (`composer sniffer-fix` to auto-fix)
+- `composer rector` — Rector in dry-run mode (`composer rector-fix` to apply)
+
+## Pull requests
 
 - **[kununu Coding Standards](https://github.com/kununu/code-tools/blob/main/dist/php-cs-fixer.php.dist)**
-  - The kununu coding standards are an extension of the [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md). 
-  - Check out our kununu Coding Standards library, [kununu/code-tools](https://github.com/kununu/code-tools) for more details.
-    - In development mode the package is already a dependency that expose commands that you can use to meet our standards.
+  - The kununu coding standards extend [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md).
+  - See [kununu/code-tools](https://github.com/kununu/code-tools) for details.
 
 - **Add tests!**
-  - To ensure a high quality code base, your code patch can't be accepted if it does not have tests.
+  - To ensure a high-quality code base, patches without tests cannot be accepted.
 
 - **Document any change in behaviour**
-  - Make sure that the `README.md` and any other relevant documentation files are kept up-to-date.
+  - Keep `README.md` and any other relevant documentation up-to-date.
 
 - **Consider our release cycle**
-  - Since we're using semantic versioning ([SemVer v2.0.0](http://semver.org/)), changes to the API must be done with great consideration, and prevented if at all possible.
+  - We use semantic versioning ([SemVer 2.0.0](https://semver.org/)). Changes to
+    the public API must be made with great consideration and prevented if possible.
 
 - **Create feature branches**
-  - `main` is the stable branch, create a new branch for each feature.
+  - `main` is the stable branch; create a new branch for each feature.
 
 - **One pull request per feature**
   - If you want to do more than one thing, send multiple pull requests.
