@@ -324,7 +324,7 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
         $this->dynamoDbClient->setDescribeTableThrowsException(true);
 
         $this->expectException(PurgeFailedException::class);
-        $this->expectExceptionMessage('Failed to purge DynamoDB table "users": Table not found');
+        $this->expectExceptionMessageIs('Failed to purge DynamoDB table "users": Table not found');
 
         $this->purger->purge();
     }
@@ -345,7 +345,7 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
         $this->dynamoDbClient->setScanThrowsException(true);
 
         $this->expectException(PurgeFailedException::class);
-        $this->expectExceptionMessage('Failed to purge DynamoDB table "users": Scan failed');
+        $this->expectExceptionMessageIs('Failed to purge DynamoDB table "users": Scan failed');
 
         $this->purger->purge();
     }
@@ -414,7 +414,7 @@ final class DynamoDbPurgerTest extends AbstractPurgerTestCase
         $this->dynamoDbClient->setPersistentUnprocessedItems(true);
 
         $this->expectException(PurgeFailedException::class);
-        $this->expectExceptionMessage('Failed to delete all items after 3 retries');
+        $this->expectExceptionMessageIs('Failed to delete all items after 3 retries');
 
         $this->purger->purge();
     }

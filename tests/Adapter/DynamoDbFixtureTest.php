@@ -12,6 +12,7 @@ use Kununu\DataFixtures\Adapter\DynamoDbFixture;
 use Kununu\DataFixtures\Exception\LoadFailedException;
 use Kununu\DataFixtures\Tests\Utils\FakeDynamoDbClient;
 use LogicException;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
 final class DynamoDbFixtureTest extends TestCase
@@ -204,7 +205,7 @@ final class DynamoDbFixtureTest extends TestCase
         $this->dynamoDbClient->setPutItemThrowsException(true);
 
         $this->expectException(LoadFailedException::class);
-        $this->expectExceptionMessage('Failed to load single record to table "users": Put item failed');
+        $this->expectExceptionMessageIsOrContains('Failed to load single record to table "users": Put item failed');
 
         $fixture->load($this->dynamoDbClient);
     }
@@ -243,7 +244,7 @@ final class DynamoDbFixtureTest extends TestCase
         $this->dynamoDbClient->setBatchWriteItemThrowsException(true);
 
         $this->expectException(LoadFailedException::class);
-        $this->expectExceptionMessage('Failed to load batch records to table "users": Batch write failed');
+        $this->expectExceptionMessageIsOrContains('Failed to load batch records to table "users": Batch write failed');
 
         $fixture->load($this->dynamoDbClient);
     }
@@ -343,7 +344,7 @@ final class DynamoDbFixtureTest extends TestCase
         $this->dynamoDbClient->setPersistentUnprocessedItems(true);
 
         $this->expectException(LoadFailedException::class);
-        $this->expectExceptionMessage('Failed to process all items for table "users" after 3 retries');
+        $this->expectExceptionMessageIsOrContains('Failed to process all items for table "users" after 3 retries');
 
         $fixture->load($this->dynamoDbClient);
     }
@@ -540,11 +541,14 @@ final class DynamoDbFixtureTest extends TestCase
         });
 
         $this->expectException(LoadFailedException::class);
-        $this->expectExceptionMessage('Failed to process unprocessed items for table "users": Retry failed');
+        $this->expectExceptionMessageIsOrContains(
+            'Failed to process unprocessed items for table "users": Retry failed'
+        );
 
         $fixture->load($client);
     }
 
+    #[DoesNotPerformAssertions]
     public function testHandleUnprocessedItemsRetryExceptionWithoutThrowOnFail(): void
     {
         $fixture = new class extends DynamoDbFixture {
@@ -595,8 +599,6 @@ final class DynamoDbFixtureTest extends TestCase
         });
 
         $fixture->load($client, false);
-
-        $this->addToAssertionCount(1);
     }
 
     protected function setUp(): void
