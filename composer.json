@@ -102,7 +102,10 @@
     "sniffer": "phpcs",
     "sniffer-fix": "phpcbf",
     "test": "phpunit --testsuite Full --testdox --testdox-summary --no-coverage --no-logging",
-    "test-coverage": "XDEBUG_MODE=coverage phpunit --testsuite Full --testdox --testdox-summary --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-cobertura tests/.results/tests-cobertura.xml --coverage-html tests/.results/html/"
+    "test-coverage": [
+      "@putenv XDEBUG_MODE=coverage",
+      "@php -d zend.assertions=1 vendor/bin/phpunit --testsuite Full --testdox --testdox-summary --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-cobertura tests/.results/tests-cobertura.xml --coverage-html tests/.results/html/"
+    ]
   },
   "scripts-descriptions": {
     "ci": "Run all CI checks",
