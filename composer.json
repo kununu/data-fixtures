@@ -52,13 +52,6 @@
     "symfony/http-client": "Load fixtures with mocked data for Symfony Http client",
     "symfony/http-foundation": "Load fixtures with mocked data for Symfony Http client"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/kununu/code-tools.git",
-      "no-api": true
-    }
-  ],
   "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
