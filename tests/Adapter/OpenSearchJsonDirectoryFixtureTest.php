@@ -144,7 +144,7 @@ final class OpenSearchJsonDirectoryFixtureTest extends TestCase
             ]);
 
         $this->expectException(LoadFailedException::class);
-        $this->expectExceptionMessage(
+        $this->expectExceptionMessageIsOrContains(
             <<<'TEXT'
 Errors:
 [
@@ -205,7 +205,7 @@ TEXT
             ->willReturn(['errors' => false]);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
+        $this->expectExceptionMessageIs(
             sprintf(
                 'Error decoding JSON file: "%s"',
                 realpath(__DIR__ . '/../TestFixtures/OpenSearch/OpenSearchJsonDirectoryFixture2/docs2.json')

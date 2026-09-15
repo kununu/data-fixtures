@@ -36,13 +36,9 @@ final class HttpClient extends MockHttpClient implements FixturesHttpClientInter
 
     public function addResponses(array $responses): void
     {
-        if (null === $this->responses) {
-            $this->responses = [];
-        }
+        $this->responses ??= [];
 
-        if (null === $this->bodyValidators) {
-            $this->bodyValidators = [];
-        }
+        $this->bodyValidators ??= [];
 
         foreach ($responses as $response) {
             [$url, $method, $code, $body, $bodyValidator] = $this->extractResponseData($response);

@@ -72,9 +72,7 @@ abstract class Loader implements LoaderInterface
 
     final public function registerInitializableFixture(string $className, mixed ...$args): void
     {
-        if (!isset($this->initalizableFixtures[$className])) {
-            $this->initalizableFixtures[$className] = $args;
-        }
+        $this->initalizableFixtures[$className] ??= $args;
     }
 
     final public function clearFixtures(): void
