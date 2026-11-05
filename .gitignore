@@ -5,3 +5,4 @@ composer.lock
 .phpunit.cache
 vendor/
 tests/.results/
+/tools/

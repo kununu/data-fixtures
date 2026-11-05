@@ -31,9 +31,7 @@
     "aws/aws-sdk-php": "^3.173",
     "doctrine/dbal": "^3.10 || ^4.4",
     "elasticsearch/elasticsearch": "^7.1",
-    "ergebnis/composer-normalize": "^2.53",
-    "kununu/code-tools": "^5.1",
-    "maglnet/composer-require-checker": "^4.20",
+    "kununu/code-tools": "^5.2",
     "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.0",
     "phpunit/phpunit": "^13.3",
@@ -65,7 +63,6 @@
   },
   "config": {
     "allow-plugins": {
-      "ergebnis/composer-normalize": true,
       "kununu/code-tools": true,
       "php-http/discovery": true
     },
@@ -78,9 +75,9 @@
       "print-section 'Dependency Analyser'",
       "composer-dependency-analyser",
       "print-section 'Composer Require Checker'",
-      "composer-require-checker",
+      "@require-checker",
       "print-section 'Composer Normalize'",
-      "composer normalize --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock",
+      "@normalize-check",
       "print-section 'PHP CS Fixer'",
       "@cs",
       "print-section 'PHP CodeSniffer'",
@@ -96,29 +93,47 @@
     ],
     "coverage-check": "coverage-check tests/.results/tests-cobertura.xml 95",
     "cs": "composer kununu:cs-fixer src/ tests/",
-    "normalize-fix": "composer normalize --indent-size 2 --indent-style space --no-check-lock --no-update-lock",
+    "normalize-check": [
+      "@tool:composer-normalize",
+      "@php tools/composer-normalize.phar --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock"
+    ],
+    "normalize-fix": [
+      "@tool:composer-normalize",
+      "@php tools/composer-normalize.phar --indent-size 2 --indent-style space --no-check-lock --no-update-lock"
+    ],
     "phpstan": "phpstan",
     "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
     "rector-fix": "rector process --config rector-ci.php src/ tests/",
+    "require-checker": [
+      "@tool:composer-require-checker",
+      "@putenv XDEBUG_MODE=off",
+      "@php tools/composer-require-checker.phar check composer.json"
+    ],
     "sniffer": "phpcs",
     "sniffer-fix": "phpcbf",
     "test": "phpunit --testsuite Full --testdox --testdox-summary --no-coverage --no-logging",
     "test-coverage": [
       "@putenv XDEBUG_MODE=coverage",
       "@php -d zend.assertions=1 vendor/bin/phpunit --testsuite Full --testdox --testdox-summary --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-cobertura tests/.results/tests-cobertura.xml --coverage-html tests/.results/html/"
-    ]
+    ],
+    "tool:composer-normalize": "download-phar composer-normalize ergebnis/composer-normalize composer-normalize.phar",
+    "tool:composer-require-checker": "download-phar composer-require-checker maglnet/ComposerRequireChecker composer-require-checker.phar"
   },
   "scripts-descriptions": {
     "ci": "Run all CI checks",
     "coverage-check": "Check that the line coverage of the last coverage run is at least 95%",
     "cs": "Run PHP CS Fixer with kununu code standards",
-    "normalize-fix": "Normalizes the composer.json file",
+    "normalize-check": "Check composer.json is normalized (Composer Normalize PHAR)",
+    "normalize-fix": "Normalize composer.json (Composer Normalize PHAR)",
     "phpstan": "Run PHPStan",
     "rector": "Run Rector in dry-run mode with CI rules",
     "rector-fix": "Run Rector in fix mode with CI rules",
+    "require-checker": "Run Composer Require Checker (PHAR)",
     "sniffer": "Run PHP_CodeSniffer",
     "sniffer-fix": "Run PHP_CodeSniffer in fix mode",
     "test": "Run all tests",
-    "test-coverage": "Run all tests with coverage report"
+    "test-coverage": "Run all tests with coverage report",
+    "tool:composer-normalize": "Download the latest Composer Normalize PHAR into tools/",
+    "tool:composer-require-checker": "Download the latest Composer Require Checker PHAR into tools/"
   }
 }
